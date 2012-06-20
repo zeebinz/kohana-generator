@@ -1,0 +1,1 @@
+Testing <?php echo $name ?> template.
