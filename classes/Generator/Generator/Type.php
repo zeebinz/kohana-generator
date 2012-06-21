@@ -428,27 +428,29 @@ class Generator_Generator_Type
 
 		// Start a fresh log
 		$this->_log = array();
-
-		// Get the parent directory of the item
 		$item = $this->_file;
-		$directory = dirname($item);
 
-		if ($this->item_exists($directory))
+		// Check the item directories
+		foreach ($this->get_item_dirs() as $dir)
 		{
-			// The directory exists, no action is needed
-			$this->log('exists', $directory);
-		}
-		else
-		{
-			$this->log('create', $directory);
-
-			if ( ! $this->_pretend)
+			if ($this->item_exists($dir))
 			{
-				// Create the parent directory
-				$this->make_dir($directory);
+				// The directory exists, no action is needed
+				$this->log('exists', $dir);
+			}
+			else
+			{
+				$this->log('create', $dir);
+
+				if ( ! $this->_pretend)
+				{
+					// Create the parent directory
+					$this->make_dir($dir);
+				}
 			}
 		}
 
+		// Check the item
 		if ( ! $this->_force AND $this->item_exists($item))
 		{
 			// The item won't be replaced if it already exists
@@ -481,12 +483,12 @@ class Generator_Generator_Type
 	 * the current builder list if we're pretending.
 	 *
 	 * @param   string  $item  The file or directory
-	 * @param   string  $mode  The current command mode
+	 * @param   string  $search_builder  Should the builder be searched?
 	 * @return  bool
 	 */
-	public function item_exists($item, $mode = Generator::CREATE)
+	public function item_exists($item, $search_builder = TRUE)
 	{
-		if ($this->_pretend AND $this->_builder AND $mode == Generator::CREATE)
+		if ($this->_pretend AND $this->_builder AND $search_builder)
 		{
 			// Search the current builder generators for the item path
 			foreach ($this->builder()->generators() as $generator)
@@ -533,11 +535,8 @@ class Generator_Generator_Type
 		// Start a fresh log
 		$this->_log = array();
 
-		// Set the parent directory
-		$directory = dirname($this->_file);
-
 		// Check the file
-		if ($this->item_exists($this->_file, Generator::REMOVE))
+		if ($this->item_exists($this->_file, FALSE))
 		{
 			$this->log('remove', $this->_file);
 
@@ -548,22 +547,26 @@ class Generator_Generator_Type
 			}
 		}
 
-		// Check the parent directory
-		if ($this->item_exists($directory, Generator::REMOVE))
+		// Check the file directories
+		foreach ($this->get_item_dirs(FALSE) as $dir)
 		{
-			if ( ! $this->dir_is_empty($directory, $this->_file))
+			if ($this->item_exists($dir, FALSE))
 			{
-				// Don't touch non-empty directories
-				$this->log('not empty', $directory);
-			}
-			else
-			{
-				$this->log('remove', $directory);
-
-				if ( ! $this->_pretend)
+				if ( ! $this->dir_is_empty($dir, $this->_file))
 				{
-					// Remove the directory
-					rmdir($directory);
+					// Stop on non-empty directories
+					$this->log('not empty', $dir);
+					break;
+				}
+				else
+				{
+					$this->log('remove', $dir);
+
+					if ( ! $this->_pretend)
+					{
+						// Remove the directory
+						rmdir($dir);
+					}
 				}
 			}
 		}
@@ -576,9 +579,9 @@ class Generator_Generator_Type
 	 * mode, this means whether it contains items other than $ignored.
 	 *
 	 * @param   string  $directory  The directory path
-	 * @param   string  $target     Item to ignore in the directory
+	 * @param   string  $ignore     Item to ignore in the directory
 	 * @return  bool
-	 */	
+	 */
 	public function dir_is_empty($directory, $ignored = NULL)
 	{
 		// Get the list of files in the directory
@@ -591,7 +594,7 @@ class Generator_Generator_Type
 			if ($this->_builder)
 			{
 				// Get a list of items removed so far from the builder
-				$ignored += $this->_builder->get_removed_items();
+				$ignored = array_merge($ignored, $this->_builder->get_removed_items());
 			}
 
 			foreach ($ignored as $item)
@@ -608,13 +611,45 @@ class Generator_Generator_Type
 	}
 
 	/**
+	 * Returns a list of all the directory paths related to the current item,
+	 * not including the application or module path.
+	 *
+	 * @param   bool   $reverse  Should the list be reversed?
+	 * @return  array  The list of directories
+	 */
+	public function get_item_dirs($reverse = TRUE)
+	{
+		// We need a filename to parse
+		if ( ! $this->_file AND ! $this->guess_filename())
+			return array();
+
+		// Start to parse the filename
+		$ds = DIRECTORY_SEPARATOR;
+		$path = $this->_file;
+		$tree = array();
+
+		// Set the base path
+		$base = rtrim(($this->_module ? MODPATH : APPPATH), $ds);
+
+		// Remove each leaf from the path
+		while (($path = substr($path, 0, strrpos($path, $ds)))
+			AND $path != $base)
+		{
+			// Add the sub-path to the list
+			$tree[] = $path;
+		}
+
+		return $reverse ? array_reverse($tree) : $tree;
+	}
+
+	/**
 	 * Converts strings, including comma-separated lists, to arrays for local
 	 * parameter storage.
 	 *
 	 * @param   string  $values  The given parameter string value(s)
 	 * @param   string  $param   The parameter name
 	 * @return  bool    TRUE if the values were converted
-	 */	
+	 */
 	public function param_to_array($values, $param)
 	{
 		// String values should be converted internally to arrays

@@ -94,6 +94,9 @@ class Generator_Task_Generate extends Minion_Task
 			return;
 		}
 
+		// Set verbosity level
+		$this->_options['verbose'] = $params['remove'] ?: $this->_options['verbose'];
+
 		// Choose which command to run
 		$command = $params['remove'] ? Generator::REMOVE : Generator::CREATE;
 

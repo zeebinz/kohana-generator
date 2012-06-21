@@ -60,49 +60,48 @@ class Generator_Generator_Type_Directory extends Generator_Type
 
 		// Start a fresh log
 		$this->_log = array();
+		$child = $this->_file;
 
-		// Set the directories
-		$dir = $this->_file;
-		$parent = dirname($this->_file);
-		$empty = FALSE;
-
-		// Check the child directory
-		if ($this->item_exists($dir, Generator::REMOVE))
+		// Check the main directory
+		if ($this->item_exists($child, FALSE))
 		{
-			if ( ! $this->dir_is_empty($dir))
+			if ( ! $this->dir_is_empty($child))
 			{
 				// The directory isn't empty, so leave it be
-				$this->log('not empty', $dir);
+				$this->log('not empty', $child);
 			}
 			else
 			{
-				$this->log('remove', $dir);
-				$empty = TRUE;
+				$this->log('remove', $child);
 
 				if ( ! $this->_pretend)
 				{
 					// Remove the directory
-					rmdir($dir);
+					rmdir($child);
 				}
 			}
 		}
 
-		// Check the parent directory
-		if ($this->item_exists($parent, Generator::REMOVE))
+		// Check the parent directories
+		foreach ($this->get_item_dirs(FALSE) as $parent)
 		{
-			if ( ! $empty OR ! $this->dir_is_empty($parent, $dir))
+			if ($this->item_exists($parent, FALSE))
 			{
-				// The directory isn't empty, so leave it be
-				$this->log('not empty', $parent);
-			}
-			else
-			{
-				$this->log('remove', $parent);
-
-				if ( ! $this->_pretend)
+				if ( ! $this->dir_is_empty($parent, $child))
 				{
-					// Remove the directory
-					rmdir($parent);
+					// Stop on non-empty directories
+					$this->log('not empty', $parent);
+					break;
+				}
+				else
+				{
+					$this->log('remove', $parent);
+
+					if ( ! $this->_pretend)
+					{
+						// Remove the directory
+						rmdir($parent);
+					}
 				}
 			}
 		}

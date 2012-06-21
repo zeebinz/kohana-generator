@@ -203,19 +203,49 @@ class Generator_TypeTest extends Unittest_TestCase
 	}
 
 	/**
+	 * When creating an item, we also need a list of all the directories that
+	 * the item will create, not including APPPATH or MODPATH.
+	 */
+	public function test_get_dirs_from_filename()
+	{
+		$ds = DIRECTORY_SEPARATOR;
+
+		$type = new Generator_Type_Tester();
+		$type->folder('classes');
+
+		$type->name('Foo');
+		$this->assertSame(array(APPPATH.'classes'), $type->get_item_dirs());
+
+		$type->name('Foo_Bar');
+		$type->guess_filename();
+		$this->assertSame(array(APPPATH.'classes', APPPATH.'classes'.$ds.'Foo'),
+			$type->get_item_dirs());
+
+		$type->module('amodule')->verify(FALSE);
+		$type->guess_filename();
+		$this->assertSame(array(
+			MODPATH.'amodule',
+			MODPATH.'amodule'.$ds.'classes',
+			MODPATH.'amodule'.$ds.'classes'.$ds.'Foo'),
+			$type->get_item_dirs());
+	}
+
+	/**
 	 * Creating an item in pretend mode will create a log of expected actions
 	 * without making any changes.
+	 *
+	 * @depends test_get_dirs_from_filename
 	 */
 	public function test_pretend_create_makes_no_changes()
 	{
 		$ds = DIRECTORY_SEPARATOR;
 
 		$type = new Generator_Type_Tester('Dummy_Foo');
-		$type->folder('classes')->pretend();
+		$type->pretend();
 
 		$log = array(
-			array('status' => 'create', 'item' => APPPATH.'classes'.$ds.'Dummy'),
-			array('status' => 'create', 'item' => APPPATH.'classes'.$ds.'Dummy'.$ds.'Foo'.EXT),
+			array('status' => 'create', 'item' => APPPATH.'Dummy'),
+			array('status' => 'create', 'item' => APPPATH.'Dummy'.$ds.'Foo'.EXT),
 		);
 
 		$type->create();
