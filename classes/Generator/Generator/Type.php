@@ -579,7 +579,7 @@ class Generator_Generator_Type
 	 * mode, this means whether it contains items other than $ignored.
 	 *
 	 * @param   string  $directory  The directory path
-	 * @param   string  $ignore     Item to ignore in the directory
+	 * @param   string  $ignored    Item to ignore in the directory
 	 * @return  bool
 	 */
 	public function dir_is_empty($directory, $ignored = NULL)
@@ -612,7 +612,7 @@ class Generator_Generator_Type
 
 	/**
 	 * Returns a list of all the directory paths related to the current item,
-	 * not including the application or module path.
+	 * (i.e. that will be created or removed), not including APPPATH or MODPATH.
 	 *
 	 * @param   bool   $reverse  Should the list be reversed?
 	 * @return  array  The list of directories
