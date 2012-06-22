@@ -110,7 +110,7 @@ class Generator_Generator_Builder
 		}
 
 		// Convert the requested type to the class name
-		$class = 'Generator_Type_'.ucfirst($type);
+		$class = rtrim('Generator_Type_'.ucfirst($type), '_');
 
 		if ( ! class_exists($class))
 			throw new Generator_Exception("Class ':class' does not exist", array(':class' => $class));
