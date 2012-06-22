@@ -47,7 +47,7 @@ class Generator_Generator_Type_Directory extends Generator_Type
 	}
 
 	/**
-	 * Deletes the directory and its parent if not empty.
+	 * Deletes the directory and its parents if not empty.
 	 *
 	 * @throws  Generator_Exception  On invalid directory name
 	 * @return  Generator_Type  This instance
@@ -83,7 +83,7 @@ class Generator_Generator_Type_Directory extends Generator_Type
 		}
 
 		// Check the parent directories
-		foreach ($this->get_item_dirs(FALSE) as $parent)
+		foreach ($this->get_item_dirs(TRUE) as $parent)
 		{
 			if ($this->item_exists($parent, FALSE))
 			{

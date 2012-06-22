@@ -521,7 +521,7 @@ class Generator_Generator_Type
 	}
 
 	/**
-	 * Deletes the specified file and its parent directory if empty.
+	 * Deletes the specified file and its parent directories if empty.
 	 *
 	 * @throws  Generator_Exception  On invalid filename
 	 * @return  Generator_Type  This instance
@@ -547,8 +547,8 @@ class Generator_Generator_Type
 			}
 		}
 
-		// Check the file directories
-		foreach ($this->get_item_dirs(FALSE) as $dir)
+		// Check the parent directories
+		foreach ($this->get_item_dirs(TRUE) as $dir)
 		{
 			if ($this->item_exists($dir, FALSE))
 			{
@@ -617,7 +617,7 @@ class Generator_Generator_Type
 	 * @param   bool   $reverse  Should the list be reversed?
 	 * @return  array  The list of directories
 	 */
-	public function get_item_dirs($reverse = TRUE)
+	public function get_item_dirs($reverse = FALSE)
 	{
 		// We need a filename to parse
 		if ( ! $this->_file AND ! $this->guess_filename())
@@ -636,7 +636,7 @@ class Generator_Generator_Type
 			AND $path != $base)
 		{
 			// Add the sub-path to the list
-			$tree[] = $path;
+			array_unshift($tree, $path);
 		}
 
 		return $reverse ? array_reverse($tree) : $tree;
