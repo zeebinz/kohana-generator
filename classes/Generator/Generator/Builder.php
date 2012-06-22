@@ -267,20 +267,21 @@ class Generator_Generator_Builder
 	}
 
 	/**
-	 * Convenience method for creating all generator items in one action.
+	 * Runs the given command on all added generators in one action.
 	 *
-	 * In practice it's more convenient to iterate over each item via the
-	 * generators() method and create each one individually.
+	 * In practice it's more convenient to iterate over each generator
+	 * via the generators() method and run the commands individually.
 	 *
+	 * @param   string  $commmand  The command to run
 	 * @return  Generator_Builder  This instance
 	 */
-	public function execute()
+	public function execute($command = Generator::CREATE)
 	{
 		$this->_is_prepared OR $this->prepare();
 
 		foreach ($this->_generators as $generator)
 		{
-			$generator->create();
+			$generator->$command();
 		}
 
 		return $this;
