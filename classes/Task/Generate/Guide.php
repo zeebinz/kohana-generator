@@ -1,7 +1,8 @@
 <?php defined('SYSPATH') OR die('No direct script access.');
 /**
  * Generates Guide menu, index and optionally page files with skeleton
- * content. The menu will include entries for any given page definitions.
+ * content, and the userguide config file. The menu will include entries
+ * for any given page definitions.
  *
  * Additional options:
  *
@@ -23,6 +24,7 @@
  *     file : MODPATH.'/logger/guide/logger/index.md'
  *     file : MODPATH.'/logger/guide/logger/setup.md'
  *     file : MODPATH.'/logger/guide/logger/tasks.md'
+ *     file : MODPATH.'/logger/config/userguide.php'
  *
  * @package    Generator 
  * @category   Tasks 

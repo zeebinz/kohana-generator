@@ -59,8 +59,6 @@ class Generator_Task_Generate_Guide extends Task_Generate
 			->add_guide($options['name'])
 				->folder($folder)
 				->page($options['pages'])
-				->pretend($options['pretend'])
-				->force($options['force'])
 			->builder();
 
 		if ($options['pages'])
@@ -83,9 +81,21 @@ class Generator_Task_Generate_Guide extends Task_Generate
 			->folder($folder)
 			->content('# '.$options['name'].PHP_EOL.PHP_EOL.'Content of the index page.'.PHP_EOL);
 
+		if ($options['module'])
+		{
+			// Add a config file
+			$builder->add_config('userguide')
+				->template('generator/type_guide_config')
+				->set('name', ucfirst($options['name']))
+				->set('module', $options['module'])
+				->defaults($this->get_defaults());
+		}
+
 		// Return the builder
 		return $builder
 			->with_module($options['module'])
+			->with_pretend($options['pretend'])
+			->with_force($options['force'])
 			->prepare();
 	}
 

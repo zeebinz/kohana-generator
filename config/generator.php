@@ -9,6 +9,12 @@ return array
 			'author'    => 'Author',
 			'copyright' => '(c) 2012 Author',
 			'license'   => 'License info',
-		)
+		),
+		'guide' => array
+		(
+			'author'    => 'Author',
+			'copyright' => '(c) 2012 Author',
+			'license'   => 'License info',
+		)		
 	)
 );
