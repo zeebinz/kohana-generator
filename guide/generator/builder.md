@@ -53,7 +53,7 @@ For example, the Generator_Type_Controller class can be used without any additio
 
 	$builder = Generator::build()->add_controller('Home')
 		->extend('Controller_Template')
-		->actions('index, create, edit')
+		->action('index, create, edit')
 		->builder();
 
 When you've finished configuring your first generator, it's time to add some more types by calling `add_*` again, returning new type instances each time. In this way, we can build up our list step by step. We can use indentation to keep the code a bit clearer:
@@ -61,7 +61,7 @@ When you've finished configuring your first generator, it's time to add some mor
 	$builder = Generator::build()
 		->add_controller('Home')
 			->extend('Controller_Template')
-			->actions('index, create, edit')
+			->action('index, create, edit')
 			->set('category', 'Controllers')
 			->pretend()
 		->add_file('home.php')
@@ -83,7 +83,8 @@ So far, we've configured each generator individually, but often there are common
 	$builder = Generator::build()
 		->add_model('Kohana_Model_Foo')
 			->extend('Model_Database')
-		->add_class('Model_Foo')
+		->add_model('Foo')
+			->extend('Kohana_Model_Foo')
 			->blank()
 		->with_pretend()
 		->with_module('mymodule');
