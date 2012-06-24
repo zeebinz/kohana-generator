@@ -17,7 +17,7 @@
 	/**
 	 * @var  string  some string
 	 */
-	 public $some_string;
+	public $some_string;
 
 	/**
 	 * Short description.
