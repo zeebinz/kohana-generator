@@ -409,7 +409,10 @@ class Generator_Generator_Type
 		}
 
 		// Return the rendered view template
-		return ($this->_security ? (Kohana::FILE_SECURITY.PHP_EOL) : '').$view->render();
+		$rendered = ($this->_security ? (Kohana::FILE_SECURITY.PHP_EOL) : '').$view->render();
+		$rendered = preg_replace('/[ \t]+(\r\n|\n\r|\n)/', PHP_EOL, $rendered);
+
+		return $rendered;
 	}
 
 	/**
