@@ -35,7 +35,7 @@ There's a lot more in the `Generator_Type` class, including methods for handling
 
 ## Interacting with a Builder
 
-If the generator type was actually created by a Generator_Builder object, it's really useful for the generator to know about this and to be able to interact with the Builder.  So a reference to the Builder can be injected into the type via its constructor:
+If the generator type was actually created by a `Generator_Builder` object, it's really useful for the generator to know about this and to be able to interact with the Builder.  So a reference to the Builder can be injected into the type via its constructor:
 
 	public function __construct($name = NULL, Generator_Builder $builder = NULL)
 
@@ -45,7 +45,7 @@ This may make some people frown - why should the generator care how it was creat
 	
 This means, though, that the Builder needs to know whether a method is being called on the generator or on the Builder itself. Behind the scenes, the `__call()` magic method in `Generator_Type` handles this, by passing any undefined method calls to the Builder if one has been injected. So the flow of execution can move transparently between from generators to Builder and back again.
 
-The good news is that if you're handling generators directly without using a Builder, you don't need to worry about this at all. What you *do* need to think about, though, is making sure that none of your custom generator method names match those of the Generator_Builder class.  Otherwise anyone using your generator via the Builder is going to have problems. For more about this, see [Using the Builder](builder).
+The good news is that if you're handling generators directly without using a Builder, you don't need to worry about this at all. What you *do* need to think about, though, is making sure that none of your custom generator method names match those of the `Generator_Builder` class.  Otherwise anyone using your generator via the Builder is going to have problems. For more about this, see [Using the Builder](builder).
 
 ## Core Generator Types
 
