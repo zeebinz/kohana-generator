@@ -136,6 +136,6 @@ Now the log will report on exactly which files were removed, as well as any of t
 
 ## So where do I put all this code?
 
-Good question! We're basically working with a familiar MVC pattern here: generators are the 'Model', templates are the 'View', now we just need a 'Controller' to put the two together.  You can use your web app for this purpose if you want, but by far the most sensible and `secure` way is to use the bundled [Minion tasks](tasks) to configure and run Builders automatically from the commandline.
+Good question! We're basically working with a familiar MVC pattern here: generators are the 'Model', templates are the 'View', now we just need a 'Controller' to put the two together.  You can use your web app for this purpose if you want, but by far the most sensible and *secure* way is to use the bundled [Minion tasks](tasks) to configure and run Builders automatically from the commandline.
 
-Exploring the source code for these tasks also happens to be the best way of seeing how the Builder class can be used in different scenarios, from creating inividual files to whole skeleton modules.
+Exploring the source code for these tasks also happens to be the best way of seeing how the Builder class can be used in different scenarios, from creating individual files to whole skeleton modules.
