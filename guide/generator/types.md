@@ -17,19 +17,19 @@ All of the types are defined in classes/Generator/Type/*, and extend the base `G
 :	The absolute path to the resource can be set directly, but otherwise it will be guessed based on name, folder and module settings, which is what you usually want.
 
 **template($template)**
-:	The view template used by the generator must be stored in the views folder. The value is what you would normally use to load templates, e.g. 'generator/type_class' will load 'views/generator/type_class.php', wherever it can be found in the Cascading File System. This means that it's very easy to swap the default templates for your own - just add them to the views folder in your application.
+:	The view template used by the generator must be stored in the views folder. The value is what you would normally use to load templates, e.g. 'generator/type_class' will load 'views/generator/type_class.php', wherever it can be found in the Cascading File System. This means that it's very easy to swap the default templates with your own - just add them to the views folder in your application.
 
 **pretend()**
 :	When the pretend mode is set, no changes will be made to the file system, but the log will record what *would* have happened if the command had been run. This is very handy for previewing and debugging.
 
 **render()**
-:	This method must be implemented by each type, and `Generator_Type` by default returns a rendered view from the specified template, with parameters configured by methods like `set($key, $value)`.  But any children of `Generator_Type` can override this method quite easily.  All that needs to be returned is a string that represents the file contents, so pure code generation without using view templates is also possible.
+:	This method must be implemented by each type, and `Generator_Type` by default returns a rendered view from the specified template, with parameters configured by methods like `set($key, $value)`.  But any children of `Generator_Type` can override this method quite easily.  All that needs to be returned is a string that represents the file contents, so pure code generation without using view templates is also possible. This is in fact how `Generator_Type_File` works (see below).
 
 **log()**
 :	By design, the actions taken by the generator are recorded in a simple log, each entry consisting of an array with `status` and `item` keys. Most controllers will want to process the log returned by this method in some way to verify the result of running a generator.
 
 **create()**, **remove()**
-: When these actions are called, the log will be populated with a record of the actions taken.  This log should be identical in pretend mode - just without any actual effects on the file system.
+: When these actions are called, the log will be populated with a record of the actions taken, including for all of the resource's sub-directories as well as the file itself.  This log should be identical in pretend mode - just without any actual effects on the file system. Nested directories will be created automatically, and when the resource is removed any empty ones should be deleted as well.
 
 There's a lot more in the `Generator_Type` class, including methods for handling default parameters, guessing filenames, processing sub-directories, and so on. It's well worth getting to know this class well if you plan to make your own generator types.
 
@@ -43,9 +43,9 @@ This may make some people frown - why should the generator care how it was creat
 
 	$generator->name('Foo')->module('bar')-> ... etc.
 	
-This means, though, that the Builder needs to know whether a method is being called on the generator or on the Builder itself. Behind the scenes, the `__call()` magic method in `Generator_Type` handles this, by passing any undefined method calls to the Builder if one has been injected. So the flow of execution can move transparently between from generators to Builder and back again.
+This means, though, that the Builder needs to know whether a method is being called on the generator or on the Builder itself. Behind the scenes, the `__call()` magic method in `Generator_Type` handles this, by passing any undefined method calls to the Builder if one has been injected. So the flow of execution can move transparently from generators to Builder and back again.
 
-The good news is that if you're handling generators directly without using a Builder, you don't need to worry about this at all. What you *do* need to think about, though, is making sure that none of your custom generator method names match those of the `Generator_Builder` class.  Otherwise anyone using your generator via the Builder is going to have problems. For more about this, see [Using the Builder](builder).
+The good news is that if you're not using a Builder, you don't need to worry about this at all. What you *do* need to think about, though, is making sure that none of your custom generator method names match those of the `Generator_Builder` class.  Otherwise anyone using your generator via the Builder is going to have problems. For more about this, see [Using the Builder](builder).
 
 ## Core Generator Types
 
@@ -54,11 +54,11 @@ The simplest generator that can be created is actually an instance of `Generator
 	$generator = new Generator_Type;
 	$generator->name('Foo')->template('some_template')-> ... etc.
 
-Usually, though, you'll either want to adapt one of the classes that extend `Generator_Type`, or roll your own.  Here are some of the generator types that are worth getting to know a bit better:
+Usually, though, you'll either want to adapt one of the classes that extend `Generator_Type`, or roll your own.  But first, here are some of the generator types that are worth getting to know a bit better:
 
 #### Generator_Type_Class
 
-This is probably one of the most useful to use either directly or extend yourself. As models and controllers as well as libraries are defined in Kohana as classes, you can easily make do with configuring this generator for those - adding details of any class extension, implemented interfaces, and so on, via the fluent interface. As it happens, other types are defined for controllers and models to make life a little easier.
+This is probably one of the most useful to use either directly or extend yourself. Since models and controllers as well as libraries are defined in Kohana as classes, you can easily make do with configuring this generator for those - adding details of any class extension, implemented interfaces, and so on, via the fluent interface. As it happens, other types are defined for controllers and models to make life a little easier.
 
 #### Generator_Type_Controller
 
@@ -75,13 +75,13 @@ This is one of two special generators that don't use view templates. Instead, th
 		->content(''Content of the index file)
 		->create();
 
-Here the generator name is the actual filename, and the destination folder must be set explicitly. This type can be handy for generating content on the fly, but if you use it often that's probably a sign that it's time to make your own generator to handle this functionality.
+Here the generator name is the actual filename, and the destination folder must be set explicitly. The `render()` method is overridden just to return whatever was set via `content()`. This type can be handy for generating content on the fly, but if you use it often that's probably a sign that it's time to make your own generator to handle this functionality.
 
 #### Generator_Type_Directory
 
 The other special type, useful only for creating empty directories, and really only needed for more complex Builder statements (for example, to create a whole module skeleton with default directories).  But again it's worth looking at the source code to see how it overrides some parent methods - particularly for handling removal of nested directories.
 
-Apart from these, all of the types in the module are used by one or more of the bundled Minion tasks, and absolutely the best way of seeing how they work is to peek into the simple source code for these - and see [Running the Tasks](tasks) for more info.
+Apart from these, all of the types in the module are used by one or more of the bundled Minion tasks, and the best way of seeing how they work is to peek into the simple source code for the tasks - see [Running the Tasks](tasks) for more info.
 
 ##  Creating your own Generators
 
@@ -105,7 +105,7 @@ The Model type actually extends the Class type, but it makes setting the class n
 
 Any generator type can be created by the Builder with `add_<type>()` method like this. Otherwise the main need for new generator types is to add extra processing, or extend the syntax in some meaningful way.
 
-Every public method that you define in the new type will become part of the generator fluent interface, so it's usually important always to return the generator instance from them so that they can be chained.  A number of methods act as both getters and setters to keep the syntax simple. For example:
+Every public method that you define in the new type will become part of the generator's fluent interface, so it's usually important always to return the generator instance from them so that they can be chained.  A number of methods act as both getters and setters to keep the syntax simple. For example:
 
 	/**
 	 * Setter and getter for the module folder in which generator items will
