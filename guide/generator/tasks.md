@@ -12,7 +12,7 @@ First you need to install the latest version of Minion from [here](http://github
         ...
     ));
 
-It's well advised to read the Minion guide at least once (it's short) so you understand its conventions and how it handles what it calls 'tasks'. Then start your console of choice and start with this simple command:
+It's well advised to read the Minion guide at least once (it's short) so you understand its conventions and how it handles what it calls 'tasks'. Then start your console of choice and run this simple command:
 
 	./minion generate --help
 
@@ -40,7 +40,9 @@ This should give you the main help page for the Generator module in the usual Mi
 	
 	    A valid module folder under MODPATH in which to create
 	    the files instead of the default APPPATH.
-
+	
+	Available generators:
+	
 Following this should be a list of the available generators on your system. You can view the help pages for each of these by running the command:
 
 	./minion generate:GENERATOR --help
@@ -51,6 +53,8 @@ The options listed in the general help are common to all generators, and each ge
 	
 	...
 	
+	Description
+	===========
 	Generates configuration files, optionally with simple config entries
 	passed as value definitions.
 	
@@ -78,7 +82,7 @@ This should be plenty to get you started.  The examples in the help cover the mo
 
 ## Previewing and Inspecting
 
-Unless you're really confident about what the output is going to be, you'll usually want to preview the changes that are going to be made.  Let's continue with the `config` generator example.  Run this command in your console of choice:
+Unless you're really confident about what the output is going to be, you'll usually want to preview the changes that are going to be made.  Let's continue with the `config` generator example.  Run this command in your console:
 
 	./minion generate:config --name=logger
 
