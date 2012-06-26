@@ -26,6 +26,11 @@
  *     A valid module folder under MODPATH in which to create
  *     the files instead of the default APPPATH.
  *
+ *   --config=CONFIG
+ *
+ *     The config file to use with this task instead of the
+ *     default, stored in the config folder.
+ *
  * @package    Generator
  * @category   Tasks
  * @author     Zeebee

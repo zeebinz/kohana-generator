@@ -28,6 +28,7 @@ class Generator_Task_Generate extends Minion_Task
 		'verbose'  => FALSE,
 		'module'   => '',
 		'template' => '',
+		'config'   => '',
 	);
 
 	/**

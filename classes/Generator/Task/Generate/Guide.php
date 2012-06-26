@@ -2,13 +2,13 @@
 /**
  * Task for generating Guide pages, see Task_Generate_Guide for usage.
  *
- * @package    Generator 
- * @category   Generator/Tasks 
- * @author     Zeebee 
- * @copyright  (c) 2012 Zeebee 
- * @license    BSD revised 
+ * @package    Generator
+ * @category   Generator/Tasks
+ * @author     Zeebee
+ * @copyright  (c) 2012 Zeebee
+ * @license    BSD revised
  */
-class Generator_Task_Generate_Guide extends Task_Generate 
+class Generator_Task_Generate_Guide extends Task_Generate
 {
 	/**
 	 * @var  array  The task options
@@ -21,7 +21,7 @@ class Generator_Task_Generate_Guide extends Task_Generate
 	/**
 	 * Validates the task options.
 	 *
-	 * @param  Validation  $validation  the validation object to add rules to	 
+	 * @param  Validation  $validation  The validation object to add rules to
 	 * @return Validation
 	 */
 	public function build_validation(Validation $validation)
@@ -33,11 +33,14 @@ class Generator_Task_Generate_Guide extends Task_Generate
 	/**
 	 * Loads any view parameter defaults from config.
 	 *
-	 * @return array
+	 * @param  array  $options  The selected task options
+	 * @return array  The default values
 	 */
-	public function get_defaults()
+	public function get_defaults(array $options = NULL)
 	{
-		if ($defaults = Kohana::$config->load('generator.defaults.guide'))
+		$config = ! empty($options['config']) ? $options['config'] : 'generator';
+
+		if ($defaults = Kohana::$config->load($config.'.defaults.guide'))
 			return $defaults;
 
 		return array();
@@ -46,7 +49,7 @@ class Generator_Task_Generate_Guide extends Task_Generate
 	/**
 	 * Creates a generator builder with the given configuration options.
 	 *
-	 * @param  array  $options  the selected task options
+	 * @param  array  $options  The selected task options
 	 * @return Generator_Builder
 	 */
 	public function get_builder(array $options)
@@ -88,7 +91,7 @@ class Generator_Task_Generate_Guide extends Task_Generate
 				->template('generator/type_guide_config')
 				->set('name', ucfirst($options['name']))
 				->set('module', $options['module'])
-				->defaults($this->get_defaults());
+				->defaults($this->get_defaults($options));
 		}
 
 		// Return the builder
@@ -102,7 +105,7 @@ class Generator_Task_Generate_Guide extends Task_Generate
 	/**
 	 * Executes the task.
 	 *
-	 * @param  array  $params  the task parameters
+	 * @param  array  $params  The task parameters
 	 * @return void
 	 */
 	protected function _execute(array $params)
@@ -111,4 +114,4 @@ class Generator_Task_Generate_Guide extends Task_Generate
 		$this->run($builder, $params);
 	}
 
-} // End Generator_Task_Generate_Guide 
+} // End Generator_Task_Generate_Guide
