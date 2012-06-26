@@ -203,15 +203,26 @@ class Generator_Task_Generate extends Minion_Task
 	 */	
 	protected function _write_log($status, $item)
 	{
-		$line = sprintf('%10s  %s', $status, $item);
+		$color = in_array($status, array(Generator::CREATE, Generator::REMOVE)) ? 'green' : 'red';
 
-		if ( ! $this->_options['no-ansi'])
-		{
-			$color = in_array($status, array(Generator::CREATE, Generator::REMOVE)) ? 'green' : 'red';
-			$line = Minion_CLI::color($line, $color);
-		}
+		$this->_write($this->_color(sprintf('%10s  %s', $status, $item), $color));
+	}
 
-		$this->_write($line);
+	/**
+	 * Returns the given text with the correct color codes for a foreground and
+	 * optionally a background color.
+	 *
+	 * @param  string  $text        The text to color
+	 * @param  atring  $foreground  The foreground color
+	 * @param  string  $background  The background color
+	 * @return string  The color coded string
+	 */
+	public function _color($text, $foreground, $background = NULL)
+	{
+		if ($this->_options['no-ansi'])
+			return $text;
+
+		return Minion_CLI::color($text, $foreground, $background);
 	}
 
 	/**
