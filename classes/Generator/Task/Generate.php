@@ -26,6 +26,7 @@ class Generator_Task_Generate extends Minion_Task
 		'no-ask'   => FALSE,
 		'remove'   => FALSE,
 		'verbose'  => FALSE,
+		'no-ansi'  => FALSE,
 		'module'   => '',
 		'template' => '',
 		'config'   => '',
@@ -168,6 +169,7 @@ class Generator_Task_Generate extends Minion_Task
 	/**
 	 * Outputs the common help message by default.
 	 *
+	 * @param  array  $params  The current task parameters	 
 	 * @return void
 	 */
 	protected function _execute(array $params)
@@ -178,6 +180,8 @@ class Generator_Task_Generate extends Minion_Task
 	/**
 	 * Writes a message directly to STDOUT.
 	 *
+	 * @param  string  $text  The message to write
+	 * @param  bool    $eol   Should EOL be added?
 	 * @return void
 	 */	
 	protected function _write($text, $eol = TRUE)
@@ -193,11 +197,21 @@ class Generator_Task_Generate extends Minion_Task
 	/**
 	 * Writes a formatted log message directly to STDOUT.
 	 *
+	 * @param  string  $status  The status message
+	 * @param  string  $item    The item affected
 	 * @return void
 	 */	
 	protected function _write_log($status, $item)
 	{
-		$this->_write(sprintf("%10s  %s", $status, $item));
+		$line = sprintf('%10s  %s', $status, $item);
+
+		if ( ! $this->_options['no-ansi'])
+		{
+			$color = in_array($status, array(Generator::CREATE, Generator::REMOVE)) ? 'green' : 'red';
+			$line = Minion_CLI::color($line, $color);
+		}
+
+		$this->_write($line);
 	}
 
 	/**
@@ -218,7 +232,7 @@ class Generator_Task_Generate extends Minion_Task
 	 * A list of available generators will be appended to the help only if the
 	 * current instance is the base generator task.
 	 *
-	 * @param  array  $params  the current task parameters
+	 * @param  array  $params  The current task parameters
 	 * @return void
 	 */	
 	protected function _help(array $params)

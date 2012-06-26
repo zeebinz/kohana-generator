@@ -15,6 +15,7 @@
  *   --no-ask    # Don't ask for any user input
  *   --remove    # Delete files and empty directories
  *   --verbose   # Show more information when running
+ *   --no-ansi   # Disable ANSI output, e.g. colors
  *
  *   --template=VIEW
  *
