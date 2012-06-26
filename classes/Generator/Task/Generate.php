@@ -88,7 +88,7 @@ class Generator_Task_Generate extends Minion_Task
 			foreach ($builder->inspect() as $num => $item)
 			{
 				$this->_write('');
-				$this->_write("[ File $i ] ".Debug::path($item['file']));
+				$this->_write($this->_color("[ File $i ] ".Debug::path($item['file']), 'brown'));
 				$this->_write('');
 				$this->_write($item['rendered']);
 				$i++;
