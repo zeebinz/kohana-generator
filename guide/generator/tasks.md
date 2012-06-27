@@ -177,7 +177,11 @@ At some point you'll probably want to make your own generators with tasks to run
 	
 So you can just add your new methods or override existing ones in that new class file.	Note, though, that because of how Minion works, you'll need to add the help page for this task to your new file also.
 
-Otherwise you can run the `generate:task` command with the proper options. But what you *really* want to do (trust me) is run the special task for creating generators:
+Otherwise you can run the `generate:task` command with the proper options, or for a less manual approach you can use this handy shortcut instead:
+
+	./minion generate:task:generator --name=Foo
+
+But for a full set of files, what you *really* want to do (trust me) is run the special task for creating generators:
 
 	./minion generate:generator --name=Foo
 	

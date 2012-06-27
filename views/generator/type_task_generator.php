@@ -29,7 +29,9 @@
  * @copyright  <?php echo $copyright ?> 
  * @license    <?php echo $license ?> 
  */
-class <?php echo $name.' extends Task_Generate';
+class <?php
+	echo $name;
+	echo ' extends '.( ! empty($extends) ? $extends : 'Task_Generate');
 	if ( ! empty($blank)) {echo ' {}';} else { ?> 
 {
 	/**
@@ -55,7 +57,7 @@ class <?php echo $name.' extends Task_Generate';
 	 * Loads any view parameter defaults from config.
 	 *
 	 * @param  array  $options  The selected task options
-	 * @return array
+	 * @return array  The list of default values
 	 */
 	public function get_defaults(array $options = NULL)
 	{
