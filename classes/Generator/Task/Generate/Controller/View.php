@@ -3,18 +3,18 @@
  * Task for generating template controllers with views, for usage see
  * Task_Generate_Controller_View.
  *
- * @package    Generator 
- * @category   Generator/Tasks 
- * @author     Zeebee 
- * @copyright  (c) 2012 Zeebee 
- * @license    BSD revised 
+ * @package    Generator
+ * @category   Generator/Tasks
+ * @author     Zeebee
+ * @copyright  (c) 2012 Zeebee
+ * @license    BSD revised
  */
 class Generator_Task_Generate_Controller_View extends Task_Generate_Controller
 {
 	/**
 	 * Creates a generator builder with the given configuration options.
 	 *
-	 * @param  array  $options  the selected task options
+	 * @param  array  $options  The selected task options
 	 * @return Generator_Builder
 	 */
 	public function get_builder(array $options)

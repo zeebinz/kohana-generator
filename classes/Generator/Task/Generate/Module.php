@@ -2,11 +2,11 @@
 /**
  * Task for generating module skeletons, see Task_Generate_Module for usage.
  *
- * @package    Generator 
- * @category   Generator/Tasks 
- * @author     Zeebee 
- * @copyright  (c) 2012 Zeebee 
- * @license    BSD revised 
+ * @package    Generator
+ * @category   Generator/Tasks
+ * @author     Zeebee
+ * @copyright  (c) 2012 Zeebee
+ * @license    BSD revised
  */
 class Generator_Task_Generate_Module extends Task_Generate
 {
@@ -20,7 +20,7 @@ class Generator_Task_Generate_Module extends Task_Generate
 	/**
 	 * Validates the task options.
 	 *
-	 * @param  Validation  $validation  the validation object to add rules to	 
+	 * @param  Validation  $validation  The validation object to add rules to
 	 * @return Validation
 	 */
 	public function build_validation(Validation $validation)
@@ -32,7 +32,7 @@ class Generator_Task_Generate_Module extends Task_Generate
 	/**
 	 * Creates a generator builder with the given configuration options.
 	 *
-	 * @param  array  $options  the selected task options
+	 * @param  array  $options  The selected task options
 	 * @return Generator_Builder
 	 */
 	public function get_builder(array $options)
@@ -79,7 +79,7 @@ class Generator_Task_Generate_Module extends Task_Generate
 	/**
 	 * Executes the task.
 	 *
-	 * @param  array  $params  the task parameters
+	 * @param  array  $params  The task parameters
 	 * @return void
 	 */
 	protected function _execute(array $params)

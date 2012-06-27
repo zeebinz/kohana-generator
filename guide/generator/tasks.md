@@ -3,7 +3,7 @@
 You can run generators from any type of controller, including from a page of your web application. But it makes a lot more sense - is far easier and more secure - to create new resources from the commandline.  The module is therefore bundled with a set of tasks for Kohana's awesome Minion CLI module.
 
 ## Getting Started
-First you need to install the latest version of Minion from [here](http://github.com/kohana/minion). Then you should load both Generataor and Minion modules in your bootstrap like so, in this order:
+First you need to install the latest version of Minion from [here](http://github.com/kohana/minion). Then you should load both Generator and Minion modules in your bootstrap like so, in this order:
 
     Kohana::modules(array(
         ...
@@ -30,6 +30,7 @@ This should give you the main help page for the Generator module in the usual Mi
 	  --no-ask    # Don't ask for any user input
 	  --remove    # Delete files and empty directories
 	  --verbose   # Show more information when running
+	  --no-ansi   # Disable ANSI output, e.g. colors
 	
 	  --template=VIEW
 	
@@ -41,8 +42,15 @@ This should give you the main help page for the Generator module in the usual Mi
 	    A valid module folder under MODPATH in which to create
 	    the files instead of the default APPPATH.
 	
+	  --config=CONFIG
+	
+	    The config file to use with this task instead of the
+	    default, stored in the config folder.
+	
 	Available generators:
 	
+	...
+
 Following this should be a list of the available generators on your system. You can view the help pages for each of these by running the command:
 
 	./minion generate:GENERATOR --help
@@ -94,6 +102,8 @@ Unless you're really confident about what the output is going to be, you'll usua
 	Do you want to continue? [ y, n ]:
 	
 Notice that by default you're asked to confirm any actions - *exists* means the item won't be replaced. You can change the behaviour by using the `--force` option usually, and if you don't want to be asked for confirmation use `--no-ask` or `--quiet`. If you want to see what the changes will be without making them and don't want the prompt, use `--pretend`. Entering 'n' as your response will end the task, 'y' will create only the resources marked *create*.
+
+The log output will be colorized by default for consoles that support ANSI escape characters - Windows users will need to install [ANSICON](http://adoxa.110mb.com/ansicon). To disable the colors, use the `--no-ansi` option.
 
 Otherwise, you can add the `--inspect` option to preview the destination filename as well as the rendered file contents:
 
@@ -147,7 +157,11 @@ Add generator.php to your APPPATH/config directory, and set the common values in
 		),
 	);
  
-Notice that these are just defaults, they won't override anything set manually. If you don't set any specific value here, placeholder values will be used by the tasks instead.
+Notice that these are just defaults, they won't override anything set manually. If you don't set any specific value here, placeholder values will be used by the tasks instead. You can also set the config file used by the task with the `--config` option:
+
+	./minion generate:class --name=Foo  --config=test/generator
+
+In this case, the task will look for the list of default values in the array path `defaults.class` of the config/test/generator.php file.
 
 ## Creating your own Generator Tasks
 
@@ -163,7 +177,11 @@ At some point you'll probably want to make your own generators with tasks to run
 	
 So you can just add your new methods or override existing ones in that new class file.	Note, though, that because of how Minion works, you'll need to add the help page for this task to your new file also.
 
-Otherwise you can run the `generate:task` command with the proper options. But what you *really* want to do (trust me) is run the special task for creating generators:
+Otherwise you can run the `generate:task` command with the proper options, or for a less manual approach you can use this handy shortcut instead:
+
+	./minion generate:task:generator --name=Foo
+
+But for a full set of files, what you *really* want to do (trust me) is run the special task for creating generators:
 
 	./minion generate:generator --name=Foo
 	

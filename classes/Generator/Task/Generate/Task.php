@@ -22,7 +22,7 @@ class Generator_Task_Generate_Task extends Task_Generate
 	/**
 	 * Validates the task options.
 	 *
-	 * @param  Validation  $validation  the validation object to add rules to	 
+	 * @param  Validation  $validation  The validation object to add rules to
 	 * @return Validation
 	 */
 	public function build_validation(Validation $validation)
@@ -34,11 +34,14 @@ class Generator_Task_Generate_Task extends Task_Generate
 	/**
 	 * Loads any view parameter defaults from config.
 	 *
-	 * @return array
+	 * @param  array  $options  The selected task options
+	 * @return array  The default values
 	 */
-	public function get_defaults()
+	public function get_defaults(array $options = NULL)
 	{
-		if ($defaults = Kohana::$config->load('generator.defaults.class'))
+		$config = ! empty($options['config']) ? $options['config'] : 'generator';
+
+		if ($defaults = Kohana::$config->load($config.'.defaults.class'))
 			return $defaults;
 
 		return array();
@@ -72,14 +75,14 @@ class Generator_Task_Generate_Task extends Task_Generate
 			->with_template($options['template'])
 			->with_pretend($options['pretend'])
 			->with_force($options['force'])
-			->with_defaults($this->get_defaults())
+			->with_defaults($this->get_defaults($options))
 			->prepare();
 	}
 
 	/**
 	 * Executes the task.
 	 *
-	 * @param  array  $params  the task parameters
+	 * @param  array  $params  The task parameters
 	 * @return void
 	 */
 	protected function _execute(array $params)

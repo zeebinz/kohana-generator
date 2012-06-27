@@ -45,7 +45,7 @@ class <?php
 	/**
 	 * Validates the task options.
 	 *
-	 * @param  Validation  $validation  the validation object to add rules to	 
+	 * @param  Validation  $validation  The validation object to add rules to
 	 * @return Validation
 	 */
 	public function build_validation(Validation $validation)
@@ -57,7 +57,7 @@ class <?php
 	/**
 	 * Executes the task.
 	 *
-	 * @param  array  $params  the task parameters
+	 * @param  array  $params  The task parameters
 	 * @return void
 	 */
 	protected function _execute(array $params)

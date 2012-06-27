@@ -1,14 +1,15 @@
 <?php defined('SYSPATH') OR die('No direct script access.');
 /**
- * Task for generating generators, see Task_Generate_Generator for usage.
+ * Task for creating generator tasks, see Task_Generate_task_Generator for
+ * usage and examples.
  *
  * @package    Generator
- * @category   Generator/Tasks
+ * @category   Tasks
  * @author     Zeebee
  * @copyright  (c) 2012 Zeebee
  * @license    BSD revised
  */
-class Generator_Task_Generate_Generator extends Task_Generate
+class Generator_Task_Generate_Task_Generator extends Task_Generate
 {
 	/**
 	 * @var  array  The task options
@@ -18,8 +19,6 @@ class Generator_Task_Generate_Generator extends Task_Generate
 		'extend'  => '',
 		'prefix'  => '',
 		'no-stub' => FALSE,
-		'no-task' => FALSE,
-		'no-test' => FALSE,
 	);
 
 	/**
@@ -53,7 +52,7 @@ class Generator_Task_Generate_Generator extends Task_Generate
 	/**
 	 * Creates a generator builder with the given configuration options.
 	 *
-	 * @param  array  $options  The selected task options
+	 * @param  array  $options  the selected task options
 	 * @return Generator_Builder
 	 */
 	public function get_builder(array $options)
@@ -61,53 +60,30 @@ class Generator_Task_Generate_Generator extends Task_Generate
 		// Set any class prefix, default is the module name
 		$prefix = $options['prefix'] ?: ucfirst($options['module']);
 
+		// Set the default template and extension
+		$template = $options['template'] ?: 'generator/type_task_generator';
+		$extend = $options['extend'] ?: 'Task_Generate';
+
 		$builder = Generator::build()
-			->add_generator($options['name'])
-				->extend($options['extend'])
-				->template($options['template'])
-			->builder(); // Return the builder instance
+			->add_task('Generate_'.$options['name'])
+				->extend($extend);
 
 		if ($options['module'] AND ! $options['no-stub'])
 		{
-			// Prefix the generator name
+			// Prefix the task name
 			$name = $prefix.'_'.$builder->name();
-			$builder->name($name);
+			$builder->name($name)
+				->set('category', 'Generator/Tasks')
+				->no_help();
 
-			// Add a stub to extend the generator transparently
-			$builder->add_generator($options['name'])
-				->template($options['template'])
+			// Add a stub to extend the task transparently
+			$builder->add_task('Generate_'.$options['name'])
 				->extend($name)
 				->blank();
 		}
 
-		if ( ! $options['no-task'])
-		{
-			$builder->add_task('Generate_'.$options['name'])
-				->template('generator/type_task_generator');
-
-			if ($options['module'] AND ! $options['no-stub'])
-			{
-				// Prefix the task name
-				$name = $prefix.'_'.$builder->name();
-				$builder->name($name)
-					->set('category', 'Generator/Tasks')
-					->no_help();
-
-				// Add a stub to extend the task transparently
-				$builder->add_task('Generate_'.$options['name'])
-					->extend($name)
-					->blank();
-			}
-		}
-
-		if ( ! $options['no-test'])
-		{
-			$builder->add_unittest('Generator_Type_'.$options['name'])
-				->group('generator')
-				->group('generator.types');
-		}
-
 		return $builder
+			->with_template($template)
 			->with_module($options['module'])
 			->with_pretend($options['pretend'])
 			->with_force($options['force'])
@@ -127,4 +103,4 @@ class Generator_Task_Generate_Generator extends Task_Generate
 		$this->run($builder, $params);
 	}
 
-} // End Generator_Task_Generate_Generator
+} // End Generator_Task_Generate_Task_Generator

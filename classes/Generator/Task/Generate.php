@@ -26,8 +26,10 @@ class Generator_Task_Generate extends Minion_Task
 		'no-ask'   => FALSE,
 		'remove'   => FALSE,
 		'verbose'  => FALSE,
+		'no-ansi'  => FALSE,
 		'module'   => '',
 		'template' => '',
+		'config'   => '',
 	);
 
 	/**
@@ -86,7 +88,7 @@ class Generator_Task_Generate extends Minion_Task
 			foreach ($builder->inspect() as $num => $item)
 			{
 				$this->_write('');
-				$this->_write("[ File $i ] ".Debug::path($item['file']));
+				$this->_write($this->_color("[ File $i ] ".Debug::path($item['file']), 'brown'));
 				$this->_write('');
 				$this->_write($item['rendered']);
 				$i++;
@@ -167,6 +169,7 @@ class Generator_Task_Generate extends Minion_Task
 	/**
 	 * Outputs the common help message by default.
 	 *
+	 * @param  array  $params  The current task parameters	 
 	 * @return void
 	 */
 	protected function _execute(array $params)
@@ -177,6 +180,8 @@ class Generator_Task_Generate extends Minion_Task
 	/**
 	 * Writes a message directly to STDOUT.
 	 *
+	 * @param  string  $text  The message to write
+	 * @param  bool    $eol   Should EOL be added?
 	 * @return void
 	 */	
 	protected function _write($text, $eol = TRUE)
@@ -192,11 +197,32 @@ class Generator_Task_Generate extends Minion_Task
 	/**
 	 * Writes a formatted log message directly to STDOUT.
 	 *
+	 * @param  string  $status  The status message
+	 * @param  string  $item    The item affected
 	 * @return void
 	 */	
 	protected function _write_log($status, $item)
 	{
-		$this->_write(sprintf("%10s  %s", $status, $item));
+		$color = in_array($status, array(Generator::CREATE, Generator::REMOVE)) ? 'green' : 'red';
+
+		$this->_write($this->_color(sprintf('%10s  %s', $status, $item), $color));
+	}
+
+	/**
+	 * Returns the given text with the correct color codes for a foreground and
+	 * optionally a background color.
+	 *
+	 * @param  string  $text        The text to color
+	 * @param  atring  $foreground  The foreground color
+	 * @param  string  $background  The background color
+	 * @return string  The color coded string
+	 */
+	public function _color($text, $foreground, $background = NULL)
+	{
+		if ($this->_options['no-ansi'])
+			return $text;
+
+		return Minion_CLI::color($text, $foreground, $background);
 	}
 
 	/**
@@ -217,7 +243,7 @@ class Generator_Task_Generate extends Minion_Task
 	 * A list of available generators will be appended to the help only if the
 	 * current instance is the base generator task.
 	 *
-	 * @param  array  $params  the current task parameters
+	 * @param  array  $params  The current task parameters
 	 * @return void
 	 */	
 	protected function _help(array $params)
