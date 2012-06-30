@@ -139,11 +139,14 @@ class Generator_Generator_Builder
 	 * @param   array  $defaults   The list of default values
 	 * @return  Generator_Builder  This instance
 	 */
-	public function with_defaults(array $defaults)
+	public function with_defaults(array $defaults = NULL)
 	{
-		$this->_defaults = $defaults;
+		if ($defaults)
+		{
+			$this->_defaults = $defaults;
+			$this->_is_prepared = FALSE;
+		}
 
-		$this->_is_prepared = FALSE;
 		return $this;
 	}
 
