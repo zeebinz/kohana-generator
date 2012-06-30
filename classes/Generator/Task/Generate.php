@@ -76,12 +76,12 @@ class Generator_Task_Generate extends Minion_Task
 	 * confirmation before any destructive changes, allowing inspection, etc.
 	 *
 	 * @param  Generator_Builder  $builder  The builder to execute
-	 * @param  array  $params  The task parameters to use
+	 * @param  array  $options  The task options to use
 	 * @return void
 	 */
-	public function run(Generator_Builder $builder, array $params)
+	public function run(Generator_Builder $builder, array $options)
 	{
-		if ($params['inspect'])
+		if ($options['inspect'])
 		{
 			// Output debug info for each generator item
 			$i = 1;
@@ -97,12 +97,12 @@ class Generator_Task_Generate extends Minion_Task
 		}
 
 		// Set verbosity level
-		$this->_options['verbose'] = $params['remove'] ?: $this->_options['verbose'];
+		$this->_options['verbose'] = $options['remove'] ?: $this->_options['verbose'];
 
 		// Choose which command to run
-		$command = $params['remove'] ? Generator::REMOVE : Generator::CREATE;
+		$command = $options['remove'] ? Generator::REMOVE : Generator::CREATE;
 
-		if ( ! $params['quiet'] AND ! $params['pretend'] AND ! $params['no-ask'])
+		if ( ! $options['quiet'] AND ! $options['pretend'] AND ! $options['no-ask'])
 		{
 			// Run once in pretend mode to get a list of expected actions,
 			// and don't continue if there's nothing to do
@@ -112,13 +112,12 @@ class Generator_Task_Generate extends Minion_Task
 			$this->_write('');
 
 			// Ask for user confirmation
-			$read = $this->_read('Do you want to continue?', array('y', 'n'));
-			if ($read == 'n')
+			if ('n' == $this->_read('Do you want to continue?', array('y', 'n')))
 				return;
 		}
 
 		// Run the chosen command on the generators
-		$this->run_command($command, $builder->with_pretend($params['pretend']));
+		$this->run_command($command, $builder->with_pretend($options['pretend']));
 	}
 
 	/**
