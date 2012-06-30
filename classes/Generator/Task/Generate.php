@@ -166,7 +166,18 @@ class Generator_Task_Generate extends Minion_Task
 	}
 
 	/**
-	 * Outputs the common help message by default.
+	 * Convenience method for loading configuration values.
+	 *
+	 * @param  array  $path   Array path to the config values
+	 * @param  array  $group  The config group to load
+	 * @return mixed  The config values or NULL
+	 */
+	public function get_config($path, $group = NULL)
+	{
+		$group = $group ?: 'generator';
+
+		return Kohana::$config->load($group.'.'.$path);
+	}
 	 *
 	 * @param  array  $params  The current task parameters	 
 	 * @return void

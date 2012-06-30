@@ -27,10 +27,10 @@
  *     A valid module folder under MODPATH in which to create
  *     the files instead of the default APPPATH.
  *
- *   --config=CONFIG
+ *   --config=GROUP
  *
- *     The config file to use with this task instead of the
- *     default, stored in the config folder.
+ *     The config group to use with this task instead of the
+ *     default 'generator'.
  *
  * @package    Generator
  * @category   Tasks
