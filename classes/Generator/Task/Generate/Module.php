@@ -76,16 +76,4 @@ class Generator_Task_Generate_Module extends Task_Generate
 			->prepare();
 	}
 
-	/**
-	 * Executes the task.
-	 *
-	 * @param  array  $params  The task parameters
-	 * @return void
-	 */
-	protected function _execute(array $params)
-	{
-		$builder = $this->get_builder($params);
-		$this->run($builder, $params);
-	}
-
 } // End Generator_Task_Generate_Module

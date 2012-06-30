@@ -178,12 +178,34 @@ class Generator_Task_Generate extends Minion_Task
 
 		return Kohana::$config->load($group.'.'.$path);
 	}
+
+	/**
+	 * Returns a generator builder created with the given configuration options.
+	 * This method should be implemented in full by child classes.
+	 *
+	 * @param  array  $options  The selected task options
+	 * @return bool|Generator_Builder  FALSE if no builder is available
+	 */
+	public function get_builder(array $options)
+	{
+		return FALSE;
+	}
+
+	/**
+	 * Loads a builder and runs the task, or outputs the common help message
+	 * by default.
 	 *
 	 * @param  array  $params  The current task parameters	 
 	 * @return void
 	 */
 	protected function _execute(array $params)
 	{
+		if ($builder = $this->get_builder($params))
+		{
+			$this->run($builder, $params);
+			return;
+		}
+
 		$this->_help($params);
 	}
 
