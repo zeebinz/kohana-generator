@@ -59,7 +59,17 @@ class Generator_Generator_Type_Config extends Generator_Type
 			list($key, $val) = explode('|', $value);
 			$key = is_integer($key) ? (trim($key) + 0) : trim($key);
 			$val = is_numeric($val) ? (trim($val) + 0) : trim($val);
-			Arr::set_path($ret, $key, $val);
+
+			if (is_numeric($key))
+			{
+				// Numeric keys should be set directly
+				$ret[$key] = $val;
+			}
+			else
+			{
+				// Otherwise treat key as an array path
+				Arr::set_path($ret, $key, $val);
+			}
 		}
 
 		return $ret;
