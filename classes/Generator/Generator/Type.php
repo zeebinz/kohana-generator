@@ -302,7 +302,7 @@ class Generator_Generator_Type
 
 	/**
 	 * Sets the 'blank' parameter for the current template. This allows
-	 * generators that support it to skip ay skeleton methods, etc.
+	 * generators that support it to skip any skeleton methods, etc.
 	 *
 	 * @param   bool  $blank  The 'blank' parameter value
 	 * @return  Generator_Type  This instance
