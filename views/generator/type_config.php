@@ -6,6 +6,8 @@ return array
 );
 <?php 
 } else {
-	echo 'return '.str_replace('  ', "\t", var_export($values, TRUE)).';';
+	$refl = new Generator_Reflector;
+	$values = $refl->export_variable($values, TRUE);
+	echo "return $values;";
 }
 ?> 

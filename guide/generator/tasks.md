@@ -113,9 +113,8 @@ Otherwise, you can add the `--inspect` option to preview the destination filenam
 
 	<?php defined('SYSPATH') OR die('No direct script access.');
 	
-	return array (
-		'logger' =>
-		array (
+	return array(
+		'logger' => array(
 			'debug' => 1,
 		),
 	);
