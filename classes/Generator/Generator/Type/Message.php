@@ -19,7 +19,7 @@ class Generator_Generator_Type_Message extends Generator_Type_Config
 	 * @param   array  $values  The list of value definitions
 	 * @return  array  The parsed list
 	 */
-	public function parse_values(array $values)
+	protected function _parse_values(array $values)
 	{
 		$ret = array();
 

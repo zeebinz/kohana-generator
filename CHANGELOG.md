@@ -1,6 +1,20 @@
 Generator for Kohana - Changelog
 ================================
 
+Version 0.3
+-----------
+
+- Skeleton methods will now be added for classes that implement interfaces - if
+  the interfaces exist - to satisfy any interface requirements.
+- Generated config values should now have proper indentation.
+- Numeric config keys are now set directly and not treated as array paths.
+- Added Generator_Reflector class to support basic reflection functions.
+- Limited access to Type methods that should not be part of their fluent interface.
+- Refactored the tasks to reduce the number of required methods, making
+  the creation of new tasks simpler.
+- Added new get_config() method for all tasks to more easily load default
+  configuration values.
+
 Version 0.2
 -----------
 

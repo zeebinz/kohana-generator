@@ -35,22 +35,6 @@ class Generator_Task_Generate_Class extends Task_Generate
 	}
 
 	/**
-	 * Loads any view parameter defaults from config.
-	 *
-	 * @param  array  $options  The selected task options
-	 * @return array  The default values
-	 */
-	public function get_defaults(array $options = NULL)
-	{
-		$config = ! empty($options['config']) ? $options['config'] : 'generator';
-
-		if ($defaults = Kohana::$config->load($config.'.defaults.class'))
-			return $defaults;
-
-		return array();
-	}
-
-	/**
 	 * Creates a generator builder with the given configuration options.
 	 *
 	 * @param  array  $options  The selected task options
@@ -76,7 +60,8 @@ class Generator_Task_Generate_Class extends Task_Generate
 
 		if ( ! $options['no-test'])
 		{
-			$builder->add_unittest($options['name'])
+			$name = $options['stub'] ? $builder->name() : $options['name'];
+			$builder->add_unittest($name)
 				->group($options['module']);
 		}
 
@@ -84,20 +69,8 @@ class Generator_Task_Generate_Class extends Task_Generate
 			->with_module($options['module'])
 			->with_pretend($options['pretend'])
 			->with_force($options['force'])
-			->with_defaults($this->get_defaults($options))
+			->with_defaults($this->get_config('defaults.class', $options['config']))
 			->prepare();
-	}
-
-	/**
-	 * Executes the task.
-	 *
-	 * @param  array  $params  The task parameters
-	 * @return void
-	 */
-	protected function _execute(array $params)
-	{
-		$builder = $this->get_builder($params);
-		$this->run($builder, $params);
 	}
 
 } // End Generator_Task_Generate_Class

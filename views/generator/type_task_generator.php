@@ -38,7 +38,7 @@ class <?php
 	 * @var  array  The task options
 	 */
 	protected $_options = array(
-		'option' => '',
+		'name' => '',
 	);
 
 	/**
@@ -50,23 +50,7 @@ class <?php
 	public function build_validation(Validation $validation)
 	{
 		return parent::build_validation($validation)
-			->rule('option', 'not_empty');
-	}
-
-	/**
-	 * Loads any view parameter defaults from config.
-	 *
-	 * @param  array  $options  The selected task options
-	 * @return array  The list of default values
-	 */
-	public function get_defaults(array $options = NULL)
-	{
-		$config = ! empty($options['config']) ? $options['config'] : 'generator';
-
-		if ($defaults = Kohana::$config->load($config.'.defaults.class'))
-			return $defaults;
-
-		return array();
+			->rule('name', 'not_empty');
 	}
 
 	/**
@@ -80,18 +64,6 @@ class <?php
 		$builder = Generator::build();
 
 		return $builder->prepare();
-	}
-
-	/**
-	 * Executes the task.
-	 *
-	 * @param  array  $params  The task parameters
-	 * @return void
-	 */
-	protected function _execute(array $params)
-	{
-		$builder = $this->get_builder($params);
-		$this->run($builder, $params);
 	}
 
 } // End <?php echo $name ?>

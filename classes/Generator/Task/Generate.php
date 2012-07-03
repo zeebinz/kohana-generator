@@ -76,12 +76,12 @@ class Generator_Task_Generate extends Minion_Task
 	 * confirmation before any destructive changes, allowing inspection, etc.
 	 *
 	 * @param  Generator_Builder  $builder  The builder to execute
-	 * @param  array  $params  The task parameters to use
+	 * @param  array  $options  The task options to use
 	 * @return void
 	 */
-	public function run(Generator_Builder $builder, array $params)
+	public function run(Generator_Builder $builder, array $options)
 	{
-		if ($params['inspect'])
+		if ($options['inspect'])
 		{
 			// Output debug info for each generator item
 			$i = 1;
@@ -97,12 +97,12 @@ class Generator_Task_Generate extends Minion_Task
 		}
 
 		// Set verbosity level
-		$this->_options['verbose'] = $params['remove'] ?: $this->_options['verbose'];
+		$this->_options['verbose'] = $options['remove'] ?: $this->_options['verbose'];
 
 		// Choose which command to run
-		$command = $params['remove'] ? Generator::REMOVE : Generator::CREATE;
+		$command = $options['remove'] ? Generator::REMOVE : Generator::CREATE;
 
-		if ( ! $params['quiet'] AND ! $params['pretend'] AND ! $params['no-ask'])
+		if ( ! $options['quiet'] AND ! $options['pretend'] AND ! $options['no-ask'])
 		{
 			// Run once in pretend mode to get a list of expected actions,
 			// and don't continue if there's nothing to do
@@ -112,13 +112,12 @@ class Generator_Task_Generate extends Minion_Task
 			$this->_write('');
 
 			// Ask for user confirmation
-			$read = $this->_read('Do you want to continue?', array('y', 'n'));
-			if ($read == 'n')
+			if ('n' == $this->_read('Do you want to continue?', array('y', 'n')))
 				return;
 		}
 
 		// Run the chosen command on the generators
-		$this->run_command($command, $builder->with_pretend($params['pretend']));
+		$this->run_command($command, $builder->with_pretend($options['pretend']));
 	}
 
 	/**
@@ -167,13 +166,46 @@ class Generator_Task_Generate extends Minion_Task
 	}
 
 	/**
-	 * Outputs the common help message by default.
+	 * Convenience method for loading configuration values.
+	 *
+	 * @param  array  $path   Array path to the config values
+	 * @param  array  $group  The config group to load
+	 * @return mixed  The config values or NULL
+	 */
+	public function get_config($path, $group = NULL)
+	{
+		$group = $group ?: 'generator';
+
+		return Kohana::$config->load($group.'.'.$path);
+	}
+
+	/**
+	 * Returns a generator builder created with the given configuration options.
+	 * This method should be implemented in full by child classes.
+	 *
+	 * @param  array  $options  The selected task options
+	 * @return bool|Generator_Builder  FALSE if no builder is available
+	 */
+	public function get_builder(array $options)
+	{
+		return FALSE;
+	}
+
+	/**
+	 * Loads a builder and runs the task, or outputs the common help message
+	 * by default.
 	 *
 	 * @param  array  $params  The current task parameters	 
 	 * @return void
 	 */
 	protected function _execute(array $params)
 	{
+		if ($builder = $this->get_builder($params))
+		{
+			$this->run($builder, $params);
+			return;
+		}
+
 		$this->_help($params);
 	}
 

@@ -23,7 +23,7 @@ class Generator_Type_ConfigTest extends Unittest_TestCase
 		$type = new Generator_Type_Config();
 
 		$type->value('a.b.c|some string');
-		$type->value('a.b.d|2, e | 3');
+		$type->value('a.b.d|2, e | 3, 1|4, 0.2|5');
 
 		$type->render();
 		$params = $type->params();
@@ -37,6 +37,8 @@ class Generator_Type_ConfigTest extends Unittest_TestCase
 					),
 				),
 				'e' => 3,
+				1 => 4,
+				'0.2' => 5,
 			),
 			$params['values']
 		);

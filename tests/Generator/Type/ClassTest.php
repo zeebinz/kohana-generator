@@ -24,6 +24,7 @@ class Generator_Type_ClassTest extends Unittest_TestCase
 		$type->as_abstract()
 			->implement('Countable')
 			->implement('ArrayAccess')
+			->implement('TestCountable')
 			->module($module)
 			->extend('Bar');
 
@@ -33,10 +34,19 @@ class Generator_Type_ClassTest extends Unittest_TestCase
 		$this->assertSame('Bar', $params['extends']);
 		$this->assertContains('Countable', $params['implements']);
 		$this->assertContains('ArrayAccess', $params['implements']);
+		$this->assertContains('TestCountable', $params['implements']);
+		$this->assertArrayNotHasKey('methods', $params);
 
 		$type->render();
 		$params = $type->params();
-		$this->assertSame('Countable, ArrayAccess', $params['implements']);
+		$this->assertSame('Countable, ArrayAccess, TestCountable', $params['implements']);
+		$this->assertCount(5, $params['methods']);
+		$this->assertSame('TestCountable', $params['methods']['count']['interface']);
 	}
 
 } // End Generator_Type_ClassTest 
+
+interface TestCountable
+{
+	public function count();
+}

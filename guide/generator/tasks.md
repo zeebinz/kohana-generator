@@ -42,10 +42,10 @@ This should give you the main help page for the Generator module in the usual Mi
 	    A valid module folder under MODPATH in which to create
 	    the files instead of the default APPPATH.
 	
-	  --config=CONFIG
+	  --config=GROUP
 	
-	    The config file to use with this task instead of the
-	    default, stored in the config folder.
+	    The config group to use with this task instead of the
+	    default 'generator'.
 	
 	Available generators:
 	
@@ -96,26 +96,25 @@ Unless you're really confident about what the output is going to be, you'll usua
 
 	The result of running this task will be:
 	
-	     exists  APPPATH\config
-	     create  APPPATH\config\logger.php
+	     exists  APPPATH/config
+	     create  APPPATH/config/logger.php
 
 	Do you want to continue? [ y, n ]:
 	
 Notice that by default you're asked to confirm any actions - *exists* means the item won't be replaced. You can change the behaviour by using the `--force` option usually, and if you don't want to be asked for confirmation use `--no-ask` or `--quiet`. If you want to see what the changes will be without making them and don't want the prompt, use `--pretend`. Entering 'n' as your response will end the task, 'y' will create only the resources marked *create*.
 
-The log output will be colorized by default for consoles that support ANSI escape characters - Windows users will need to install [ANSICON](http://adoxa.110mb.com/ansicon). To disable the colors, use the `--no-ansi` option.
+[!!] The log output will be colorized by default for consoles that support ANSI escape characters - Windows users will need to install [ANSICON](http://adoxa.110mb.com/ansicon). To disable the colors, use the `--no-ansi` option.
 
 Otherwise, you can add the `--inspect` option to preview the destination filename as well as the rendered file contents:
 
 	./minion generate:config --name=logger --values="logger.debug|1" --inspect
 	
-	[ File 1 ] APPPATH\config\logger.php
+	[ File 1 ] APPPATH/config/logger.php
 
 	<?php defined('SYSPATH') OR die('No direct script access.');
 	
-	return array (
-		'logger' =>
-		array (
+	return array(
+		'logger' => array(
 			'debug' => 1,
 		),
 	);
@@ -126,8 +125,8 @@ Isn't that handy? You pretty much can't go wrong if you preview like this when t
 
 	The result of running this task will be:
 	
-	     remove  APPPATH\config\logger.php
-	  not empty  APPPATH\config
+	     remove  APPPATH/config/logger.php
+	  not empty  APPPATH/config
 	
 	Do you want to continue? [ y, n ]:
 
@@ -157,7 +156,7 @@ Add generator.php to your APPPATH/config directory, and set the common values in
 		),
 	);
  
-Notice that these are just defaults, they won't override anything set manually. If you don't set any specific value here, placeholder values will be used by the tasks instead. You can also set the config file used by the task with the `--config` option:
+Notice that these are just defaults, they won't override anything set manually. If you don't set any specific value here, placeholder values will be used by the tasks instead. You can also set the config group used by the task with the `--config` option:
 
 	./minion generate:class --name=Foo  --config=test/generator
 

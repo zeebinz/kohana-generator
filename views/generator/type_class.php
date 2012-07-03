@@ -24,12 +24,26 @@
 	 *
 	 * Long method description.
 	 *
-	 * @param  string  $param  some string
+	 * @param  string  $param  Some string
 	 * @return void
 	 */
 	public function some_method($param)
 	{
+		// Method implementation
 	}
-
+<?php	if (isset($methods)) foreach ($methods as $method => $m): ?> 
+	/**
+	 * Implementation of <?php echo $m['interface'].'::'.$method ?> 
+	 *
+<?php if ( ! empty($m['params'])) foreach ($m['params'] as $param => $p): ?>
+	 * @param  <?php echo $p['type'].'  $'.$param ?> 
+<?php endforeach ?>
+	 * @return void  **This line should be edited**
+	 */
+	<?php echo $m['signature'] ?> 
+	{
+		// Method implementation
+	}
+<?php endforeach; ?> 
 } // End <?php echo $name ?>
 <?php } ?> 
