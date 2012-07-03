@@ -16,7 +16,6 @@ class Generator_Generator_Reflector
 	// The supported source types
 	const TYPE_CLASS     = 'class';
 	const TYPE_INTERFACE = 'interface';
-	const TYPE_FILE      = 'file';
 
 	/**
 	 * The source class, interface etc. to inspect
