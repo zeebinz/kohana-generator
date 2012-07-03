@@ -61,7 +61,8 @@ class Generator_Generator_Type_Class extends Generator_Type
 	}
 
 	/**
-	 * Converts the interfaces list to a string and renders the template.
+	 * Converts the interfaces list to a string, adds any method skeletons to be
+	 * be implemented by the class and renders the template.
 	 *
 	 * @return  string  The rendered output
 	 */
@@ -69,10 +70,53 @@ class Generator_Generator_Type_Class extends Generator_Type
 	{
 		if ( ! empty($this->_params['implements']) AND is_array($this->_params['implements']))
 		{
+			if ( ! isset($this->_params['blank']))
+			{
+				$this->_params['methods'] = $this->_get_interface_methods($this->_params['implements']);
+			}
+
 			$this->_params['implements'] = implode(', ', $this->_params['implements']);
 		}
 
 		return parent::render();
+	}
+
+	/**
+	 * Returns reflection details of the interface methods to be implemented,
+	 * allowing the generation of basic skeleton methods.
+	 *
+	 * @uses    Generator_Reflector
+	 * @param   array  $interfaces  The interface names to implement
+	 * @return  array  Details of the methods to be implemented
+	 */
+	protected function _get_interface_methods(array $interfaces)
+	{
+		$refl = new Generator_Reflector;
+		$refl->type(Generator_Reflector::TYPE_INTERFACE);
+		$methods = array();
+
+		foreach ($interfaces as $interface)
+		{
+			if ($refl->source($interface)->exists())
+			{
+				foreach($refl->get_methods() as $method => $info)
+				{
+					// Include the method name
+					$info['name'] = $method;
+
+					// Include the full method signature
+					$info['signature'] = str_replace('abstract ', '', $refl->get_method_signature($method));
+
+					// Include the interface name
+					$info['interface'] = $interface;
+
+					// Add the method info
+					$methods[] = $info;
+				}
+			}
+		}
+
+		return $methods;
 	}
 
 } // End Generator_Generator_Type_Class
