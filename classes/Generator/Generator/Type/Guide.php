@@ -13,7 +13,7 @@ class Generator_Generator_Type_Guide extends Generator_Type
 	protected $_template = 'generator/type_guide_menu';
 	protected $_name     = 'menu.md';
 	protected $_folder   = 'guide';
-	
+
 	// Don't add the security string
 	protected $_security = FALSE;
 
@@ -70,13 +70,33 @@ class Generator_Generator_Type_Guide extends Generator_Type
 	}
 
 	/**
+	 * Finalizes parameters and renders the template.
+	 *
+	 * @return  string  The rendered output
+	 */
+	public function render()
+	{
+		if ( ! empty($this->_params['pages']))
+		{
+			$this->_params['pages'] = $this->_parse_pages($this->_params['pages']);
+		}
+
+		if (empty($this->_params['menu']))
+		{
+			$this->_params['menu'] = 'Guide Menu';
+		}
+
+		return parent::render();
+	}
+
+	/**
 	 * Converts an array of page definition strings into a final array of 
 	 * menu items.
 	 *
 	 * @param   array  $pages  The list of page definitions
 	 * @return  array  The parsed list
 	 */
-	public function parse_pages(array $pages)
+	protected function _parse_pages(array $pages)
 	{
 		$ret = array();
 
@@ -87,26 +107,6 @@ class Generator_Generator_Type_Guide extends Generator_Type
 		}
 
 		return $ret;
-	}
-
-	/**
-	 * Finalizes parameters and renders the template.
-	 *
-	 * @return  string  The rendered output
-	 */
-	public function render()
-	{
-		if ( ! empty($this->_params['pages']))
-		{
-			$this->_params['pages'] = $this->parse_pages($this->_params['pages']);
-		}
-
-		if (empty($this->_params['menu']))
-		{
-			$this->_params['menu'] = 'Guide Menu';
-		}
-
-		return parent::render();
 	}
 
 } // End Generator_Generator_Type_Guide 
