@@ -62,6 +62,7 @@ class Generator_Generator_Reflector
 			return $this->_source;
 
 		$this->_source = $source;
+		$this->_info = array();
 
 		return $this;
 	}

@@ -15,16 +15,26 @@ class Generator_ReflectorTest extends Unittest_TestCase
 {
 	/**
 	 * Sources can be set via constructor or by setter method that also acts as
-	 * a getter.
+	 * a getter, and any stored values should always be reset.
 	 */
 	public function test_setting_source()
 	{
 		$refl = new TestReflector('TestInterface');
 
 		$this->assertSame('TestInterface', $refl->source());
+		$this->assertAttributeEmpty('_info', $refl);
+		$this->assertFalse($refl->is_inspected());
+
+		$p = new ReflectionProperty('Generator_Reflector', '_info');
+		$p->setAccessible(TRUE);
+		$p->setValue($refl, array('foo'));
+		$this->assertAttributeNotEmpty('_info', $refl);
+		$this->assertTrue($refl->is_inspected());
 
 		$this->assertInstanceOf('Generator_Reflector', $refl->source('SomeSource'));
 		$this->assertSame('SomeSource', $refl->source());
+		$this->assertAttributeEmpty('_info', $refl);
+		$this->assertFalse($refl->is_inspected());
 	}
 
 	/**
