@@ -101,9 +101,6 @@ class Generator_Generator_Type_Class extends Generator_Type
 			{
 				foreach($refl->get_methods() as $method => $info)
 				{
-					// Include the method name
-					$info['name'] = $method;
-
 					// Include the full method signature
 					$info['signature'] = str_replace('abstract ', '', $refl->get_method_signature($method));
 
@@ -111,7 +108,7 @@ class Generator_Generator_Type_Class extends Generator_Type
 					$info['interface'] = $interface;
 
 					// Add the method info
-					$methods[] = $info;
+					$methods[$method] = $info;
 				}
 			}
 		}

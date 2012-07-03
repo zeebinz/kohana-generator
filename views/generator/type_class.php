@@ -31,16 +31,16 @@
 	{
 		// Method implementation
 	}
-<?php	if (isset($methods)) foreach ($methods as $method): ?> 
+<?php	if (isset($methods)) foreach ($methods as $method => $m): ?> 
 	/**
-	 * Implementation of <?php echo $method['interface'].'::'.$method['name'] ?> 
+	 * Implementation of <?php echo $m['interface'].'::'.$method ?> 
 	 *
-<?php if ( ! empty($method['params'])) foreach ($method['params'] as $param => $info): ?>
-	 * @param  <?php echo $info['type'].'  $'.$param ?> 
+<?php if ( ! empty($m['params'])) foreach ($m['params'] as $param => $p): ?>
+	 * @param  <?php echo $p['type'].'  $'.$param ?> 
 <?php endforeach ?>
 	 * @return void  **This line should be edited**
 	 */
-	<?php echo $method['signature'] ?> 
+	<?php echo $m['signature'] ?> 
 	{
 		// Method implementation
 	}
