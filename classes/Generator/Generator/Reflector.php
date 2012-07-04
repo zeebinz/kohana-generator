@@ -98,11 +98,11 @@ class Generator_Generator_Reflector
 	 * @throws  Generator_Exception  If a source is not set
 	 * @return  Generator_Reflector  This instance
 	 */
-	public function inspect()
+	public function analyze()
 	{
 		// We need a source to work with
 		if ( ! $this->_source)
-			throw new Generator_Exception('No source is available to inspect');
+			throw new Generator_Exception('No source is available to analyze');
 
 		// Start the new reflection
 		$reflection = new ReflectionClass($this->_source);
@@ -229,11 +229,11 @@ class Generator_Generator_Reflector
 	}
 
 	/**
-	 * Determines whether the current source has been inspected yet.
+	 * Determines whether the current source has been analyzed yet.
 	 *
 	 * @return  bool
 	 */
-	public function is_inspected()
+	public function is_analyzed()
 	{
 		return ! empty($this->_info);
 	}
@@ -246,7 +246,7 @@ class Generator_Generator_Reflector
 	 */
 	public function get_methods()
 	{
-		$this->is_inspected() OR $this->inspect();
+		$this->is_analyzed() OR $this->analyze();
 
 		return isset($this->_info['methods']) ? $this->_info['methods'] : array();
 	}
@@ -316,7 +316,7 @@ class Generator_Generator_Reflector
 	 */
 	public function get_method_signature($method)
 	{
-		$this->is_inspected() OR $this->inspect();
+		$this->is_analyzed() OR $this->analyze();
 
 		if (empty($this->_info['methods'][$method]))
 			throw new Generator_Exception('Method :method does not exist', array(':method' => $method));

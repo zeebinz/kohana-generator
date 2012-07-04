@@ -23,18 +23,18 @@ class Generator_ReflectorTest extends Unittest_TestCase
 
 		$this->assertSame('TestInterface', $refl->source());
 		$this->assertAttributeEmpty('_info', $refl);
-		$this->assertFalse($refl->is_inspected());
+		$this->assertFalse($refl->is_analyzed());
 
 		$p = new ReflectionProperty('Generator_Reflector', '_info');
 		$p->setAccessible(TRUE);
 		$p->setValue($refl, array('foo'));
 		$this->assertAttributeNotEmpty('_info', $refl);
-		$this->assertTrue($refl->is_inspected());
+		$this->assertTrue($refl->is_analyzed());
 
 		$this->assertInstanceOf('Generator_Reflector', $refl->source('SomeSource'));
 		$this->assertSame('SomeSource', $refl->source());
 		$this->assertAttributeEmpty('_info', $refl);
-		$this->assertFalse($refl->is_inspected());
+		$this->assertFalse($refl->is_analyzed());
 	}
 
 	/**
@@ -57,25 +57,25 @@ class Generator_ReflectorTest extends Unittest_TestCase
 
 	/**
 	 * Sources should only be inspected once per run or each time that
-	 * inspect() is called, and the method should also be chainable.
+	 * analyze() is called, and the method should also be chainable.
 	 */
-	public function test_inspect()
+	public function test_analyze()
 	{
 		$refl = new TestReflector('TestInterface');
 
-		$this->assertFalse($refl->is_inspected());
+		$this->assertFalse($refl->is_analyzed());
 
 		$refl->get_methods();
-		$this->assertTrue($refl->is_inspected());
-		$this->assertSame(1, $refl->inspect_count);
+		$this->assertTrue($refl->is_analyzed());
+		$this->assertSame(1, $refl->analysis_count);
 
 		$refl->get_methods();
-		$this->assertTrue($refl->is_inspected());
-		$this->assertSame(1, $refl->inspect_count);
+		$this->assertTrue($refl->is_analyzed());
+		$this->assertSame(1, $refl->analysis_count);
 
-		$this->assertSame($refl, $refl->inspect());
-		$this->assertTrue($refl->is_inspected());
-		$this->assertSame(2, $refl->inspect_count);
+		$this->assertSame($refl, $refl->analyze());
+		$this->assertTrue($refl->is_analyzed());
+		$this->assertSame(2, $refl->analysis_count);
 	}
 
 	/**
@@ -86,7 +86,7 @@ class Generator_ReflectorTest extends Unittest_TestCase
 	public function test_missing_source_throws_exception()
 	{
 		$refl = new TestReflector;
-		$refl->inspect();
+		$refl->analyze();
 	}
 
 	/**
@@ -124,11 +124,11 @@ interface TestInterface
 
 class TestReflector extends Generator_Reflector
 {
-	public $inspect_count = 0;
+	public $analysis_count = 0;
 
-	public function inspect()
+	public function analyze()
 	{
-		$this->inspect_count++;
-		return parent::inspect();
+		$this->analysis_count++;
+		return parent::analyze();
 	}
 }
