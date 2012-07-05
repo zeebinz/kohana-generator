@@ -154,7 +154,7 @@ class Generator_Generator_Reflector
 		$by_ref = $param->isPassedByReference();
 		$default = NULL;
 
-		if ($param->isOptional())
+		if ($param->isDefaultValueAvailable())
 		{
 			// Add any default values
 			$default = $this->export_variable($param->getDefaultValue());
