@@ -1,6 +1,15 @@
 Generator for Kohana - Changelog
 ================================
 
+Version 0.4
+-----------
+
+- The implemented methods for generated classes will now use the original interface
+  doccomments if these are available, otherwise new ones will be created.
+- Added new doccomment template.
+- Renamed Generator_Reflector::inspect to ::analyze, avoiding confusion with
+  the inspect methods of other Generator classes.
+
 Version 0.3
 -----------
 

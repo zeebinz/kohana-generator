@@ -93,19 +93,44 @@ class Generator_Generator_Type_Class extends Generator_Type
 	{
 		$refl = new Generator_Reflector;
 		$refl->type(Generator_Reflector::TYPE_INTERFACE);
+
+		// Start the methods list
 		$methods = array();
 
 		foreach ($interfaces as $interface)
 		{
+			// Only add skeleton methods for known interfaces
 			if ($refl->source($interface)->exists())
 			{
 				foreach($refl->get_methods() as $method => $info)
 				{
-					// Include the full method signature
-					$info['signature'] = str_replace('abstract ', '', $refl->get_method_signature($method));
-
 					// Include the interface name
 					$info['interface'] = $interface;
+
+					// Create a doccomment if one doesn't exist
+					if (empty($info['doccomment']))
+					{
+						$doc = View::factory('generator/type_doccomment')->set('tabs', 1);
+						$tags = array();
+
+						// Set the method description
+						$doc->set('short_description',  "Implementation of {$interface}::{$method}");
+
+						if (! empty($info['params'])) foreach ($info['params'] as $param => $p)
+						{
+							// Add the parameter tags
+							$tags[] = '@param   '.$p['type'].'  $'.$param;
+						}
+
+						// Add the return tag
+						$tags[] = '@return  void  **This line should be edited**';
+
+						// Include the rendered doccomment
+						$info['doccomment'] = $doc->set('tags', $tags)->render();
+					}
+
+					// Include the full method signature
+					$info['signature'] = str_replace('abstract ', '', $refl->get_method_signature($method));
 
 					// Add the method info
 					$methods[$method] = $info;
