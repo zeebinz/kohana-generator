@@ -17,11 +17,12 @@ class Generator_ReflectorTest extends Unittest_TestCase
 	 * Sources can be set via constructor or by setter method that also acts as
 	 * a getter, and any stored values should always be reset.
 	 */
-	public function test_setting_source()
+	public function test_setting_source_and_type()
 	{
-		$refl = new TestReflector('TestInterface');
+		$refl = new TestReflector('TestInterface', Generator_Reflector::TYPE_INTERFACE);
 
 		$this->assertSame('TestInterface', $refl->source());
+		$this->assertTrue($refl->is_interface());
 		$this->assertAttributeEmpty('_info', $refl);
 		$this->assertFalse($refl->is_analyzed());
 
@@ -32,7 +33,10 @@ class Generator_ReflectorTest extends Unittest_TestCase
 		$this->assertTrue($refl->is_analyzed());
 
 		$this->assertInstanceOf('Generator_Reflector', $refl->source('SomeSource'));
+		$this->assertInstanceOf('Generator_Reflector', $refl->type(Generator_Reflector::TYPE_CLASS));
 		$this->assertSame('SomeSource', $refl->source());
+		$this->assertFalse($refl->is_interface());
+		$this->assertTrue($refl->is_class());
 		$this->assertAttributeEmpty('_info', $refl);
 		$this->assertFalse($refl->is_analyzed());
 	}
@@ -90,22 +94,104 @@ class Generator_ReflectorTest extends Unittest_TestCase
 	}
 
 	/**
-	 * The method signature should be returned as a string, with any array
-	 * parameter values parsed recursively.
+	 * The methods should be stored locally after initial analysis.
+	 */
+	public function test_get_methods()
+	{
+		$refl = new TestReflector('TestInterface', Generator_Reflector::TYPE_INTERFACE);
+
+		$methods = $refl->get_methods();
+		$this->assertCount(2, $methods);
+		$this->assertArrayHasKey('method_one', $methods);
+		$this->assertArrayHasKey('method_two', $methods);
+
+		$refl = new TestReflector('TestClass');
+		$methods = $refl->get_methods();
+		$this->assertCount(2, $methods);
+		$this->assertArrayHasKey('some_method', $methods);
+		$this->assertArrayHasKey('count', $methods);
+		$this->assertTrue($methods['some_method']['abstract']);
+
+		$this->assertSame(1, $refl->analysis_count);
+	}
+
+	/**
+	 * The method signatures should be returned as a parsable string, with any
+	 * array parameter values parsed recursively.
+	 *
+	 * @covers Generator_Reflector::get_method_signature
+	 * @covers Generator_Reflector::get_method_param_signatures
+	 * @covers Generator_Reflector::get_param_signature
 	 */
 	public function test_get_method_signature()
 	{
-		$refl = new TestReflector('TestInterface');
+		$refl = new TestReflector('TestInterface', Generator_Reflector::TYPE_INTERFACE);
 
-		$expected = 'abstract public function method_one(SomeClass $class, $foo = \'foo\', '
+		$expected = 'public function method_one(SomeClass $class, $foo = \'foo\', '
 			.'array $bar = array(\'bar1\', \'bar2\', \'bar3\' => FALSE, \'bar4\' => array(1, \'foo\' => \'bar\')), '
 			.'$bool = FALSE)';
 		$actual = $refl->get_method_signature('method_one');
 		$this->assertSame($expected, $actual);
 
-		$expected = 'abstract public function & method_two(OtherClass $class, & $foo = NULL, array $bar = NULL)';
+		$expected = 'public function & method_two(OtherClass $class, & $foo = NULL, array $bar = NULL, $empty = array())';
 		$actual = $refl->get_method_signature('method_two');
 		$this->assertSame($expected, $actual);
+
+		$this->assertSame(1, $refl->analysis_count);
+	}
+
+	/**
+	 * The main source information should be stored locally as pre-parsed data,
+	 * including doccomment, parent, interfaces, constants, properties, etc.
+	 */
+	public function test_getting_source_information()
+	{
+		$refl = new TestReflector('TestClass');
+
+		$this->assertRegExp('/A test class/', $refl->get_doccomment());
+		$this->assertSame('abstract', $refl->get_modifiers());
+		$this->assertSame('TestParentClass', $refl->get_parent());
+		$this->assertSame(array('Countable'), $refl->get_interfaces());
+
+		$constants = $refl->get_constants();
+		$this->assertArrayHasKey('CONSTANT_ONE', $constants);
+		$this->assertArrayHasKey('CONSTANT_TWO', $constants);
+
+		$properties = $refl->get_properties();
+		$this->assertArrayHasKey('prop_one', $properties);
+		$this->assertArrayHasKey('prop_two', $properties);
+
+		$this->assertSame(1, $refl->analysis_count);
+	}
+
+	/**
+	 * Constant declarations should be returned as parsable strings.
+	 */
+	public function test_get_constant_declarations()
+	{
+		$refl = new TestReflector('TestClass');
+
+		$this->assertSame("const CONSTANT_ONE = 'foo'", $refl->get_constant_declaration('CONSTANT_ONE'));
+		$this->assertSame('const CONSTANT_TWO = 2', $refl->get_constant_declaration('CONSTANT_TWO'));
+
+		$this->assertSame(1, $refl->analysis_count);
+	}
+
+	/**
+	 * Property declarations should be returned as parsable strings.
+	 */
+	public function test_get_property_declarations()
+	{
+		$refl = new TestReflector('TestClass');
+
+		$this->assertSame('public $prop_one = \'foo\'', $refl->get_property_declaration('prop_one'));
+		$this->assertSame('public $prop_two = 2', $refl->get_property_declaration('prop_two'));
+		$this->assertSame('public $prop_three = array()', $refl->get_property_declaration('prop_three'));
+		$this->assertSame('public $prop_four', $refl->get_property_declaration('prop_four'));
+		$this->assertSame('protected $prop_five', $refl->get_property_declaration('prop_five'));
+		$this->assertSame('public static $prop_six', $refl->get_property_declaration('prop_six'));
+
+		$this->assertSame(1, $refl->analysis_count);
 	}
 
 } // End Generator_ReflectorTest
@@ -119,7 +205,7 @@ interface TestInterface
 		array $bar = array('bar1', 'bar2', 'bar3' => FALSE, 'bar4' => array(1, 'foo' => 'bar')),
 		$bool = FALSE);
 
-	public function &method_two(OtherClass $class, &$foo = NULL, array $bar = NULL);
+	public function &method_two(OtherClass $class, &$foo = NULL, array $bar = NULL, $empty = array());
 }
 
 class TestReflector extends Generator_Reflector
@@ -132,3 +218,27 @@ class TestReflector extends Generator_Reflector
 		return parent::analyze();
 	}
 }
+
+/**
+ * A test class
+ */
+abstract class TestClass extends TestParentClass implements Countable
+{
+	const CONSTANT_ONE = 'foo';
+	const CONSTANT_TWO = 2;
+
+	public $prop_one = 'foo';
+	public $prop_two = 2;
+	public $prop_three = array();
+	public $prop_four;
+
+	protected $prop_five;
+
+	public static $prop_six;
+
+	public function count()	{}
+
+	abstract public function some_method();
+}
+
+class TestParentClass {}
