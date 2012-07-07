@@ -94,9 +94,9 @@ class Generator_Generator_Builder
 	 * The $type may be the name of a valid type, or an existing instance
 	 * of a Generator_Type class.
 	 *
+	 * @throws  Generator_Exception    On invalid type class name
 	 * @param   string|Generator_Type  $type   The generator type to be added
 	 * @param   string                 $name   The name of the new type
-	 * @throws  Generator_Exception    If the type does not exist
 	 * @return  Generator_Type         The new generator instance
 	 */
 	public function add_type($type, $name = NULL)
@@ -113,7 +113,10 @@ class Generator_Generator_Builder
 		$class = rtrim('Generator_Type_'.ucfirst($type), '_');
 
 		if ( ! class_exists($class))
-			throw new Generator_Exception("Class ':class' does not exist", array(':class' => $class));
+		{
+			throw new Generator_Exception("Class ':class' does not exist", array(
+				':class' => $class));
+		}
 
 		// Create the generator with a reference to this builder
 		$type = new $class($name, $this);
@@ -378,9 +381,9 @@ class Generator_Generator_Builder
 	 * and supports the fluent interface by passing undefined method calls
 	 * to the last added generator, or else throws an exception.
 	 *
+	 * @throws  Generator_Exception  For any other undefined methods
 	 * @param   string  $method      The undefined method name
 	 * @param   string  $arguments   The undefined method arguments
-	 * @throws  Generator_Exception  For any other undefined methods
 	 * @return  Generator_Type       The requested generator type
 	 */
 	public function __call($method, $arguments)

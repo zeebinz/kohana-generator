@@ -39,7 +39,7 @@ class Generator_Task_Generate_Guide extends Task_Generate
 	public function get_builder(array $options)
 	{
 		// Choose the folder in which to create the guide files
-		$folder = $options['module'] ? 'guide'.DIRECTORY_SEPARATOR.$options['module'] : 'guide';
+		$folder = $options['module'] ? ('guide'.DIRECTORY_SEPARATOR.$options['module']) : 'guide';
 
 		// Start by creating the guide menu
 		$builder = Generator::build()

@@ -325,7 +325,9 @@ class Generator_Generator_Type
 	public function builder()
 	{
 		if ( ! $this->_builder)
+		{
 			throw new Generator_Exception('No builder is associated with this type');
+		}
 
 		return $this->_builder;
 	}
@@ -351,15 +353,17 @@ class Generator_Generator_Type
 	 * If the current filename has not been set, this method will try to guess
 	 * it based on current module, folder and name values.
 	 *
-	 * @param   bool  $convert  Should the name be converted to a file path?
 	 * @throws  Generator_Exception  On invalid name or base path
+	 * @param   bool  $convert  Should the name be converted to a file path?
 	 * @return  string  The guessed filename
 	 */
 	public function guess_filename($convert = TRUE)
 	{
-		// We can't continue without a generator name
 		if ( ! $this->_name)
+		{
+			// We can't continue without a generator name
 			throw new Generator_Exception('Name is required for this type');
+		}
 
 		// Why does this constant have to be so damn long?
 		$ds = DIRECTORY_SEPARATOR;
@@ -368,7 +372,10 @@ class Generator_Generator_Type
 		$path = $this->_module ? (MODPATH.$this->_module.$ds) : APPPATH;
 
 		if ($this->_verify AND ! file_exists($path))
-			throw new Generator_Exception("Path ':dir' does not exist", array(':dir' => Debug::path($path)));
+		{
+			throw new Generator_Exception("Path ':dir' does not exist", array(
+				':dir' => Debug::path($path)));
+		}
 
 		// Get the file name, optionally converting it to a path
 		$name = $convert ? (str_replace('_', $ds, $this->_name)) : $this->_name;
@@ -425,9 +432,11 @@ class Generator_Generator_Type
 	 */
 	public function create()
 	{
-		// We can't continue without a valid filename
 		if ( ! $this->_file AND ! $this->guess_filename())
+		{
+			// We can't continue without a valid filename
 			throw new Generator_Exception('Filename could not be determined');
+		}
 
 		// Start a fresh log
 		$this->_log = array();
@@ -531,9 +540,11 @@ class Generator_Generator_Type
 	 */
 	public function remove()
 	{
-		// We can't continue without a valid filename
 		if ( ! $this->_file AND ! $this->guess_filename())
+		{
+			// We can't continue without a valid filename
 			throw new Generator_Exception('Filename could not be determined');
+		}
 
 		// Start a fresh log
 		$this->_log = array();
@@ -689,9 +700,9 @@ class Generator_Generator_Type
 	 * method calls. The downside: care needs to be taken that the proper
 	 * instance is being referenced.
 	 *
+	 * @throws  Generator_Exception  On missing builder instance
 	 * @param   string  $method      The undefined method name
 	 * @param   string  $arguments   The undefined method arguments
-	 * @throws  Generator_Exception  If no builder instance is available
 	 * @return  mixed   Whatever the referenced builder method returns
 	 */
 	public function __call($method, $arguments)
