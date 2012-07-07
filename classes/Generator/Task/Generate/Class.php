@@ -20,6 +20,8 @@ class Generator_Task_Generate_Class extends Task_Generate
 		'stub'      => '',
 		'abstract'  => FALSE,
 		'no-test'   => FALSE,
+		'no-file'   => FALSE,
+		'clone'     => '',
 	);
 
 	/**
@@ -42,13 +44,20 @@ class Generator_Task_Generate_Class extends Task_Generate
 	 */
 	public function get_builder(array $options)
 	{
-		$builder = Generator::build()
-			->add_class($options['name'])
-				->as_abstract(($options['abstract']))
-				->extend($options['extend'])
-				->implement($options['implement'])
-				->template($options['template'])
-			->builder();
+		if ( ! empty($options['clone']))
+		{
+			$builder = $this->get_clone($options);
+		}
+		else
+		{
+			$builder = Generator::build()
+				->add_class($options['name'])
+					->as_abstract(($options['abstract']))
+					->extend($options['extend'])
+					->implement($options['implement'])
+					->template($options['template'])
+				->builder();
+		}
 
 		if ($options['stub'])
 		{
@@ -71,6 +80,56 @@ class Generator_Task_Generate_Class extends Task_Generate
 			->with_force($options['force'])
 			->with_defaults($this->get_config('defaults.class', $options['config']))
 			->prepare();
+	}
+
+	/**
+	 * Creates a generator builder that clones an existing class, either from
+	 * an existing file or from an internal class definition.
+	 *
+	 * @throws  Generator_Exception  On missing class to clone
+	 * @param  array  $options  The selected task options
+	 * @return Generator_Builder
+	 */
+	public function get_clone(array $options)
+	{
+		if ( ! class_exists($options['clone']))
+		{
+			throw new Generator_Exception("Class ':class' does not exist", array(
+				':class' => $options['clone']));
+		}
+
+		// Convert the cloned class name to a filename
+		$source = str_replace('_', DIRECTORY_SEPARATOR, $options['clone']);
+
+		if ( ! $options['no-file'] AND ($file = Kohana::find_file('classes', $source)))
+		{
+			// Use the existing class file
+			$content = file_get_contents($file);
+
+			// Replace the class name references
+			$content = preg_replace("/\b{$options['clone']}\b/", $options['name'], $content);
+
+			// Convert the generated class name to a filename
+			$destination = str_replace('_', DIRECTORY_SEPARATOR, $options['name']).EXT;
+
+			// Create the Builder
+			$builder = Generator::build()
+				->add_file($destination)
+					->folder('classes')
+					->content($content)
+				->builder();
+		}
+		else
+		{
+			// Use the internal class definition via reflection
+			$builder = Generator::build()
+				->add_clone($options['name'])
+					->source($options['clone'])
+					->type(Generator_Reflector::TYPE_CLASS)
+				->builder();
+		}
+
+		return $builder;
 	}
 
 } // End Generator_Task_Generate_Class

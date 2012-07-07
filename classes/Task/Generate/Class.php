@@ -24,6 +24,12 @@
  *     A comma-separated list of any interfaces that this class should 
  *     implement.
  *
+ *   --clone=CLASS
+ *
+ *     If a valid class name is set with this option, its properties and
+ *     methods will be copied directly from its class file.  Reflection
+ *     will be used for internal classes, or if the --no-file option is set.
+ *
  *   --no-test
  *
  *     A test case will be created automatically for the class unless this
