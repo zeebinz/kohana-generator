@@ -40,9 +40,10 @@ class Generator_Type_ClassTest extends Unittest_TestCase
 		$type->render();
 		$params = $type->params();
 		$this->assertSame('Countable, ArrayAccess, TestCountable', $params['implements']);
-		$this->assertCount(5, $params['methods']);
-		$this->assertSame('TestCountable', $params['methods']['count']['interface']);
-		$this->assertNotEmpty($params['methods']['count']['doccomment']);
+		$this->assertCount(1, $params['methods']);
+		$this->assertCount(5, $params['methods']['public']);
+		$this->assertSame('TestCountable', $params['methods']['public']['count']['class']);
+		$this->assertNotEmpty($params['methods']['public']['count']['doccomment']);
 	}
 
 } // End Generator_Type_ClassTest 

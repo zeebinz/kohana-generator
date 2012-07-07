@@ -31,12 +31,18 @@
 	{
 		// Method implementation
 	}
-<?php	if (isset($methods)) foreach ($methods as $method => $m): ?> 
+
+<?php foreach (array('static', 'public', 'abstract', 'other') as $group): ?>
+<?php	if (isset($methods[$group])) foreach ($methods[$group] as $method => $m): ?>
 	<?php echo $m['doccomment'] ?> 
-	<?php echo $m['signature'] ?> 
+	<?php echo $m['signature'] ?>
+<?php if ($m['abstract']): echo ';'.PHP_EOL.PHP_EOL; else: ?> 
 	{
 		// Method implementation
 	}
-<?php endforeach; ?> 
+
+<?php endif; ?>
+<?php endforeach; ?>
+<?php endforeach; ?>
 } // End <?php echo $name ?>
 <?php } ?> 
