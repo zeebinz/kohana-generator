@@ -23,7 +23,10 @@ if (isset($long_description))
 }
 
 // Spacer
-echo $tabs.' *'.PHP_EOL;
+if (isset($short_description) OR isset($long_description))
+{
+	echo $tabs.' *'.PHP_EOL;
+}
 
 // Tags
 if (isset($tags)) foreach ((array) $tags as $tag)
