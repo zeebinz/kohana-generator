@@ -14,12 +14,55 @@
 class Generator_Type_CloneTest extends Unittest_TestCase
 {
 	/**
+	 * Inherited methods and properties may optionally be included in any
+	 * cloned classes.
+	 */
+	public function test_inheritance()
+	{
+		$type = new Generator_Type_Clone('Foo');
+		$type->source('TestCloneClassOne')
+			->type(Generator_Reflector::TYPE_CLASS)
+			->inherit(FALSE);
+
+		$type->render();
+		$params = $type->params();
+
+		$this->assertCount(2, $params['properties']['public']);
+		$this->assertArrayNotHasKey('public', $params['methods']);
+		$this->assertCount(1, $params['methods']['other']);
+		$this->assertArrayNotHasKey('_inherited_method', $params['methods']['other']);
+
+		$this->assertSame('TestCloneClassOne',
+			$params['methods']['other']['_overridden_method']['class']);
+
+		$type = new Generator_Type_Clone('Foo');
+		$type->source('TestCloneClassOne')
+			->type(Generator_Reflector::TYPE_CLASS)
+			->inherit(TRUE);
+
+		$type->render();
+		$params = $type->params();
+
+		$this->assertCount(3, $params['properties']['public']);
+		$this->assertCount(1, $params['methods']['public']);
+		$this->assertCount(2, $params['methods']['other']);
+		$this->assertArrayHasKey('_inherited_method', $params['methods']['other']);
+
+		$this->assertSame('TestCloneClassOne',
+			$params['methods']['other']['_overridden_method']['class']);
+	}
+
+	/**
 	 * Tests that all type options are applied correctly.
+	 *
+	 * @depends test_inheritance
 	 */
 	public function test_type_options()
 	{
 		$type = new Generator_Type_Clone('Foo');
-		$type->source('TestCloneClass')->type(Generator_Reflector::TYPE_CLASS);
+		$type->source('TestCloneClassThree')
+			->type(Generator_Reflector::TYPE_CLASS)
+			->inherit(TRUE);
 
 		$params = $type->params();
 		$this->assertArrayNotHasKey('implements', $params);
@@ -31,7 +74,7 @@ class Generator_Type_CloneTest extends Unittest_TestCase
 		$this->assertSame('Countable', $params['implements']);
 
 		$this->assertCount(2, $params['constants']);
-		$this->assertSame('// Declared in TestCloneClass',
+		$this->assertSame('// Declared in TestCloneClassThree',
 			$params['constants']['CONSTANT_ONE']['comment']);
 		$this->assertSame('const CONSTANT_ONE = \'foo\'',
 			$params['constants']['CONSTANT_ONE']['declaration']);
@@ -41,13 +84,13 @@ class Generator_Type_CloneTest extends Unittest_TestCase
 		$this->assertCount(1, $params['properties']['other']);
 
 		$prop = $params['properties']['static']['prop_one'];
-		$this->assertSame('TestCloneClass', $prop['class']);
+		$this->assertSame('TestCloneClassThree', $prop['class']);
 		$this->assertSame('string', $prop['type']);
-		$this->assertRegExp('/Declared in TestCloneClass/', $prop['doccomment']);
+		$this->assertRegExp('/Declared in TestCloneClassThree/', $prop['doccomment']);
 		$this->assertSame('public static $prop_one = \'bar\'', $prop['declaration']);
 
 		$prop = $params['properties']['public']['prop_two'];
-		$this->assertSame('TestCloneClass', $prop['class']);
+		$this->assertSame('TestCloneClassThree', $prop['class']);
 		$this->assertSame('mixed', $prop['type']);
 		$this->assertRegExp('/A public property/', $prop['doccomment']);
 		$this->assertSame('public $prop_two', $prop['declaration']);
@@ -57,28 +100,40 @@ class Generator_Type_CloneTest extends Unittest_TestCase
 		$this->assertCount(2, $params['methods']['abstract']);
 		$this->assertCount(1, $params['methods']['other']);
 
-		$this->assertSame('TestCloneClass',
+		$this->assertSame('TestCloneClassThree',
 			$params['methods']['static']['method_one']['class']);
 		$this->assertSame('Countable',
 			$params['methods']['public']['count']['class']);
-		$this->assertRegExp('/Implementation of TestCloneClass::method_four/',
+		$this->assertRegExp('/Implementation of TestCloneClassThree::method_three/',
+			$params['methods']['public']['method_three']['doccomment']);
+		$this->assertRegExp('/Declaration of TestCloneClassThree::method_four/',
 			$params['methods']['abstract']['method_four']['doccomment']);
 		$this->assertRegExp('/A protected method/',
 			$params['methods']['other']['_method_six']['doccomment']);
-
-		$type = new Generator_Type_Clone('Foo');
-		$type->source('TestCloneClassTwo')->type(Generator_Reflector::TYPE_CLASS);
-		$type->render();
-		$params = $type->params();
-
-		$this->assertCount(1, $params['properties']['public']);
-		$this->assertCount(1, $params['methods']['public']);
-		$this->assertCount(1, $params['methods']['other']);
 	}
 
 } // End Generator_Type_CloneTest
 
-abstract class TestCloneClass implements Countable
+class TestCloneClassOne extends TestCloneClassTwo
+{
+	public $foo;
+	public $bar;
+
+	protected function _overridden_method() {}
+}
+
+class TestCloneClassTwo
+{
+	public $foo;
+	public $moo;
+
+	public function __construct() {}
+
+	protected function _overridden_method() {}
+	protected function _inherited_method() {}
+}
+
+abstract class TestCloneClassThree implements Countable
 {
 	const CONSTANT_ONE = 'foo';
 	const CONSTANT_TWO = 2;
@@ -105,13 +160,4 @@ abstract class TestCloneClass implements Countable
 	 * A protected method
 	 */
 	protected function _method_six($foo = 'foo') {}
-}
-
-class TestCloneClassTwo
-{
-	public $foo;
-
-	public function __construct() {}
-
-	protected function _some_method() {}
 }

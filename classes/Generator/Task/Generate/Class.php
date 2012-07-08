@@ -20,8 +20,9 @@ class Generator_Task_Generate_Class extends Task_Generate
 		'stub'      => '',
 		'abstract'  => FALSE,
 		'no-test'   => FALSE,
-		'no-file'   => FALSE,
 		'clone'     => '',
+		'no-file'   => FALSE,
+		'inherit'   => FALSE,
 	);
 
 	/**
@@ -126,6 +127,7 @@ class Generator_Task_Generate_Class extends Task_Generate
 				->add_clone($options['name'])
 					->source($options['clone'])
 					->type(Generator_Reflector::TYPE_CLASS)
+					->inherit($options['inherit'])
 				->builder();
 		}
 

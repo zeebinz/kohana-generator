@@ -122,6 +122,10 @@ class Generator_Generator_Type_Class extends Generator_Type
 			{
 				foreach ($refl->get_methods() as $method => $m)
 				{
+					// Skip inherited methods?
+					if ( ! $refl->is_interface() AND ! $this->_inherit AND $m['class'] != $source)
+						continue;
+
 					// Create a doccomment if one doesn't exist
 					if (empty($m['doccomment']))
 					{
@@ -129,7 +133,8 @@ class Generator_Generator_Type_Class extends Generator_Type
 						$tags = array();
 
 						// Set the method description
-						$doc->set('short_description',  "Implementation of {$m['class']}::{$method}");
+						$prefix = $m['abstract'] ? 'Declaration' : 'Implementation';
+						$doc->set('short_description',  "{$prefix} of {$m['class']}::{$method}");
 
 						foreach ($m['params'] as $param => $p)
 						{
@@ -138,7 +143,7 @@ class Generator_Generator_Type_Class extends Generator_Type
 						}
 
 						// Add the return tag
-						$tags[] = '@return  void  **This line should be edited**';
+						$tags[] = '@return  void  **Needs editing**';
 
 						// Include the rendered doccomment
 						$m['doccomment'] = $doc->set('tags', $tags)->render();

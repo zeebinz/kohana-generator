@@ -13,6 +13,8 @@ class Generator_Generator_Type_Clone extends Generator_Type_Class
 	protected $_template = 'generator/type_clone';
 	protected $_folder   = 'classes';
 
+	protected $_inherit = FALSE;
+
 	/**
 	 * Sets the reflection source to be cloned.
 	 *
@@ -34,6 +36,18 @@ class Generator_Generator_Type_Clone extends Generator_Type_Class
 	public function type($type)
 	{
 		$this->_params['type'] = (string) $type;
+		return $this;
+	}
+
+	/**
+	 * Sets whether the clone should include inherited properties and methods.
+	 *
+	 * @param   string  $inherit  Should the clone inherit?
+	 * @return  Generator_Type_Clone  This instance
+	 */
+	public function inherit($inherit)
+	{
+		$this->_inherit = (bool) $inherit;
 		return $this;
 	}
 
@@ -143,6 +157,10 @@ class Generator_Generator_Type_Clone extends Generator_Type_Class
 			{
 				foreach ($refl->get_properties() as $property => $p)
 				{
+					// Skip inherited properties?
+					if ( ! $this->_inherit AND $p['class'] != $source)
+						continue;
+
 					// Create a doccomment if one doesn't exist
 					if (empty($p['doccomment']))
 					{
