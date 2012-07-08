@@ -193,6 +193,11 @@ class Generator_ReflectorTest extends Unittest_TestCase
 		$this->assertSame('public static $prop_six', $refl->get_property_declaration('prop_six'));
 
 		$this->assertSame(1, $refl->analysis_count);
+
+		// Objects in static properties should be ignored
+		TestStaticClass::$object = new stdclass;
+		$refl = new TestReflector('TestStaticClass');
+		$this->assertSame('public static $object', $refl->get_property_declaration('object'));
 	}
 
 	/**
@@ -258,3 +263,8 @@ abstract class TestClass extends TestParentClass implements Countable
 }
 
 class TestParentClass {}
+
+class TestStaticClass
+{
+	public static $object;
+}
