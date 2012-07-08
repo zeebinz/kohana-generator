@@ -28,7 +28,7 @@
  *
  *     If a valid class name is set with this option, its properties and
  *     methods will be copied directly from its class file.  Reflection
- *     will be used for internal classes, or if the --no-file option is set,
+ *     will be used for internal classes, or if the --reflect option is set,
  *     and inherited methods and properties may be included with --inherit.
  *
  *   --no-test

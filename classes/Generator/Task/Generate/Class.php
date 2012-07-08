@@ -21,7 +21,7 @@ class Generator_Task_Generate_Class extends Task_Generate
 		'abstract'  => FALSE,
 		'no-test'   => FALSE,
 		'clone'     => '',
-		'no-file'   => FALSE,
+		'reflect'   => FALSE,
 		'inherit'   => FALSE,
 	);
 
@@ -102,7 +102,7 @@ class Generator_Task_Generate_Class extends Task_Generate
 		// Convert the cloned class name to a filename
 		$source = str_replace('_', DIRECTORY_SEPARATOR, $options['clone']);
 
-		if ( ! $options['no-file'] AND ($file = Kohana::find_file('classes', $source)))
+		if ( ! $options['reflect'] AND ($file = Kohana::find_file('classes', $source)))
 		{
 			// Use the existing class file
 			$content = file_get_contents($file);
