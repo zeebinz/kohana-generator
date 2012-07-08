@@ -252,8 +252,10 @@ class Generator_Generator_Reflector
 		// Get the returns by reference flag
 		$by_ref = $method->returnsReference();
 
-		// Get the is abstract flag
+		// Get the method flags
 		$abstract = $method->isAbstract();
+		$final    = $method->isFinal();
+		$private  = $method->isPrivate();
 
 		// Get the parsed parameters list
 		$params = array();
@@ -269,6 +271,8 @@ class Generator_Generator_Reflector
 			'modifiers'  => $modifiers,
 			'by_ref'     => $by_ref,
 			'abstract'   => $abstract,
+			'final'      => $final,
+			'private'    => $private,
 			'params'     => $params,
 		);
 	}
@@ -318,7 +322,7 @@ class Generator_Generator_Reflector
 	}
 
 	/**
-	 * Converts a parsed abstract method defintiion to a concrete one for
+	 * Converts a parsed abstract method definition to a concrete one for
 	 * storing locally.
 	 *
 	 * @param   array   $method  The method definition to convert
@@ -660,6 +664,31 @@ class Generator_Generator_Reflector
 		$modifiers = $m['modifiers'] ? ($m['modifiers'].' ') : '';
 
 		return $modifiers.'function '.$ref.$method.'('.$params.')';
+	}
+
+	/**
+	 * Returns a parsable string representation of a method invocation from
+	 * the current source.
+	 *
+	 * @throws  Generator_Exception  On invalid method name
+	 * @param   string  $method  The method name
+	 * @return  string  The method invocation string
+	 */
+	public function get_method_invocation($method)
+	{
+		$this->is_analyzed() OR $this->analyze();
+
+		if (empty($this->_info['methods'][$method]))
+		{
+			throw new Generator_Exception('Method :method does not exist', array(
+				':method' => $method));
+		}
+
+		// Get the parameters list
+		$params = array_keys($this->_info['methods'][$method]['params']);
+		$params = array_map(function($p) {return '$'.$p;}, $params);
+
+		return $method.'('.implode(', ', $params).')';
 	}
 
 } // End Generator_Generator_Reflector

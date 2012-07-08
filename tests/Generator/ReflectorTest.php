@@ -107,10 +107,11 @@ class Generator_ReflectorTest extends Unittest_TestCase
 
 		$refl = new TestReflector('TestClass');
 		$methods = $refl->get_methods();
-		$this->assertCount(2, $methods);
-		$this->assertArrayHasKey('some_method', $methods);
+		$this->assertCount(3, $methods);
 		$this->assertArrayHasKey('count', $methods);
-		$this->assertTrue($methods['some_method']['abstract']);
+		$this->assertArrayHasKey('some_invoked_method', $methods);
+		$this->assertArrayHasKey('some_abstract_method', $methods);
+		$this->assertTrue($methods['some_abstract_method']['abstract']);
 
 		$this->assertSame(1, $refl->analysis_count);
 	}
@@ -194,6 +195,20 @@ class Generator_ReflectorTest extends Unittest_TestCase
 		$this->assertSame(1, $refl->analysis_count);
 	}
 
+	/**
+	 * Method invocations should be returned as parsable strings.
+	 */
+	public function test_get_method_invocation()
+	{
+		$refl = new TestReflector('TestClass');
+
+		$this->assertSame('count()', $refl->get_method_invocation('count'));
+		$this->assertSame('some_invoked_method($foo, $bar)',
+			$refl->get_method_invocation('some_invoked_method'));
+
+		$this->assertSame(1, $refl->analysis_count);
+	}
+
 } // End Generator_ReflectorTest
 
 interface TestInterface
@@ -237,8 +252,9 @@ abstract class TestClass extends TestParentClass implements Countable
 	public static $prop_six;
 
 	public function count()	{}
+	public function some_invoked_method($foo = 1, array $bar = NULL) {}
 
-	abstract public function some_method();
+	abstract public function some_abstract_method();
 }
 
 class TestParentClass {}
