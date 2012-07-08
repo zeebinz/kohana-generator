@@ -15,8 +15,8 @@ class Generator_Generator_Type_Directory extends Generator_Type
 	/**
 	 * Ensures that the directory is not converted to a file name.
 	 *
-	 * @param   bool    $convert  Should the name be converted to a file path?
 	 * @throws  Generator_Exception  On invalid name or base path
+	 * @param   bool    $convert  Should the name be converted to a file path?
 	 * @return  string  The guessed filename
 	 */
 	public function guess_filename($convert = TRUE)
@@ -54,9 +54,11 @@ class Generator_Generator_Type_Directory extends Generator_Type
 	 */
 	public function remove()
 	{
-		// We can't continue without a valid path
 		if ( ! $this->_file AND ! $this->guess_filename())
+		{
+			// We can't continue without a valid path
 			throw new Generator_Exception('Directory name could not be determined');
+		}
 
 		// Start a fresh log
 		$this->_log = array();

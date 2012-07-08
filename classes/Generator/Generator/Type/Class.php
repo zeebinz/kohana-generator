@@ -68,52 +68,153 @@ class Generator_Generator_Type_Class extends Generator_Type
 	 */
 	public function render()
 	{
+		if ( ! isset($this->_params['blank']) AND ! isset($this->_params['methods']))
+		{
+			// Initialize the methods list
+			$this->_params['methods'] = array();
+		}
+
 		if ( ! empty($this->_params['implements']) AND is_array($this->_params['implements']))
 		{
 			if ( ! isset($this->_params['blank']))
 			{
-				$this->_params['methods'] = $this->_get_interface_methods($this->_params['implements']);
+				// Merge any class and interface methods
+				$this->_params['methods'] = array_merge($this->_params['methods'],
+					$this->_get_reflection_methods($this->_params['implements'], Generator_Reflector::TYPE_INTERFACE)
+				);
 			}
 
+			// Convert the interfaces list
 			$this->_params['implements'] = implode(', ', $this->_params['implements']);
+		}
+
+		// Group any methods by modifier
+		if ( ! empty($this->_params['methods']))
+		{
+			$this->_params['methods'] = $this->_group_by_modifier($this->_params['methods']);
 		}
 
 		return parent::render();
 	}
 
 	/**
-	 * Returns reflection details of the interface methods to be implemented,
+	 * Returns reflection details of the source methods to be implemented,
 	 * allowing the generation of basic skeleton methods.
 	 *
 	 * @uses    Generator_Reflector
-	 * @param   array  $interfaces  The interface names to implement
-	 * @return  array  Details of the methods to be implemented
+	 * @param   string|array   $sources  The source names to inspect
+	 * @param   string  $type  The inspected source type
+	 * @param   Generator_Reflector  The reflector object to use, if any
+	 * @return  array   Details of the methods to be implemented
 	 */
-	protected function _get_interface_methods(array $interfaces)
+	protected function _get_reflection_methods($sources, $type, Generator_Reflector $reflector = NULL)
 	{
-		$refl = new Generator_Reflector;
-		$refl->type(Generator_Reflector::TYPE_INTERFACE);
+		$refl = ($reflector == NULL) ? (new Generator_Reflector) : $reflector;
+		$refl->type($type);
+
+		// Start the methods list
 		$methods = array();
 
-		foreach ($interfaces as $interface)
+		foreach ( (array) $sources as $source)
 		{
-			if ($refl->source($interface)->exists())
+			// Only add skeleton methods for known sources
+			if ($refl->source($source)->exists())
 			{
-				foreach($refl->get_methods() as $method => $info)
+				foreach ($refl->get_methods() as $method => $m)
 				{
-					// Include the full method signature
-					$info['signature'] = str_replace('abstract ', '', $refl->get_method_signature($method));
+					// Skip all inherited methods, or inherited final/private?
+					if ( ! $refl->is_interface() AND ($m['class'] != $source)
+						AND ( ! $this->_inherit OR $m['final'] OR $m['private']))
+					{
+						continue;
+					}
 
-					// Include the interface name
-					$info['interface'] = $interface;
+					// Create a doccomment if one doesn't exist
+					if (empty($m['doccomment']))
+					{
+						$doc = View::factory('generator/type_doccomment')->set('tabs', 1);
+						$tags = array();
+
+						// Set the method description
+						$prefix = $m['abstract'] ? 'Declaration' : 'Implementation';
+						$doc->set('short_description',  "{$prefix} of {$m['class']}::{$method}");
+
+						foreach ($m['params'] as $param => $p)
+						{
+							// Add the parameter tags
+							$tags[] = '@param   '.$p['type'].'  $'.$param;
+						}
+
+						// Add the return tag
+						$tags[] = '@return  void  **Needs editing**';
+
+						// Include the rendered doccomment
+						$m['doccomment'] = $doc->set('tags', $tags)->render();
+					}
+
+					// Get the full method signature
+					$sig = $refl->get_method_signature($method);
+
+					// Include the signature
+					$m['signature'] = $sig;
+
+					// Include the method body
+					if ( ! $refl->is_interface() AND ! $m['abstract'] AND $m['class'] != $source)
+					{
+						// Invoke the parent for inherited methods
+						$m['body']  = ! isset($doc) ? '// Defined in '.$m['class'].PHP_EOL."\t\t" : '';
+						$m['body'] .= 'parent::'.$refl->get_method_invocation($method).';';
+					}
+					elseif ( ! $m['abstract'])
+					{
+						// Otherwise just add a comment
+						$m['body']  = ! isset($doc)
+							? "// Implementation of {$m['class']}::{$method}"
+							: '// Method implementation';
+					}
 
 					// Add the method info
-					$methods[$method] = $info;
+					$methods[$method] = $m;
+					unset($doc);
 				}
 			}
 		}
 
 		return $methods;
+	}
+
+	/**
+	 * Indexes a set of reflection values (e.g. methods, properties) by their
+	 * modifier types for proper grouping in the template.
+	 *
+	 * @param   array  $source  The reflection values to group
+	 * @return  array  The grouped list
+	 */
+	protected function _group_by_modifier(array $source)
+	{
+		$grouped = array();
+
+		foreach ($source as $key => $value)
+		{
+			if (strpos($value['modifiers'], 'static') !== FALSE)
+			{
+				$grouped['static'][$key] = $value;
+			}
+			elseif (strpos($value['modifiers'], 'abstract') !== FALSE)
+			{
+				$grouped['abstract'][$key] = $value;
+			}
+			elseif (strpos($value['modifiers'], 'public') !== FALSE)
+			{
+				$grouped['public'][$key] = $value;
+			}
+			else
+			{
+				$grouped['other'][$key] = $value;
+			}
+		}
+
+		return $grouped;
 	}
 
 } // End Generator_Generator_Type_Class

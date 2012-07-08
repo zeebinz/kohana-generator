@@ -24,6 +24,13 @@
  *     A comma-separated list of any interfaces that this class should 
  *     implement.
  *
+ *   --clone=CLASS
+ *
+ *     If a valid class name is set with this option, its properties and
+ *     methods will be copied directly from its class file.  Reflection
+ *     will be used for internal classes, or if the --no-file option is set,
+ *     and inherited methods and properties may be included with --inherit.
+ *
  *   --no-test
  *
  *     A test case will be created automatically for the class unless this
@@ -49,6 +56,11 @@
  *     file  : MODPATH.'/logger/classes/Logger/Log/Reader.php'
  *     class : Log_Reader extends Logger_Log_Reader
  *     file  : MODPATH.'/logger/classes/Log/Reader.php'
+ *
+ * minion generate:class --name=Log --clone=SplMinHeap --inherit --no-test
+ *
+ *     class : Log extends SplHeap implements Countable, Traversable, Iterator
+ *     file  : APPPATH.'/classes/Log.php'
  *
  * @package    Generator 
  * @category   Tasks 

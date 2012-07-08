@@ -1,6 +1,20 @@
 Generator for Kohana - Changelog
 ================================
 
+Version 0.4
+-----------
+
+- Added a --clone option for the generate:class task along with a new Clone type,
+  allowing properties and methods to be copied directly from a class file
+  or via reflection (with optional inheritance).
+- Extended Generator_Reflector to include class constants, properties and other
+  basic reflection info.
+- The implemented methods for generated classes will now use the original interface
+  doccomments if these are available, otherwise new ones will be created.
+- Added new doccomment template.
+- Renamed Generator_Reflector::inspect to ::analyze, avoiding confusion with
+  the inspect methods of other Generator classes.
+
 Version 0.3
 -----------
 
