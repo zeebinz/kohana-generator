@@ -350,6 +350,10 @@ class Generator_Generator_Reflector
 	{
 		if ( ! is_array($variable))
 		{
+			// Objects shouldn't be exported
+			if (is_object($variable))
+				return NULL;
+
 			// Return the exported value
 			$val = var_export($variable, TRUE);
 			return in_array($val, array('true', 'false', 'null')) ? strtoupper($val) : $val;
