@@ -19,7 +19,6 @@ class Generator_Type_CloneTest extends Unittest_TestCase
 	public function test_type_options()
 	{
 		$type = new Generator_Type_Clone('Foo');
-
 		$type->source('TestCloneClass')->type(Generator_Reflector::TYPE_CLASS);
 
 		$params = $type->params();
@@ -66,6 +65,15 @@ class Generator_Type_CloneTest extends Unittest_TestCase
 			$params['methods']['abstract']['method_four']['doccomment']);
 		$this->assertRegExp('/A protected method/',
 			$params['methods']['other']['_method_six']['doccomment']);
+
+		$type = new Generator_Type_Clone('Foo');
+		$type->source('TestCloneClassTwo')->type(Generator_Reflector::TYPE_CLASS);
+		$type->render();
+		$params = $type->params();
+
+		$this->assertCount(1, $params['properties']['public']);
+		$this->assertCount(1, $params['methods']['public']);
+		$this->assertCount(1, $params['methods']['other']);
 	}
 
 } // End Generator_Type_CloneTest
@@ -97,4 +105,13 @@ abstract class TestCloneClass implements Countable
 	 * A protected method
 	 */
 	protected function _method_six($foo = 'foo') {}
+}
+
+class TestCloneClassTwo
+{
+	public $foo;
+
+	public function __construct() {}
+
+	protected function _some_method() {}
 }

@@ -70,6 +70,7 @@ class Generator_Generator_Type_Class extends Generator_Type
 	{
 		if ( ! isset($this->_params['blank']) AND ! isset($this->_params['methods']))
 		{
+			// Initialize the methods list
 			$this->_params['methods'] = array();
 		}
 
@@ -81,13 +82,16 @@ class Generator_Generator_Type_Class extends Generator_Type
 				$this->_params['methods'] = array_merge($this->_params['methods'],
 					$this->_get_reflection_methods($this->_params['implements'], Generator_Reflector::TYPE_INTERFACE)
 				);
-
-				// Group the methods by modifier
-				$this->_params['methods'] = $this->_group_by_modifier($this->_params['methods']);
 			}
 
 			// Convert the interfaces list
 			$this->_params['implements'] = implode(', ', $this->_params['implements']);
+		}
+
+		// Group any methods by modifier
+		if ( ! empty($this->_params['methods']))
+		{
+			$this->_params['methods'] = $this->_group_by_modifier($this->_params['methods']);
 		}
 
 		return parent::render();
