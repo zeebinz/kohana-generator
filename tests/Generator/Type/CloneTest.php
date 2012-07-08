@@ -48,8 +48,20 @@ class Generator_Type_CloneTest extends Unittest_TestCase
 		$this->assertCount(2, $params['methods']['other']);
 		$this->assertArrayHasKey('_inherited_method', $params['methods']['other']);
 
+		// Final and private methods shouldn't be inherited
+		$this->assertArrayNotHasKey('final_method', $params['methods']['public']);
+		$this->assertArrayNotHasKey('_private_method', $params['methods']['other']);
+
 		$this->assertSame('TestCloneClassOne',
 			$params['methods']['other']['_overridden_method']['class']);
+
+		// Inherited methods should invoke their parent
+		$this->assertRegExp('/Some inherited method/',
+			$params['methods']['other']['_inherited_method']['doccomment']);
+		$this->assertRegExp('/Defined in TestCloneClassTwo/',
+			$params['methods']['other']['_inherited_method']['body']);
+		$this->assertRegExp('/parent::_inherited_method\(\$foo\);/',
+			$params['methods']['other']['_inherited_method']['body']);
 	}
 
 	/**
@@ -104,12 +116,20 @@ class Generator_Type_CloneTest extends Unittest_TestCase
 			$params['methods']['static']['method_one']['class']);
 		$this->assertSame('Countable',
 			$params['methods']['public']['count']['class']);
+
 		$this->assertRegExp('/Implementation of TestCloneClassThree::method_three/',
 			$params['methods']['public']['method_three']['doccomment']);
+		$this->assertRegExp('/Method implementation/',
+			$params['methods']['public']['method_three']['body']);
+
 		$this->assertRegExp('/Declaration of TestCloneClassThree::method_four/',
 			$params['methods']['abstract']['method_four']['doccomment']);
+		$this->assertArrayNotHasKey('body', $params['methods']['abstract']['method_four']);
+
 		$this->assertRegExp('/A protected method/',
 			$params['methods']['other']['_method_six']['doccomment']);
+		$this->assertRegExp('/Implementation of TestCloneClassThree::_method_six/',
+			$params['methods']['other']['_method_six']['body']);
 	}
 
 } // End Generator_Type_CloneTest
@@ -129,8 +149,15 @@ class TestCloneClassTwo
 
 	public function __construct() {}
 
+	final public function final_method() {}
+	private function _private_method() {}
+
 	protected function _overridden_method() {}
-	protected function _inherited_method() {}
+
+	/**
+	 * Some inherited method
+	 */
+	protected function _inherited_method($foo = 1) {}
 }
 
 abstract class TestCloneClassThree implements Countable

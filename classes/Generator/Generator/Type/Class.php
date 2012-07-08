@@ -122,9 +122,12 @@ class Generator_Generator_Type_Class extends Generator_Type
 			{
 				foreach ($refl->get_methods() as $method => $m)
 				{
-					// Skip inherited methods?
-					if ( ! $refl->is_interface() AND ! $this->_inherit AND $m['class'] != $source)
+					// Skip all inherited methods, or inherited final/private?
+					if ( ! $refl->is_interface() AND ($m['class'] != $source)
+						AND ( ! $this->_inherit OR $m['final'] OR $m['private']))
+					{
 						continue;
+					}
 
 					// Create a doccomment if one doesn't exist
 					if (empty($m['doccomment']))
@@ -155,8 +158,24 @@ class Generator_Generator_Type_Class extends Generator_Type
 					// Include the signature
 					$m['signature'] = $sig;
 
+					// Include the method body
+					if ( ! $refl->is_interface() AND ! $m['abstract'] AND $m['class'] != $source)
+					{
+						// Invoke the parent for inherited methods
+						$m['body']  = ! isset($doc) ? '// Defined in '.$m['class'].PHP_EOL."\t\t" : '';
+						$m['body'] .= 'parent::'.$refl->get_method_invocation($method).';';
+					}
+					elseif ( ! $m['abstract'])
+					{
+						// Otherwise just add a comment
+						$m['body']  = ! isset($doc)
+							? "// Implementation of {$m['class']}::{$method}"
+							: '// Method implementation';
+					}
+
 					// Add the method info
 					$methods[$method] = $m;
+					unset($doc);
 				}
 			}
 		}

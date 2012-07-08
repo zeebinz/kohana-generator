@@ -38,7 +38,7 @@
 	<?php echo $m['signature'] ?>
 <?php if ($m['abstract']): echo ';'.PHP_EOL.PHP_EOL; else: ?> 
 	{
-		// Method implementation
+		<?php echo $m['body'] ?> 
 	}
 
 <?php endif; ?>
