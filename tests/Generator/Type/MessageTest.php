@@ -14,22 +14,31 @@
 class Generator_Type_MessageTest extends Unittest_TestCase
 {
 	/**
-	 * Tests that all type options are applied correctly.
+	 * Tests that all type options are applied correctly. The Message type
+	 * just extends the Config type, so those tests should pass too.
 	 */
 	public function test_type_options()
 	{
 		$ds = DIRECTORY_SEPARATOR;
 
 		$type = new Generator_Type_Message();
+		$this->assertSame('messages', $type->folder());
 
-		$type->value('a.key|a.value');
-		$type->value('b.key |b.value, c.key | c.value');
+		$type->value('a.key|a_value');
+		$type->value('b.key |b_value, c.key | c_value, c.d.key|d_value');
 
 		$type->render();
 		$params = $type->params();
 
-		$this->assertSame(array('a.key' => 'a.value', 'b.key' => 'b.value',
-			'c.key' => 'c.value'),	$params['values']
+		$this->assertSame(array(
+				'a' => array('key' => 'a_value'),
+				'b' => array('key' => 'b_value'),
+				'c' => array(
+					'key' => 'c_value',
+					'd' => array('key' => 'd_value'),
+				)
+			),
+			$params['values']
 		);
 	}
 

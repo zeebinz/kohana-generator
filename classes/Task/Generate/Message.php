@@ -12,12 +12,12 @@
  *   --values=VALUES
  *
  *     Value definitions may be added as a comma-separated list in the
- *     format: "key|value".
+ *     format: "array.key.path|value".
  *
  * Examples
  * ========
  * minion generate:message --name=logger --module=logger \
- *     --values="some.key|some.value, other.key|other.value"
+ *     --values="logging.some_message|some_value"
  *
  *     file : MODPATH.'/logger/messages/logger.php'
  *
