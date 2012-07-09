@@ -19,6 +19,7 @@ class Generator_Type_UnittestTest extends Unittest_TestCase
 	public function test_type_options()
 	{
 		$type = new Generator_Type_Unittest('Foo');
+		$this->assertSame('tests', $type->folder());
 
 		$this->assertSame('FooTest', $type->name());
 		$type->name('FooTest');
