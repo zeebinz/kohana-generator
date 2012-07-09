@@ -20,11 +20,11 @@
  * minion generate:guide --name=Logging --module=logger \
  *     --pages="Setting up|setup, Running the tasks|tasks"
  *
- *     file : MODPATH.'/logger/guide/logger/menu.md'
- *     file : MODPATH.'/logger/guide/logger/index.md'
- *     file : MODPATH.'/logger/guide/logger/setup.md'
- *     file : MODPATH.'/logger/guide/logger/tasks.md'
- *     file : MODPATH.'/logger/config/userguide.php'
+ *     file : MODPATH/logger/guide/logger/menu.md
+ *     file : MODPATH/logger/guide/logger/index.md
+ *     file : MODPATH/logger/guide/logger/setup.md
+ *     file : MODPATH/logger/guide/logger/tasks.md
+ *     file : MODPATH/logger/config/userguide.php
  *
  * @package    Generator 
  * @category   Tasks 

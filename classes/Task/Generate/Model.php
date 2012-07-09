@@ -30,17 +30,17 @@
  * minion generate:model --name=Log
  *
  *     class : Model_Log extends Model
- *     file  : APPPATH.'/classes/Model/Log.php'
+ *     file  : APPPATH/classes/Model/Log.php
  *     class : Model_LogTest extends Unittest_TestCase
- *     file  : APPPATH.'/tests/Model/LogTest.php' 
+ *     file  : APPPATH/tests/Model/LogTest.php 
  *
  * minion generate:model --name=Logger_Model_Log --extend=Model_Database \
  *     --module=logger --stub=Model_Log --no-test
  *
  *     class : Logger_Model_Log extends Model_Database
- *     file  : MODPATH.'/logger/classes/Logger/Model/Log.php'
+ *     file  : MODPATH/logger/classes/Logger/Model/Log.php
  *     class : Model_Log extends Logger_Model_Log
- *     file  : MODPATH.'/logger/classes/Logger/Model/Log.php'
+ *     file  : MODPATH/logger/classes/Logger/Model/Log.php
  *
  * @package    Generator 
  * @category   Tasks 

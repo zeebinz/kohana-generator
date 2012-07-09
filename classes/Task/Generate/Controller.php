@@ -29,13 +29,13 @@
  * minion generate:controller --name=Home
  *
  *     class : Controller_Home extends Controller
- *     file  : APPPATH.'/classes/Controller/Home.php'
+ *     file  : APPPATH/classes/Controller/Home.php
  *
  * minion generate:controller --name=Home --module=logger --blank \
  *     --extend=Controller_Template --actions="index,create,edit"
  *
  *     class : Controller_Home extends Controller_Template
- *     file  : MODPATH.'/logger/classes/Controller/Home.php'
+ *     file  : MODPATH/logger/classes/Controller/Home.php
  *
  * @package    Generator 
  * @category   Tasks 

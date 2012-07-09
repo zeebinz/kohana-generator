@@ -13,7 +13,7 @@
  * ========
  * minion generate:view --name=foo/bar
  *
- *     file : APPPATH.'/views/foo/bar.php'
+ *     file : APPPATH/views/foo/bar.php
  *
  * @package    Generator 
  * @category   Tasks 

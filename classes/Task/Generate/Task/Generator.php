@@ -31,14 +31,14 @@
  * minion generate:task:generator --name=Log
  *
  *     class : Task_Generate_Log extends Task_Generate
- *     file  : APPPATH.'/classes/Task/Generate/Log.php'
+ *     file  : APPPATH/classes/Task/Generate/Log.php
  *
  * minion generate:task:generator --name=Log --module=logger --prefix=Kohana
  *
  *     class : Kohana_Task_Generate_Log extends Task_Generate
- *     file  : MODPATH.'logger/classes/Kohana/Task/Generate/Log.php'
+ *     file  : MODPATH/logger/classes/Kohana/Task/Generate/Log.php
  *     class : Task_Generate_Log extends Kohana_Task_Generate_Log
- *     file  : MODPATH.'logger/classes/Task/Generate/Log.php' 
+ *     file  : MODPATH/logger/classes/Task/Generate/Log.php 
  *
  * @package    Generator
  * @category   Tasks

@@ -23,15 +23,15 @@
  * minion generate:interface --name=Loggable --extend=Countable
  *
  *     interface : Loggable extends Countable
- *     file      : APPPATH.'/classes/Loggable.php'
+ *     file      : APPPATH/classes/Loggable.php
  *
  * minion generate:interface --name=Logger_Loggable --stub=Loggable \
  *     --module=logger
  *
  *     interface : Logger_Loggable
- *     file      : MODPATH.'/logger/classes/Logger/Loggable.php'
+ *     file      : MODPATH/logger/classes/Logger/Loggable.php
  *     interface : Loggable extends Logger_Loggable
- *     file      : MODPATH.'/logger/classes/Loggable.php' 
+ *     file      : MODPATH/logger/classes/Loggable.php 
  * 
  * @package    Generator 
  * @category   Tasks 

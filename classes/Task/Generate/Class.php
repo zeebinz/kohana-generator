@@ -8,7 +8,7 @@
  *
  *   --name=CLASS (required)
  *
- *     The full class name.
+ *     The full name of the class to be created, with capitalization.
  *
  *   --extend=CLASS
  *
@@ -45,22 +45,22 @@
  * minion generate:class --name=Log_Reader --implement="Countable,ArrayAccess"
  *
  *     class : Log_Reader implements Countable, ArrayAccess
- *     file  : APPPATH.'/classes/Log/Reader.php'
+ *     file  : APPPATH/classes/Log/Reader.php
  *     class : Log_ReaderTest extends Unittest_TestCase
- *     file  : APPPATH.'/tests/Log/ReaderTest.php' 
+ *     file  : APPPATH/tests/Log/ReaderTest.php 
  *
  * minion generate:class --name=Logger_Log_Reader --extend=Logger_Reader \
  *     --module=logger --stub=Log_Reader --no-test
  *
  *     class : Logger_Log_Reader extends Logger_Reader
- *     file  : MODPATH.'/logger/classes/Logger/Log/Reader.php'
+ *     file  : MODPATH/logger/classes/Logger/Log/Reader.php
  *     class : Log_Reader extends Logger_Log_Reader
- *     file  : MODPATH.'/logger/classes/Log/Reader.php'
+ *     file  : MODPATH/logger/classes/Log/Reader.php
  *
  * minion generate:class --name=Log --clone=SplMinHeap --inherit --no-test
  *
  *     class : Log extends SplHeap implements Countable, Traversable, Iterator
- *     file  : APPPATH.'/classes/Log.php'
+ *     file  : APPPATH/classes/Log.php
  *
  * @package    Generator 
  * @category   Tasks 
