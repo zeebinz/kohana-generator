@@ -8,7 +8,7 @@
  * @copyright  (c) 2012 Zeebee
  * @license    BSD revised
  */
-class Generator_Task_Generate_Interface extends Task_Generate
+class Generator_Task_Generate_Interface extends Task_Generate_Class
 {
 	/**
 	 * @var  array  The task options
@@ -17,6 +17,9 @@ class Generator_Task_Generate_Interface extends Task_Generate
 		'name'      => '',
 		'extend'    => '',
 		'stub'      => '',
+		'clone'     => '',
+		'reflect'   => FALSE,
+		'inherit'   => FALSE,
 	);
 
 	/**
@@ -39,10 +42,19 @@ class Generator_Task_Generate_Interface extends Task_Generate
 	 */
 	public function get_builder(array $options)
 	{
-		$builder = Generator::build()
-			->add_interface($options['name'])
-				->extend($options['extend'])
-			->builder();
+		if ( ! empty($options['clone']))
+		{
+			// Get the clone via Task_Generate_Class::get_clone
+			$builder = $this->get_clone($options, Generator_Reflector::TYPE_INTERFACE);
+			$builder->set('category', 'Interfaces');
+		}
+		else
+		{
+			$builder = Generator::build()
+				->add_interface($options['name'])
+					->extend($options['extend'])
+				->builder();
+		}
 
 		if ($options['stub'])
 		{
