@@ -24,7 +24,7 @@ class Generator_Generator_Type_Class extends Generator_Type
 	/**
 	 * Sets whether the class should be defined as abstract.
 	 *
-	 * @param   bool  $abstract  Is the class abstract?
+	 * @param   boolean  $abstract  Is the class abstract?
 	 * @return  Generator_Type_Class  The current instance
 	 */
 	public function as_abstract($abstract = TRUE)

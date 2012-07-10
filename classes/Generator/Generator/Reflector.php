@@ -104,8 +104,8 @@ class Generator_Generator_Reflector
 	/**
 	 * Gathers basic reflection info on the given source and stores it locally.
 	 *
-	 * @throws  Generator_Exception  On missing source
 	 * @return  Generator_Reflector  This instance
+	 * @throws  Generator_Exception  On missing source
 	 */
 	public function analyze()
 	{
@@ -350,10 +350,10 @@ class Generator_Generator_Reflector
 	 * variables can be processed recursively, and indentation may optionally
 	 * be included with these.
 	 *
-	 * @param   mixed   $variable  The variable to export
-	 * @param   bool    $indent    Should indentation be included?
-	 * @param   bool    $level     The indentation level
-	 * @return  string  The exported string
+	 * @param   mixed    $variable  The variable to export
+	 * @param   boolean  $indent    Should indentation be included?
+	 * @param   boolean  $level     The indentation level
+	 * @return  string   The exported string
 	 */
 	public function export_variable($variable, $indent = FALSE, $level = 1)
 	{
@@ -544,9 +544,9 @@ class Generator_Generator_Reflector
 	/**
 	 * Returns a parsable string declaration for the given constant name.
 	 *
-	 * @throws  Generator_Exception  On invalid constant name
 	 * @param   string  $constant  The constant name
 	 * @return  string  The constant declaration
+	 * @throws  Generator_Exception  On invalid constant name
 	 */
 	public function get_constant_declaration($constant)
 	{
@@ -566,9 +566,9 @@ class Generator_Generator_Reflector
 	/**
 	 * Returns a parsable string declaration for the given property name.
 	 *
-	 * @throws  Generator_Exception  On invalid property name
 	 * @param   string  $property  The property name
 	 * @return  string  The property declaration
+	 * @throws  Generator_Exception  On invalid property name
 	 */
 	public function get_property_declaration($property)
 	{
@@ -593,10 +593,10 @@ class Generator_Generator_Reflector
 	 * Returns the signature for a given method parameter as a parsable string
 	 * representation from the current source.
 	 *
-	 * @throws  Generator_Exception  On invalid parameter name
 	 * @param   string  $method  The method name
 	 * @param   string  $param   The parameter name
 	 * @return  string  The parameter signature
+	 * @throws  Generator_Exception  On invalid parameter name
 	 */
 	public function get_param_signature($method, $param)
 	{
@@ -621,9 +621,9 @@ class Generator_Generator_Reflector
 	 * Returns the full signature for the given method parameters as a parsable
 	 * string representation from the current source.
 	 *
-	 * @throws  Generator_Exception  On invalid method name
 	 * @param   string  $method  The method name
 	 * @return  string  The full signature for the parameters
+	 * @throws  Generator_Exception  On invalid method name
 	 */
 	public function get_method_param_signatures($method)
 	{
@@ -653,9 +653,9 @@ class Generator_Generator_Reflector
 	 * Returns a full method signature as a parsable string representation from
 	 * the current source.
 	 *
-	 * @throws  Generator_Exception  On invalid method name
 	 * @param   string  $method  The method name
 	 * @return  string  The method signature
+	 * @throws  Generator_Exception  On invalid method name
 	 */
 	public function get_method_signature($method)
 	{
@@ -683,9 +683,9 @@ class Generator_Generator_Reflector
 	 * Returns a parsable string representation of a method invocation from
 	 * the current source.
 	 *
-	 * @throws  Generator_Exception  On invalid method name
 	 * @param   string  $method  The method name
 	 * @return  string  The method invocation string
+	 * @throws  Generator_Exception  On invalid method name
 	 */
 	public function get_method_invocation($method)
 	{
