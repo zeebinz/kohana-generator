@@ -46,9 +46,9 @@ class Generator_Generator_Type_File extends Generator_Type
 	 * Ensures that the filename is not guessed by converting the name to 
 	 * a path, replacing underscores, etc.
 	 *
+	 * @param   boolean  $convert  Should the name be converted to a file path?
+	 * @return  string   The guessed filename
 	 * @throws  Generator_Exception  On invalid name or base path
-	 * @param   bool    $convert  Should the name be converted to a file path?
-	 * @return  string  The guessed filename
 	 */
 	public function guess_filename($convert = TRUE)
 	{

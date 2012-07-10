@@ -32,25 +32,25 @@ class Generator_Generator_Builder
 
 	/**
 	 * The pretend mode to be applied to each generator
-	 * @var bool
+	 * @var boolean
 	 */
 	protected $_pretend;
 
 	/**
 	 * The force mode be applied to each generator
-	 * @var bool
+	 * @var boolean
 	 */
 	protected $_force;
 
 	/**
 	 * The verify mode be applied to each generator
-	 * @var bool
+	 * @var boolean
 	 */
 	protected $_verify;
 
 	/**
 	 * Is the builder ready to be executed?
-	 * @var bool
+	 * @var boolean
 	 */
 	protected $_is_prepared = FALSE;
 
@@ -94,10 +94,10 @@ class Generator_Generator_Builder
 	 * The $type may be the name of a valid type, or an existing instance
 	 * of a Generator_Type class.
 	 *
-	 * @throws  Generator_Exception    On invalid type class name
 	 * @param   string|Generator_Type  $type   The generator type to be added
 	 * @param   string                 $name   The name of the new type
 	 * @return  Generator_Type         The new generator instance
+	 * @throws  Generator_Exception    On invalid type class name
 	 */
 	public function add_type($type, $name = NULL)
 	{
@@ -157,7 +157,7 @@ class Generator_Generator_Builder
 	 * Sets the pretend mode to be applied to each generator type added
 	 * by the builder.
 	 *
-	 * @param   bool  $pretend  The pretend mode
+	 * @param   boolean  $pretend  The pretend mode
 	 * @return  Generator_Builder  This instance
 	 */
 	public function with_pretend($pretend = TRUE)
@@ -171,7 +171,7 @@ class Generator_Generator_Builder
 	/**
 	 * Returns the current global pretend mode.
 	 *
-	 * @return bool
+	 * @return boolean
 	 */
 	public function is_pretend()
 	{
@@ -182,7 +182,7 @@ class Generator_Generator_Builder
 	 * Sets the force mode to be applied to each generator type added
 	 * by the builder.
 	 *
-	 * @param  bool  $force  The force mode
+	 * @param   boolean  $force  The force mode
 	 * @return  Generator_Builder  This instance
 	 */
 	public function with_force($force = TRUE)
@@ -197,7 +197,7 @@ class Generator_Generator_Builder
 	 * Sets the verify mode to be applied to each generator type added
 	 * by the builder.
 	 *
-	 * @param   bool  $pretend  The verify mode
+	 * @param   boolean  $pretend  The verify mode
 	 * @return  Generator_Builder  This instance
 	 */
 	public function with_verify($verify = TRUE)
@@ -254,7 +254,7 @@ class Generator_Generator_Builder
 	/**
 	 * Allows inspection of the current generators list for debugging purposes.
 	 *
-	 * @param   bool  $rendered  Should rendered output be displayed?
+	 * @param   boolean  $rendered  Should rendered output be displayed?
 	 * @return  array
 	 */
 	public function inspect($rendered = TRUE)
@@ -381,10 +381,10 @@ class Generator_Generator_Builder
 	 * and supports the fluent interface by passing undefined method calls
 	 * to the last added generator, or else throws an exception.
 	 *
-	 * @throws  Generator_Exception  For any other undefined methods
 	 * @param   string  $method      The undefined method name
 	 * @param   string  $arguments   The undefined method arguments
 	 * @return  Generator_Type       The requested generator type
+	 * @throws  Generator_Exception  For any other undefined methods
 	 */
 	public function __call($method, $arguments)
 	{
