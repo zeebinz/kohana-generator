@@ -246,8 +246,17 @@ class Generator_Generator_Reflector
 		// Get the declaring class name
 		$class = $method->getDeclaringClass()->getName();
 
-		// Get the modifiers string
-		$modifiers = implode(' ', Reflection::getModifierNames($method->getModifiers()));
+		// Get the modifiers
+		$modifiers = $method->getModifiers();
+
+		if ($method->getDeclaringClass()->isInterface())
+		{
+			// We don't need the abstract modifier for interface methods
+			$modifiers &= ~ReflectionMethod::IS_ABSTRACT;
+		}
+
+		// Convert the modifiers to a string
+		$modifiers = implode(' ', Reflection::getModifierNames($modifiers));
 
 		// Get the returns by reference flag
 		$by_ref = $method->returnsReference();
