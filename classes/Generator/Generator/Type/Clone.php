@@ -95,15 +95,15 @@ class Generator_Generator_Type_Clone extends Generator_Type_Class
 	 * Returns reflection details of any source constants to be included in the
 	 * template.
 	 *
-	 * @uses    Generator_Reflector
-	 * @param   string|array   $sources  The source names to inspect
-	 * @param   string  $type  The inspected source type
-	 * @param   Generator_Reflector  The reflector object to use, if any
+	 * @param   string|array  $sources  The source names to inspect
+	 * @param   string        $type     The inspected source type
+	 * @param   Generator_Reflector  $reflector  The reflector object to use, if any
 	 * @return  array   The constants info
 	 */
-	protected function _get_reflection_constants($sources, $type, Generator_Reflector $reflector = NULL)
+	protected function _get_reflection_constants($sources, $type,
+		Generator_Reflector $reflector = NULL)
 	{
-		$refl = ($reflector == NULL) ? (new Generator_Reflector) : $reflector;
+		$refl = ($reflector !== NULL) ? $reflector : (new Generator_Reflector);
 		$refl->type($type);
 
 		// Start the constants list
@@ -114,10 +114,14 @@ class Generator_Generator_Type_Clone extends Generator_Type_Class
 			// Only add constants for known sources
 			if ($refl->source($source)->exists())
 			{
-				foreach (array_keys($refl->get_constants()) as $constant)
+				foreach ($refl->get_constants() as $constant => $c)
 				{
+					// Skip inherited constants?
+					if ( ! $this->_inherit AND $c['class'] != $source)
+						continue;
+
 					// Create the comment and declaration
-					$comment = '// Declared in '.$source;
+					$comment = '// Declared in '.$c['class'];
 					$declaration = $refl->get_constant_declaration($constant);
 
 					// Add the constant info

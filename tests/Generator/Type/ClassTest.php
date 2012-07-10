@@ -44,6 +44,8 @@ class Generator_Type_ClassTest extends Unittest_TestCase
 		$this->assertCount(5, $params['methods']['public']);
 		$this->assertSame('TestCountable', $params['methods']['public']['count']['class']);
 		$this->assertNotEmpty($params['methods']['public']['count']['doccomment']);
+		$this->assertFalse($params['methods']['public']['count']['abstract']);
+		$this->assertArrayHasKey('body', $params['methods']['public']['count']);
 	}
 
 } // End Generator_Type_ClassTest 
