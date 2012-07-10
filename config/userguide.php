@@ -15,7 +15,7 @@ return array
 			'name' => 'Generator',
 
 			// A short description of this module, shown on the index page
-			'description' => 'Automatic creation of application and module reources.',
+			'description' => 'Automatic creation of application and module resources.',
 
 			// Copyright message, shown in the footer for this module
 			'copyright' => '&copy; 2012 Zeebee',
