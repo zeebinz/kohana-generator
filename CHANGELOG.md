@@ -1,6 +1,22 @@
 Generator for Kohana - Changelog
 ================================
 
+Version 0.5
+-----------
+
+- Added --clone option for generate:interface, works the same as for classes
+  except for the handling of multiple inheritance and other peculiar quirks
+  of interfaces in PHP.
+- Improved the cloning of classes, especially the handling of inherited methods
+  and properties from parents or interfaces with multiple inheritance.
+- Added better support for interfaces with multiple inheritance to prevent
+  conflicts and re-implementation errors.
+- Interface and constant inheritance can now be tracked by Generator_Reflector.
+- Minor fixes for task help and examples output, along with some general
+  code clean-up across the board.
+- Values for the Message type can now use array paths as keys, so works the
+  same as for the Config type.
+
 Version 0.4
 -----------
 
