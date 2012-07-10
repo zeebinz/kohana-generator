@@ -8,11 +8,13 @@
  *
  *   --name=INTERFACE (required)
  *
- *     The full interface name.
+ *     The full name of the interface to be created, with capitalization.
  *
- *   --extend=INTERFACE
+ *   --extend=INTERFACE[,INTERFACE[,...]]
  *
- *     The name of the parent from which this is optionally extended.
+ *     A comma-separated list of any interfaces that this interface should 
+ *     extend (multiple inheritance is possible).
+ *
  *
  *   --stub=INTERFACE
  *

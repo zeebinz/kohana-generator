@@ -191,6 +191,41 @@ class Generator_Type_CloneTest extends Unittest_TestCase
 		$this->assertArrayHasKey('count', $params['methods']['public']);
 	}
 
+	/**
+	 * Interface methods should be treated as abstract without the modifier, and
+	 * should use multiple inheritance for extending other interfaces instead
+	 * of via the 'implements' keyword.
+	 *
+	 * @depends test_cloning_classes_with_inherited_interfaces
+	 */
+	public function test_cloning_interfaces()
+	{
+		$type = new Generator_Type_Clone('Foo');
+		$type->source('TestCloneInterface')
+			->type(Generator_Reflector::TYPE_INTERFACE)
+			->inherit(TRUE)
+			->render();
+
+		$params = $type->params();
+		$this->assertArrayNotHasKey('implements', $params);
+		$this->assertSame('TestCloneInterfaceTwo, TestCloneInterfaceCountable',
+			$params['extends']);
+
+		$this->assertCount(1, $params['constants']);
+
+		// Inherited interface constants can't be re-declared, so shouldn't be included
+		$this->assertArrayNotHasKey('CONSTANT_COUNTABLE', $params['constants']);
+
+		$this->assertCount(4, $params['methods']['public']);
+		$this->assertTrue($params['methods']['public']['method_one']['abstract']);
+		$this->assertTrue($params['methods']['public']['method_two']['abstract']);
+		$this->assertTrue($params['methods']['public']['method_three']['abstract']);
+		$this->assertTrue($params['methods']['public']['count']['abstract']);
+		$this->assertArrAyNotHasKey('body', $params['methods']['public']['method_one']);
+		$this->assertArrAyNotHasKey('body', $params['methods']['public']['method_two']);
+		$this->assertArrAyNotHasKey('body', $params['methods']['public']['method_three']);
+		$this->assertArrAyNotHasKey('body', $params['methods']['public']['count']);
+	}
 
 } // End Generator_Type_CloneTest
 
