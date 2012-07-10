@@ -408,7 +408,7 @@ class Generator_Generator_Reflector
 	public function get_variable_type($variable)
 	{
 		$type = gettype($variable);
-		$type = str_replace(array('NULL', 'boolean'), array('mixed', 'bool'), $type);
+		$type = str_replace('NULL', 'mixed', $type);
 
 		return $type;
 	}
