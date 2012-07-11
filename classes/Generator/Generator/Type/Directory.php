@@ -2,13 +2,13 @@
 /**
  * Generator Directory type.
  *
- * @package    Generator 
- * @category   Generator/Types 
- * @author     Zeebee 
- * @copyright  (c) 2012 Zeebee 
- * @license    BSD revised 
+ * @package    Generator
+ * @category   Generator/Types
+ * @author     Zeebee
+ * @copyright  (c) 2012 Zeebee
+ * @license    BSD revised
  */
-class Generator_Generator_Type_Directory extends Generator_Type 
+class Generator_Generator_Type_Directory extends Generator_Type
 {
 	protected $_force = FALSE;
 
@@ -71,6 +71,7 @@ class Generator_Generator_Type_Directory extends Generator_Type
 			{
 				// The directory isn't empty, so leave it be
 				$this->log('not empty', $child);
+				return $this;
 			}
 			else
 			{
@@ -111,4 +112,4 @@ class Generator_Generator_Type_Directory extends Generator_Type
 		return $this;
 	}
 
-} // End Generator_Generator_Type_Directory 
+} // End Generator_Generator_Type_Directory
