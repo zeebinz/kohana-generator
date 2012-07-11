@@ -47,7 +47,7 @@ class Generator_Task_Generate extends Minion_Task
 
 	/**
 	 * Sets the task options passed as parameters.
-	 * 
+	 *
 	 * Boolean parameters (i.e. switches without values) are handled here by
 	 * toggling their associated options on.
 	 *
@@ -96,9 +96,6 @@ class Generator_Task_Generate extends Minion_Task
 			return;
 		}
 
-		// Set verbosity level
-		$this->_options['verbose'] = $options['remove'] ?: $this->_options['verbose'];
-
 		// Choose which command to run
 		$command = $options['remove'] ? Generator::REMOVE : Generator::CREATE;
 
@@ -146,9 +143,11 @@ class Generator_Task_Generate extends Minion_Task
 
 			foreach ($generator->log() as $msg)
 			{
-				if ($this->_options['verbose'] OR ! in_array($msg, $messages))
+				if (($this->_options['verbose'] AND $msg != end($messages))
+					OR ! in_array($msg, $messages))
 				{
-					// We only want unique messages, unless in verbose mode
+					// We only want unique messages, unless in verbose mode and
+					// the last message isn't being repeated
 					$this->_write_log($msg['status'], Debug::path($msg['item']));
 					$messages[] = $msg;
 				}
@@ -195,7 +194,7 @@ class Generator_Task_Generate extends Minion_Task
 	 * Loads a builder and runs the task, or outputs the common help message
 	 * by default.
 	 *
-	 * @param  array  $params  The current task parameters	 
+	 * @param  array  $params  The current task parameters
 	 * @return void
 	 */
 	protected function _execute(array $params)
@@ -215,7 +214,7 @@ class Generator_Task_Generate extends Minion_Task
 	 * @param  string   $text  The message to write
 	 * @param  boolean  $eol   Should EOL be added?
 	 * @return void
-	 */	
+	 */
 	protected function _write($text, $eol = TRUE)
 	{
 		if ($this->_options['quiet'])
@@ -232,7 +231,7 @@ class Generator_Task_Generate extends Minion_Task
 	 * @param  string  $status  The status message
 	 * @param  string  $item    The item affected
 	 * @return void
-	 */	
+	 */
 	protected function _write_log($status, $item)
 	{
 		$color = in_array($status, array(Generator::CREATE, Generator::REMOVE)) ? 'green' : 'red';
@@ -263,7 +262,7 @@ class Generator_Task_Generate extends Minion_Task
 	 * @param  string  $text     text to show user before waiting for input
 	 * @param  array   $options  array of options the user is shown
 	 * @return string  the user input
-	 */	
+	 */
 	protected function _read($text, array $options = NULL)
 	{
 		return Minion_CLI::read($text, $options);
@@ -277,7 +276,7 @@ class Generator_Task_Generate extends Minion_Task
 	 *
 	 * @param  array  $params  The current task parameters
 	 * @return void
-	 */	
+	 */
 	protected function _help(array $params)
 	{
 		parent::_help($params);
@@ -290,7 +289,7 @@ class Generator_Task_Generate extends Minion_Task
 			// Append the list to the help output
 			$this->_write('Available generators:');
 			$this->_write('');
-			foreach ($generators as $generator) 
+			foreach ($generators as $generator)
 			{
 				$this->_write('  * '.$generator);
 			}
