@@ -104,8 +104,8 @@ class Generator_Generator_Reflector
 	/**
 	 * Gathers basic reflection info on the given source and stores it locally.
 	 *
-	 * @throws  Generator_Exception  On missing source
 	 * @return  Generator_Reflector  This instance
+	 * @throws  Generator_Exception  On missing source
 	 */
 	public function analyze()
 	{
@@ -141,17 +141,40 @@ class Generator_Generator_Reflector
 		// Get any class modifiers
 		$modifiers = Reflection::getModifierNames($class->getModifiers());
 
-		// Get the abstract flag, always set false for interfaces
-		$abstract = $this->is_interface() ? FALSE : $class->isAbstract();
+		// Get the abstract flag
+		$abstract = $class->isAbstract();
 
-		// Get any implemented interfaces
+		// Get any parent class name
 		$parent = ($parent = $class->getParentClass()) ? $parent->getName() : NULL;
-
-		// Get any implemented interfaces
-		$interfaces = $class->getInterfaceNames();
 
 		// Get any class constants
 		$constants = $class->getConstants();
+		$const_names = array_keys($constants);
+		foreach ($constants as $key => $value)
+		{
+			// Guess the declaring class of the constant (fudge!)
+			$const_source = ($parent AND ($v = $class->getParentClass()->getConstant($key))
+				AND $v === $value) ? $parent : $this->_source;
+
+			// Add the constant info
+			$constants[$key] = array('class' => $const_source, 'value' => $value);
+		}
+
+		// Get any implemented interfaces
+		$interfaces = array();
+		$inherited  = array();
+		foreach ($class->getInterfaces() as $i)
+		{
+			// Track the interface inheritance tree
+			$interfaces[$i->getName()] = $i->getInterfaceNames();
+			$inherited += array_flip($i->getInterfaceNames());
+
+			foreach ($const_names as $c) if ($i->getConstant($c) != NULL)
+			{
+				// The constant was declared in this interface
+				$constants[$c]['class'] = $i->getName();
+			}
+		}
 
 		// Get the default properties list
 		$defaults = $class->getDefaultProperties();
@@ -163,10 +186,8 @@ class Generator_Generator_Reflector
 			$properties[$property->getName()] = $this->parse_reflection_property($property, $defaults);
 		}
 
-		// Start the methods list
-		$methods = array();
-
 		// Get any declared methods
+		$methods = array();
 		foreach ($class->getMethods() as $method)
 		{
 			$m = $this->parse_reflection_method($method);
@@ -188,6 +209,7 @@ class Generator_Generator_Reflector
 			'abstract'   => $abstract,
 			'parent'     => $parent,
 			'interfaces' => $interfaces,
+			'inherited'  => $inherited,
 			'constants'  => $constants,
 			'properties' => $properties,
 			'methods'    => $methods,
@@ -246,8 +268,17 @@ class Generator_Generator_Reflector
 		// Get the declaring class name
 		$class = $method->getDeclaringClass()->getName();
 
-		// Get the modifiers string
-		$modifiers = implode(' ', Reflection::getModifierNames($method->getModifiers()));
+		// Get the modifiers
+		$modifiers = $method->getModifiers();
+
+		if ($method->getDeclaringClass()->isInterface())
+		{
+			// We don't need the abstract modifier for interface methods
+			$modifiers &= ~ReflectionMethod::IS_ABSTRACT;
+		}
+
+		// Convert the modifiers to a string
+		$modifiers = implode(' ', Reflection::getModifierNames($modifiers));
 
 		// Get the returns by reference flag
 		$by_ref = $method->returnsReference();
@@ -341,10 +372,10 @@ class Generator_Generator_Reflector
 	 * variables can be processed recursively, and indentation may optionally
 	 * be included with these.
 	 *
-	 * @param   mixed   $variable  The variable to export
-	 * @param   bool    $indent    Should indentation be included?
-	 * @param   bool    $level     The indentation level
-	 * @return  string  The exported string
+	 * @param   mixed    $variable  The variable to export
+	 * @param   boolean  $indent    Should indentation be included?
+	 * @param   integer  $level     The indentation level
+	 * @return  string   The exported string
 	 */
 	public function export_variable($variable, $indent = FALSE, $level = 1)
 	{
@@ -399,7 +430,7 @@ class Generator_Generator_Reflector
 	public function get_variable_type($variable)
 	{
 		$type = gettype($variable);
-		$type = str_replace(array('NULL', 'boolean'), array('mixed', 'bool'), $type);
+		$type = str_replace('NULL', 'mixed', $type);
 
 		return $type;
 	}
@@ -483,27 +514,74 @@ class Generator_Generator_Reflector
 	}
 
 	/**
-	 * Returns the list of interfaces implemented by the current source.
+	 * Returns the list of interfaces implemented by the current source,
+	 * by default limited to just the interfaces that aren't inherited by
+	 * another in the current list.
 	 *
-	 * @return  array  The interfaces list
+	 * Interfaces can be extended by multiple inheritance, and ReflectionClass
+	 * will list the whole inheritance tree by default. Problems can happen
+	 * when an interface or class tries to implement multiple interfaces that
+	 * inherit each other - depending on the declared order - so it's usually
+	 * helpful to filter the list in this way.
+	 *
+	 * @link http://php.net/manual/en/language.oop5.interfaces.php
+	 *
+	 * @param   boolean   $inherited  Include inherited interfaces?
+	 * @return  array     The interfaces list
 	 */
-	public function get_interfaces()
+	public function get_interfaces($inherited = FALSE)
 	{
 		$this->is_analyzed() OR $this->analyze();
 
-		return $this->_info['interfaces'];
+		if ($inherited)
+			return array_keys($this->_info['interfaces']);
+
+		$interfaces = array();
+
+		foreach (array_keys($this->_info['interfaces']) as $i)
+		{
+			if ( ! isset($this->_info['inherited'][$i]))
+			{
+				// We only want non-inherited interfaces
+				$interfaces[] = $i;
+			}
+		}
+
+		return $interfaces;
 	}
 
 	/**
 	 * Returns the list of constants defined by the current source.
 	 *
-	 * @return  array  The constants list
+	 * By default this will exclude constants defined by interfaces, which is
+	 * usually wise since such constants can't be re-declared by any inheriting
+	 * interface or by any implementing class.
+	 *
+	 * @link http://php.net/manual/en/language.oop5.interfaces.php
+	 *
+	 * @param   boolean  $interfaces  Include constants defined by interfaces?
+	 * @return  array    The constants list
 	 */
-	public function get_constants()
+	public function get_constants($interfaces = FALSE)
 	{
 		$this->is_analyzed() OR $this->analyze();
 
-		return $this->_info['constants'];
+		if ($interfaces)
+			return $this->_info['constants'];
+
+		// Start the constants list
+		$constants = array();
+
+		foreach ($this->_info['constants'] as $const => $c)
+		{
+			if ($c['class'] == $this->_source OR $c['class'] == $this->_info['parent'])
+			{
+				// Only add constants defined by the source or its parent
+				$constants[$const] = $c;
+			}
+		}
+
+		return $constants;
 	}
 
 	/**
@@ -535,9 +613,9 @@ class Generator_Generator_Reflector
 	/**
 	 * Returns a parsable string declaration for the given constant name.
 	 *
-	 * @throws  Generator_Exception  On invalid constant name
 	 * @param   string  $constant  The constant name
 	 * @return  string  The constant declaration
+	 * @throws  Generator_Exception  On invalid constant name
 	 */
 	public function get_constant_declaration($constant)
 	{
@@ -551,15 +629,15 @@ class Generator_Generator_Reflector
 
 		// Create the declaration
 		return 'const '.$constant.' = '
-			.$this->export_variable($this->_info['constants'][$constant]);
+			.$this->export_variable($this->_info['constants'][$constant]['value']);
 	}
 
 	/**
 	 * Returns a parsable string declaration for the given property name.
 	 *
-	 * @throws  Generator_Exception  On invalid property name
 	 * @param   string  $property  The property name
 	 * @return  string  The property declaration
+	 * @throws  Generator_Exception  On invalid property name
 	 */
 	public function get_property_declaration($property)
 	{
@@ -584,10 +662,10 @@ class Generator_Generator_Reflector
 	 * Returns the signature for a given method parameter as a parsable string
 	 * representation from the current source.
 	 *
-	 * @throws  Generator_Exception  On invalid parameter name
 	 * @param   string  $method  The method name
 	 * @param   string  $param   The parameter name
 	 * @return  string  The parameter signature
+	 * @throws  Generator_Exception  On invalid parameter name
 	 */
 	public function get_param_signature($method, $param)
 	{
@@ -612,9 +690,9 @@ class Generator_Generator_Reflector
 	 * Returns the full signature for the given method parameters as a parsable
 	 * string representation from the current source.
 	 *
-	 * @throws  Generator_Exception  On invalid method name
 	 * @param   string  $method  The method name
 	 * @return  string  The full signature for the parameters
+	 * @throws  Generator_Exception  On invalid method name
 	 */
 	public function get_method_param_signatures($method)
 	{
@@ -644,9 +722,9 @@ class Generator_Generator_Reflector
 	 * Returns a full method signature as a parsable string representation from
 	 * the current source.
 	 *
-	 * @throws  Generator_Exception  On invalid method name
 	 * @param   string  $method  The method name
 	 * @return  string  The method signature
+	 * @throws  Generator_Exception  On invalid method name
 	 */
 	public function get_method_signature($method)
 	{
@@ -674,9 +752,9 @@ class Generator_Generator_Reflector
 	 * Returns a parsable string representation of a method invocation from
 	 * the current source.
 	 *
-	 * @throws  Generator_Exception  On invalid method name
 	 * @param   string  $method  The method name
 	 * @return  string  The method invocation string
+	 * @throws  Generator_Exception  On invalid method name
 	 */
 	public function get_method_invocation($method)
 	{

@@ -27,7 +27,7 @@
  * minion generate:test --name=Logger_Logs_Rotate --groups="logger,logger.tasks"
  *
  *     class : Logger_Logs_RotateTest extends Unittest_TestCase
- *     file  : APPPATH.'/tests/Logger/Logs/RotateTest.php'
+ *     file  : APPPATH/tests/Logger/Logs/RotateTest.php
  *
  * @package    Generator 
  * @category   Tasks 

@@ -87,18 +87,12 @@ class Generator_Task_Generate_Class extends Task_Generate
 	 * Creates a generator builder that clones an existing class, either from
 	 * an existing file or from an internal class definition.
 	 *
-	 * @throws  Generator_Exception  On missing class to clone
 	 * @param  array  $options  The selected task options
+	 * @param  array  $type     The source type to clone
 	 * @return Generator_Builder
 	 */
-	public function get_clone(array $options)
+	public function get_clone(array $options, $type = Generator_Reflector::TYPE_CLASS)
 	{
-		if ( ! class_exists($options['clone']))
-		{
-			throw new Generator_Exception("Class ':class' does not exist", array(
-				':class' => $options['clone']));
-		}
-
 		// Convert the cloned class name to a filename
 		$source = str_replace('_', DIRECTORY_SEPARATOR, $options['clone']);
 
@@ -126,7 +120,7 @@ class Generator_Task_Generate_Class extends Task_Generate
 			$builder = Generator::build()
 				->add_clone($options['name'])
 					->source($options['clone'])
-					->type(Generator_Reflector::TYPE_CLASS)
+					->type($type)
 					->inherit($options['inherit'])
 				->builder();
 		}

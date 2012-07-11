@@ -27,15 +27,15 @@
  * minion generate:task --name=Logs_Rotate
  *
  *     class : Task_Logs_Rotate extends Minion_Task
- *     file  : APPPATH.'/classes/Task/Logs/Rotate.php'
+ *     file  : APPPATH/classes/Task/Logs/Rotate.php
  *
  * minion generate:task --name=Logger_Task_Logs_Rotate --module=logger \
  *     --stub=Logs_Rotate
  *
  *     class : Logger_Task_Logs_Rotate extends Minion_Task
- *     file  : MODPATH.'/logger/classes/Logger/Task/Logs/Rotate.php'
+ *     file  : MODPATH/logger/classes/Logger/Task/Logs/Rotate.php
  *     class : Task_Logs_Rotate extends Logger_Task_Logs_Rotate
- *     file  : MODPATH.'/logger/classes/Task/Logs/Rotate.php'
+ *     file  : MODPATH/logger/classes/Task/Logs/Rotate.php
  *
  * @package    Generator
  * @category   Tasks

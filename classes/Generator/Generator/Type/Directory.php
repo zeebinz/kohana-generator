@@ -15,9 +15,9 @@ class Generator_Generator_Type_Directory extends Generator_Type
 	/**
 	 * Ensures that the directory is not converted to a file name.
 	 *
+	 * @param   boolean  $convert  Should the name be converted to a file path?
+	 * @return  string   The guessed filename
 	 * @throws  Generator_Exception  On invalid name or base path
-	 * @param   bool    $convert  Should the name be converted to a file path?
-	 * @return  string  The guessed filename
 	 */
 	public function guess_filename($convert = TRUE)
 	{
@@ -28,8 +28,8 @@ class Generator_Generator_Type_Directory extends Generator_Type
 	 * Existing directories should not be replaced, so don't allow the force
 	 * mode to be changed.
 	 *
-	 * @param   bool  $force  The force mode to be used
-	 * @return  Generator_Type  This instance
+	 * @param   boolean  $force  The force mode to be used
+	 * @return  Generator_Type   This instance
 	 */
 	public function force($force = TRUE)
 	{
@@ -49,8 +49,8 @@ class Generator_Generator_Type_Directory extends Generator_Type
 	/**
 	 * Deletes the directory and its parents if not empty.
 	 *
-	 * @throws  Generator_Exception  On invalid directory name
 	 * @return  Generator_Type  This instance
+	 * @throws  Generator_Exception  On invalid directory name
 	 */
 	public function remove()
 	{

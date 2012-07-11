@@ -20,7 +20,7 @@
  * minion generate:controller:view --name=Home --actions="index,create,edit"
  *
  *     class : Controller_Home extends Controller_Template
- *     file  : APPPATH.'/classes/Controller/Home.php'
+ *     file  : APPPATH/classes/Controller/Home.php
  *
  * @package    Generator 
  * @category   Tasks 

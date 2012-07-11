@@ -75,14 +75,14 @@ The options listed in the general help are common to all generators, and each ge
 	  --values=VALUES
 	
 	    Value definitions may be added as a comma-separated list in the
-	    format: "array.key.path|value".
+	    format: "array.path.key|value".
 	
 	Examples
 	========
 	minion generate:config --name=logger --module=logger \
 	    --values="logger.file.name|log, logger.file.ext|txt, logger.debug|1"
 	
-	    file : MODPATH.'/logger/config/logger.php'
+	    file : MODPATH/logger/config/logger.php
 
 	...
 
@@ -166,13 +166,13 @@ In this case, the task will look for the list of default values in the array pat
 
 At some point you'll probably want to make your own generators with tasks to run them. Or maybe you want to tweak the existing tasks. There are lots of choices here.  First, by the magic of Kohana's transparent extension, you can just create your customized versions of the tasks in your application directory, e.g. to modify the `generator:class` task:
 
-	APPPATH.'/classes/Task/Generate/Class.php
+	APPPATH/classes/Task/Generate/Class.php
 	
 	class Task_Generate_Class extends Generator_Task_Generate_Class {}
 	
 	This now takes the place of:
 	
-	MODPATH.'/generator/classes/Task/Generate/Class.php
+	MODPATH/generator/classes/Task/Generate/Class.php
 	
 So you can just add your new methods or override existing ones in that new class file.	Note, though, that because of how Minion works, you'll need to add the help page for this task to your new file also.
 

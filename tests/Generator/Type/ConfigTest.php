@@ -21,6 +21,7 @@ class Generator_Type_ConfigTest extends Unittest_TestCase
 		$ds = DIRECTORY_SEPARATOR;
 
 		$type = new Generator_Type_Config();
+		$this->assertSame('config', $type->folder());
 
 		$type->value('a.b.c|some string');
 		$type->value('a.b.d|2, e | 3, 1|4, 0.2|5');

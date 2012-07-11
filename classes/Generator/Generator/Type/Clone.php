@@ -56,16 +56,38 @@ class Generator_Generator_Type_Clone extends Generator_Type_Class
 	 * interfaces list to a string and renders the template.
 	 *
 	 * @return  string  The rendered output
+	 * @throws  Generator_Exception  On missing source to clone
+	 * @uses    Generator_Reflector
 	 */
 	public function render()
 	{
-		$refl = new Generator_Reflector($this->_params['source'], $this->_params['type']);
+		$source = $this->_params['source'];
+		$type   = $this->_params['type'];
+		$refl   = new Generator_Reflector($source, $type);
 
-		// Add any parent info
-		$this->extend($refl->get_parent());
+		if ( ! $refl->exists())
+		{
+			// We need an existing source matched correctly to the type
+			throw new Generator_Exception(":type ':source' does not exist", array(
+				':type' => ucfirst($type), ':source' => $source));
+		}
 
-		// Add any interface info
-		$this->implement($refl->get_interfaces());
+		// Get any interfaces
+		$interfaces = $refl->get_interfaces();
+
+		if ($refl->is_interface())
+		{
+			// Interfaces support multiple inheritance by extension
+			$this->extend(implode(', ', $interfaces));
+		}
+		else
+		{
+			// Add any class parent name
+			$this->extend($refl->get_parent());
+
+			// Add any interfaces to implement
+			$this->implement($interfaces);
+		}
 
 		// Add any modifiers info
 		$this->_params['modifiers'] = $refl->get_modifiers();
@@ -73,19 +95,18 @@ class Generator_Generator_Type_Clone extends Generator_Type_Class
 		if ( ! isset($this->_params['blank']))
 		{
 			// Add any source constants
-			$this->_params['constants'] = $this->_get_reflection_constants($this->_params['source'],
-				$this->_params['type'], $refl);
+			$this->_params['constants'] = $this->_get_reflection_constants(
+				$source, $type, $refl);
 
 			// Add any source properties
-			$this->_params['properties'] = $this->_get_reflection_properties($this->_params['source'],
-				$this->_params['type'], $refl);
+			$props = $this->_get_reflection_properties($source, $type, $refl);
 
 			// Group the properties by modifier
-			$this->_params['properties'] = $this->_group_by_modifier($this->_params['properties']);
+			$this->_params['properties'] = $this->_group_by_modifier($props);
 
 			// Add any source methods
-			$this->_params['methods'] = $this->_get_reflection_methods($this->_params['source'],
-				$this->_params['type'], $refl);
+			$this->_params['methods'] = $this->_get_reflection_methods(
+				$source, $type,	$this->_inherit, $refl);
 		}
 
 		return parent::render();
@@ -95,15 +116,15 @@ class Generator_Generator_Type_Clone extends Generator_Type_Class
 	 * Returns reflection details of any source constants to be included in the
 	 * template.
 	 *
-	 * @uses    Generator_Reflector
-	 * @param   string|array   $sources  The source names to inspect
-	 * @param   string  $type  The inspected source type
-	 * @param   Generator_Reflector  The reflector object to use, if any
+	 * @param   string|array  $sources  The source names to inspect
+	 * @param   string        $type     The inspected source type
+	 * @param   Generator_Reflector  $reflector  The reflector object to use, if any
 	 * @return  array   The constants info
 	 */
-	protected function _get_reflection_constants($sources, $type, Generator_Reflector $reflector = NULL)
+	protected function _get_reflection_constants($sources, $type,
+		Generator_Reflector $reflector = NULL)
 	{
-		$refl = ($reflector == NULL) ? (new Generator_Reflector) : $reflector;
+		$refl = ($reflector !== NULL) ? $reflector : (new Generator_Reflector);
 		$refl->type($type);
 
 		// Start the constants list
@@ -114,10 +135,14 @@ class Generator_Generator_Type_Clone extends Generator_Type_Class
 			// Only add constants for known sources
 			if ($refl->source($source)->exists())
 			{
-				foreach (array_keys($refl->get_constants()) as $constant)
+				foreach ($refl->get_constants() as $constant => $c)
 				{
+					// Skip inherited constants?
+					if ( ! $this->_inherit AND $c['class'] != $source)
+						continue;
+
 					// Create the comment and declaration
-					$comment = '// Declared in '.$source;
+					$comment = '// Declared in '.$c['class'];
 					$declaration = $refl->get_constant_declaration($constant);
 
 					// Add the constant info
@@ -136,15 +161,15 @@ class Generator_Generator_Type_Clone extends Generator_Type_Class
 	 * Returns reflection details of any source properties to be included in the
 	 * template.
 	 *
-	 * @uses    Generator_Reflector
-	 * @param   string|array   $sources  The source names to inspect
-	 * @param   string  $type  The inspected source type
-	 * @param   Generator_Reflector  The reflector object to use, if any
+	 * @param   string|array  $sources  The source names to inspect
+	 * @param   string        $type     The inspected source type
+	 * @param   Generator_Reflector  $reflector  The reflector object to use, if any
 	 * @return  array   The properties info
 	 */
-	protected function _get_reflection_properties($sources, $type, Generator_Reflector $reflector = NULL)
+	protected function _get_reflection_properties($sources, $type,
+		Generator_Reflector $reflector = NULL)
 	{
-		$refl = ($reflector == NULL) ? (new Generator_Reflector) : $reflector;
+		$refl = ($reflector !== NULL) ? $reflector : (new Generator_Reflector);
 		$refl->type($type);
 
 		// Start the properties list
@@ -161,15 +186,11 @@ class Generator_Generator_Type_Clone extends Generator_Type_Class
 					if ( ! $this->_inherit AND $p['class'] != $source)
 						continue;
 
-					// Create a doccomment if one doesn't exist
 					if (empty($p['doccomment']))
 					{
+						// Create a new doccomment if one doesn't exist
 						$doc = View::factory('generator/type_doccomment')->set('tabs', 1);
-
-						// Set the property description
 						$doc->set('short_description',  "Declared in {$p['class']}");
-
-						// Set the var tag
 						$doc->set('tags', '@var  '.$p['type'].'  $'.$property);
 
 						// Include the rendered doccomment

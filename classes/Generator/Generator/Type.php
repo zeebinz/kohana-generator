@@ -228,8 +228,8 @@ class Generator_Generator_Type
 	 * to the filesystem, and he log will report the actions that would have been
 	 * taken in non-pretend mode.
 	 *
-	 * @param   bool  $pretend  The pretend mode to be used
-	 * @return  Generator_Type  This instance
+	 * @param   boolean  $pretend  The pretend mode to be used
+	 * @return  Generator_Type     This instance
 	 */
 	public function pretend($pretend = TRUE)
 	{
@@ -245,8 +245,8 @@ class Generator_Generator_Type
 	 * Sets the force mode for the generator.  If TRUE, any existing files will 
 	 * be over-written with the new generator output.
 	 *
-	 * @param   bool  $force  The force mode to be used
-	 * @return  Generator_Type  This instance
+	 * @param   boolean  $force  The force mode to be used
+	 * @return  Generator_Type   This instance
 	 */
 	public function force($force = TRUE)
 	{
@@ -261,8 +261,8 @@ class Generator_Generator_Type
 	/**
 	 * Sets whether the destination path should be verified.
 	 *
-	 * @param   bool  $verify  The verify mode to be used
-	 * @return  Generator_Type  This instance
+	 * @param   boolean  $verify  The verify mode to be used
+	 * @return  Generator_Type    This instance
 	 */
 	public function verify($verify = TRUE)
 	{
@@ -304,8 +304,8 @@ class Generator_Generator_Type
 	 * Sets the 'blank' parameter for the current template. This allows
 	 * generators that support it to skip any skeleton methods, etc.
 	 *
-	 * @param   bool  $blank  The 'blank' parameter value
-	 * @return  Generator_Type  This instance
+	 * @param   boolean  $blank  The 'blank' parameter value
+	 * @return  Generator_Type   This instance
 	 */
 	public function blank($blank = TRUE)
 	{
@@ -319,8 +319,8 @@ class Generator_Generator_Type
 	 * associated builder can be referenced properly and halts execution if it
 	 * can't be, since this is usually the safest option.
 	 *
-	 * @throws  Generator_Exception  On missing builder
 	 * @return  Generator_Builder    The associated builder instance
+	 * @throws  Generator_Exception  On missing builder
 	 */
 	public function builder()
 	{
@@ -353,9 +353,9 @@ class Generator_Generator_Type
 	 * If the current filename has not been set, this method will try to guess
 	 * it based on current module, folder and name values.
 	 *
+	 * @param   boolean  $convert  Should the name be converted to a file path?
+	 * @return  string   The guessed filename
 	 * @throws  Generator_Exception  On invalid name or base path
-	 * @param   bool  $convert  Should the name be converted to a file path?
-	 * @return  string  The guessed filename
 	 */
 	public function guess_filename($convert = TRUE)
 	{
@@ -427,8 +427,8 @@ class Generator_Generator_Type
 	 * expected or actual actions in the generator log depending on the
 	 * pretend and force modes used.
 	 *
-	 * @throws  Generator_Exception  On invalid filename
 	 * @return  Generator_Type  This instance
+	 * @throws  Generator_Exception  On invalid filename
 	 */
 	public function create()
 	{
@@ -535,8 +535,8 @@ class Generator_Generator_Type
 	/**
 	 * Deletes the specified file and its parent directories if empty.
 	 *
-	 * @throws  Generator_Exception  On invalid filename
 	 * @return  Generator_Type  This instance
+	 * @throws  Generator_Exception  On invalid filename
 	 */
 	public function remove()
 	{
@@ -628,8 +628,8 @@ class Generator_Generator_Type
 	 * Returns a list of all the directory paths related to the current item,
 	 * (i.e. that will be created or removed), not including APPPATH or MODPATH.
 	 *
-	 * @param   bool   $reverse  Should the list be reversed?
-	 * @return  array  The list of directories
+	 * @param   boolean  $reverse  Should the list be reversed?
+	 * @return  array    The list of directories
 	 */
 	public function get_item_dirs($reverse = FALSE)
 	{
@@ -660,9 +660,9 @@ class Generator_Generator_Type
 	 * Converts strings, including comma-separated lists, to arrays for local
 	 * parameter storage.
 	 *
-	 * @param   string  $values  The given parameter string value(s)
-	 * @param   string  $param   The parameter name
-	 * @return  bool    TRUE if the values were converted
+	 * @param   string   $values  The given parameter string value(s)
+	 * @param   string   $param   The parameter name
+	 * @return  boolean  TRUE if the values were converted
 	 */
 	public function param_to_array($values, $param)
 	{
@@ -700,10 +700,10 @@ class Generator_Generator_Type
 	 * method calls. The downside: care needs to be taken that the proper
 	 * instance is being referenced.
 	 *
-	 * @throws  Generator_Exception  On missing builder instance
 	 * @param   string  $method      The undefined method name
 	 * @param   string  $arguments   The undefined method arguments
 	 * @return  mixed   Whatever the referenced builder method returns
+	 * @throws  Generator_Exception  On missing builder instance
 	 */
 	public function __call($method, $arguments)
 	{

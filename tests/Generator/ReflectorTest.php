@@ -94,9 +94,30 @@ class Generator_ReflectorTest extends Unittest_TestCase
 	}
 
 	/**
-	 * The methods should be stored locally after initial analysis.
+	 * The class methods should be stored locally after initial analysis.
 	 */
-	public function test_get_methods()
+	public function test_getting_class_methods()
+	{
+		$refl = new TestReflector('TestClass');
+		$methods = $refl->get_methods();
+		$this->assertCount(3, $methods);
+
+		$this->assertArrayHasKey('count', $methods);
+		$this->assertSame('public', $methods['count']['modifiers']);
+		$this->assertArrayHasKey('some_invoked_method', $methods);
+		$this->assertSame('public', $methods['some_invoked_method']['modifiers']);
+		$this->assertArrayHasKey('some_abstract_method', $methods);
+		$this->assertTrue($methods['some_abstract_method']['abstract']);
+		$this->assertSame('abstract public', $methods['some_abstract_method']['modifiers']);
+
+		$this->assertSame(1, $refl->analysis_count);
+	}
+
+	/**
+	 * Interface methods should be marked as abstract but without the 'abstract'
+	 * modifier (which is just annoying).
+	 */
+	public function test_getting_interface_methods()
 	{
 		$refl = new TestReflector('TestInterface', Generator_Reflector::TYPE_INTERFACE);
 
@@ -105,15 +126,42 @@ class Generator_ReflectorTest extends Unittest_TestCase
 		$this->assertArrayHasKey('method_one', $methods);
 		$this->assertArrayHasKey('method_two', $methods);
 
-		$refl = new TestReflector('TestClass');
-		$methods = $refl->get_methods();
-		$this->assertCount(3, $methods);
-		$this->assertArrayHasKey('count', $methods);
-		$this->assertArrayHasKey('some_invoked_method', $methods);
-		$this->assertArrayHasKey('some_abstract_method', $methods);
-		$this->assertTrue($methods['some_abstract_method']['abstract']);
+		$this->assertTrue($methods['method_one']['abstract']);
+		$this->assertSame('public', $methods['method_one']['modifiers']);
+		$this->assertTrue($methods['method_two']['abstract']);
+		$this->assertSame('public', $methods['method_two']['modifiers']);
 
-		$this->assertSame(1, $refl->analysis_count);
+		$refl = new TestReflector('TestInterfaceChild', Generator_Reflector::TYPE_INTERFACE);
+		$methods = $refl->get_methods();
+		$this->assertCount(4, $methods);
+
+		$this->assertArrayHasKey('method_three', $methods);
+		$this->assertTrue($methods['method_three']['abstract']);
+		$this->assertSame('public', $methods['method_three']['modifiers']);
+		$this->assertArrayHasKey('count', $methods);
+		$this->assertTrue($methods['count']['abstract']);
+		$this->assertSame('public', $methods['count']['modifiers']);
+	}
+
+	/**
+	 * Interfaces can implement other interfaces via multiple inheritance, but
+	 * we also need to be able to get just the interfaces that aren't inherited
+	 * by others in the list, since trying to re-implement interfaces can
+	 * cause problems.
+	 */
+	public function test_getting_inherited_interfaces()
+	{
+		$refl = new TestReflector('TestInterfaceChildTwo', Generator_Reflector::TYPE_INTERFACE);
+
+		// Get all the interfaces
+		$interfaces = $refl->get_interfaces(TRUE);
+		$this->assertSame(array(
+			'TestInterface', 'TestInterfaceSortable', 'TestInterfaceTraversable', 'TestInterfaceIterable'
+		), $interfaces);
+
+		// Get just the non-inherited interfaces
+		$interfaces = $refl->get_interfaces();
+		$this->assertSame(array('TestInterface', 'TestInterfaceSortable'), $interfaces);
 	}
 
 	/**
@@ -152,7 +200,7 @@ class Generator_ReflectorTest extends Unittest_TestCase
 		$this->assertRegExp('/A test class/', $refl->get_doccomment());
 		$this->assertSame('abstract', $refl->get_modifiers());
 		$this->assertSame('TestParentClass', $refl->get_parent());
-		$this->assertSame(array('Countable'), $refl->get_interfaces());
+		$this->assertSame(array('TestInterfaceCountable'), $refl->get_interfaces());
 
 		$constants = $refl->get_constants();
 		$this->assertArrayHasKey('CONSTANT_ONE', $constants);
@@ -216,6 +264,8 @@ class Generator_ReflectorTest extends Unittest_TestCase
 
 } // End Generator_ReflectorTest
 
+// Test interfaces
+
 interface TestInterface
 {
 	/**
@@ -227,6 +277,40 @@ interface TestInterface
 
 	public function &method_two(OtherClass $class, &$foo = NULL, array $bar = NULL, $empty = array());
 }
+
+interface TestInterfaceCountable
+{
+	public function count();
+}
+
+interface TestInterfaceChild extends TestInterface, TestInterfaceCountable
+{
+	public function method_three();
+}
+
+// For testing multiple inheritance
+
+interface TestInterfaceIterable extends TestInterfaceTraversable
+{
+	public function iter();
+}
+
+interface TestInterfaceSortable extends TestInterfaceIterable
+{
+	public function sort();
+}
+
+interface TestInterfaceTraversable
+{
+	public function traverse();
+}
+
+interface TestInterfaceChildTwo extends TestInterface, TestInterfaceSortable
+{
+	public function method_three();
+}
+
+// Test classes
 
 class TestReflector extends Generator_Reflector
 {
@@ -242,7 +326,7 @@ class TestReflector extends Generator_Reflector
 /**
  * A test class
  */
-abstract class TestClass extends TestParentClass implements Countable
+abstract class TestClass extends TestParentClass implements TestInterfaceCountable
 {
 	const CONSTANT_ONE = 'foo';
 	const CONSTANT_TWO = 2;

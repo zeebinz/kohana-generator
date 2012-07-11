@@ -39,29 +39,29 @@
  * minion generate:generator --name=Foo
  *
  *     class : Generator_Type_Foo extends Generator_Type
- *     file  : APPPATH.'/classes/Generator/Type/Foo.php'
+ *     file  : APPPATH/classes/Generator/Type/Foo.php
  *     class : Task_Generate_Foo extends Task_Generate
- *     file  : APPPATH.'/classes/Task/Generate/Foo.php'
+ *     file  : APPPATH/classes/Task/Generate/Foo.php
  *     class : Generator_Type_FooTest extends Unittest_TestCase
- *     file  : APPPATH.'/tests/Generator/Type/FooTest.php'
+ *     file  : APPPATH/tests/Generator/Type/FooTest.php
  *
  * minion generate:generator --name=Foo --module=bar --no-task --no-test
  *
  *     class : Bar_Generator_Type_Foo extends Generator_Type
- *     file  : MODPATH.'/bar/classes/Bar/Generator/Type/Foo.php'
+ *     file  : MODPATH/bar/classes/Bar/Generator/Type/Foo.php
  *     class : Generator_Type_Foo extends Bar_Generator_Type_Foo
- *     file  : MODPATH.'/bar/classes/Generator/Type/Foo.php' 
+ *     file  : MODPATH/bar/classes/Generator/Type/Foo.php 
  *
  * minion generate:generator --name=Foo --module=bar --no-test --prefix=Kohana
  *
  *     class : Kohana_Generator_Type_Foo extends Generator_Type
- *     file  : MODPATH.'/bar/classes/Kohana/Generator/Type/Foo.php'
+ *     file  : MODPATH/bar/classes/Kohana/Generator/Type/Foo.php
  *     class : Generator_Type_Foo extends Kohana_Generator_Type_Foo
- *     file  : MODPATH.'/bar/classes/Generator/Type/Foo.php'
+ *     file  : MODPATH/bar/classes/Generator/Type/Foo.php
  *     class : Kohana_Task_Generate_Foo extends Task_Generate
- *     file  : MODPATH.'/bar/classes/Kohana/Task/Generate/Foo.php'
+ *     file  : MODPATH/bar/classes/Kohana/Task/Generate/Foo.php
  *     class : Task_Generate_Foo extends Kohana_Task_Generate
- *     file  : MODATH.'/bar/classes/Task/Generate/Foo.php'
+ *     file  : MODPATH/bar/classes/Task/Generate/Foo.php
  *
  * @package    Generator 
  * @category   Tasks 

@@ -126,7 +126,7 @@ class Generator_Task_Generate extends Minion_Task
 	 *
 	 * @param  string   $command  The command to be run
 	 * @param  Generator_Builder  $builder  The builder holding the generators
-	 * @return bool  TRUE if some action has been logged
+	 * @return boolean  TRUE if some action has been logged
 	 */
 	public function run_command($command, Generator_Builder $builder)
 	{
@@ -212,8 +212,8 @@ class Generator_Task_Generate extends Minion_Task
 	/**
 	 * Writes a message directly to STDOUT.
 	 *
-	 * @param  string  $text  The message to write
-	 * @param  bool    $eol   Should EOL be added?
+	 * @param  string   $text  The message to write
+	 * @param  boolean  $eol   Should EOL be added?
 	 * @return void
 	 */	
 	protected function _write($text, $eol = TRUE)

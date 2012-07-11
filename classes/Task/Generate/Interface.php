@@ -8,30 +8,43 @@
  *
  *   --name=INTERFACE (required)
  *
- *     The full interface name.
+ *     The full name of the interface to be created, with capitalization.
  *
- *   --extend=INTERFACE
+ *   --extend=INTERFACE[,INTERFACE[,...]]
  *
- *     The name of the parent from which this is optionally extended.
+ *     A comma-separated list of any interfaces that this interface should 
+ *     extend (multiple inheritance is possible).
+ *
+ *   --clone=INTERFACE
+ *
+ *     If a valid interface name is given, its definition will be copied
+ *     directly from its file.  Reflection will be used for any internal
+ *     interfaces, or if the --reflect option is set, and any inherited
+ *     method definitions may be included with --inherit.
  *
  *   --stub=INTERFACE
  *
  *     If set, this stub will be created as a transparent extension.
- *  
+ *
  * Examples
  * ========
- * minion generate:interface --name=Loggable --extend=Countable
+ * minion generate:interface --name=Loggable --extend=Countable,Iterator
  *
- *     interface : Loggable extends Countable
- *     file      : APPPATH.'/classes/Loggable.php'
+ *     interface : Loggable extends Countable, Iterator
+ *     file      : APPPATH/classes/Loggable.php
  *
  * minion generate:interface --name=Logger_Loggable --stub=Loggable \
  *     --module=logger
  *
  *     interface : Logger_Loggable
- *     file      : MODPATH.'/logger/classes/Logger/Loggable.php'
+ *     file      : MODPATH/logger/classes/Logger/Loggable.php
  *     interface : Loggable extends Logger_Loggable
- *     file      : MODPATH.'/logger/classes/Loggable.php' 
+ *     file      : MODPATH/logger/classes/Loggable.php 
+ *
+ * minion generate:interface --name=Loggable --clone=SeekableIterator
+ *
+ *     interface : Loggable extends Traversable
+ *     file      : APPPATH/classes/Log.php
  * 
  * @package    Generator 
  * @category   Tasks 
