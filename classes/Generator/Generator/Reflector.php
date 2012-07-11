@@ -374,7 +374,7 @@ class Generator_Generator_Reflector
 	 *
 	 * @param   mixed    $variable  The variable to export
 	 * @param   boolean  $indent    Should indentation be included?
-	 * @param   boolean  $level     The indentation level
+	 * @param   integer  $level     The indentation level
 	 * @return  string   The exported string
 	 */
 	public function export_variable($variable, $indent = FALSE, $level = 1)
@@ -527,7 +527,6 @@ class Generator_Generator_Reflector
 	 * @link http://php.net/manual/en/language.oop5.interfaces.php
 	 *
 	 * @param   boolean   $inherited  Include inherited interfaces?
-	 * @param   boolean   $full       Return the full info for debugging?
 	 * @return  array     The interfaces list
 	 */
 	public function get_interfaces($inherited = FALSE)
