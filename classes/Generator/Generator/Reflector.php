@@ -606,15 +606,32 @@ class Generator_Generator_Reflector
 
 	/**
 	 * Returns the list of methods with their parsed info from the current
-	 * source.
+	 * source, optionally limited to only abstract methods that may need
+	 * implementing.
 	 *
-	 * @return  array  The methods list
+	 * @param   boolean  $abstract  Only return abstract methods?
+	 * @return  array    The methods list
 	 */
-	public function get_methods()
+	public function get_methods($abstract = FALSE)
 	{
 		$this->is_analyzed() OR $this->analyze();
 
-		return $this->_info['methods'];
+		if ( ! $abstract)
+			return $this->_info['methods'];
+
+		// Start the methods list
+		$methods = array();
+
+		foreach ($this->_info['methods'] as $method => $m)
+		{
+			if ($m['abstract'])
+			{
+				// Only return abstract methods
+				$methods[$method] = $m;
+			}
+		}
+
+		return $methods;
 	}
 
 	/**

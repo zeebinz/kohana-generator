@@ -110,6 +110,11 @@ class Generator_ReflectorTest extends Unittest_TestCase
 		$this->assertTrue($methods['some_abstract_method']['abstract']);
 		$this->assertSame('abstract public', $methods['some_abstract_method']['modifiers']);
 
+		// We can optionally get only abstract methods
+		$methods = $refl->get_methods(TRUE);
+		$this->assertCount(1, $methods);
+		$this->assertArrayHasKey('some_abstract_method', $methods);
+
 		$this->assertSame(1, $refl->analysis_count);
 	}
 
@@ -141,6 +146,10 @@ class Generator_ReflectorTest extends Unittest_TestCase
 		$this->assertArrayHasKey('count', $methods);
 		$this->assertTrue($methods['count']['abstract']);
 		$this->assertSame('public', $methods['count']['modifiers']);
+
+		// Interface methods should always be abstract
+		$methods = $refl->get_methods(TRUE);
+		$this->assertCount(4, $methods);
 	}
 
 	/**
