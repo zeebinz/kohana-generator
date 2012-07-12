@@ -72,6 +72,9 @@ class Generator_Generator_Type_Clone extends Generator_Type_Class
 				':type' => ucfirst($type), ':source' => $source));
 		}
 
+		// Is the class abstract?
+		$this->_params['abstract'] = $refl->is_abstract();
+
 		// Get any interfaces
 		$interfaces = $refl->get_interfaces();
 
