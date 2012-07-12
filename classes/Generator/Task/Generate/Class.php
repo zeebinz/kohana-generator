@@ -20,6 +20,7 @@ class Generator_Task_Generate_Class extends Task_Generate
 		'stub'      => '',
 		'abstract'  => FALSE,
 		'no-test'   => FALSE,
+		'blank'     => FALSE,
 		'clone'     => '',
 		'reflect'   => FALSE,
 		'inherit'   => FALSE,
@@ -57,6 +58,7 @@ class Generator_Task_Generate_Class extends Task_Generate
 					->extend($options['extend'])
 					->implement($options['implement'])
 					->template($options['template'])
+					->blank($options['blank'])
 				->builder();
 		}
 
@@ -72,7 +74,8 @@ class Generator_Task_Generate_Class extends Task_Generate
 		{
 			$name = $options['stub'] ? $builder->name() : $options['name'];
 			$builder->add_unittest($name)
-				->group($options['module']);
+				->group($options['module'])
+				->blank($options['blank']);
 		}
 
 		return $builder
