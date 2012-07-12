@@ -33,11 +33,12 @@ class Generator_Task_Generate extends Minion_Task
 	);
 
 	/**
-	 * Instantiates the task, and merges common and task options.
+	 * Instantiates the task, and merges common and task options.We make this
+	 * public here so we can handle different instances more easily.
 	 *
 	 * @return void
 	 */
-	protected function __construct()
+	public function __construct()
 	{
 		// Merge any task options with the common options
 		$this->_options = array_merge($this->_common_options, $this->_options);
