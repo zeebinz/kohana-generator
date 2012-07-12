@@ -166,16 +166,24 @@ class Generator_Task_Generate extends Minion_Task
 	}
 
 	/**
-	 * Convenience method for loading configuration values.
+	 * Convenience method for loading configuration values, optionally from
+	 * a given config group or an absolute file path.
 	 *
 	 * @param  array  $path   Array path to the config values
-	 * @param  array  $group  The config group to load
+	 * @param  array  $group  The config group of file to load
 	 * @return mixed  The config values or NULL
 	 */
 	public function get_config($path, $group = NULL)
 	{
-		$group = $group ?: 'generator';
+		if ($group !== NULL AND is_file($group))
+		{
+			// Return the values from the file
+			$config = include $group;
+			return Arr::path($config, $path);
+		}
 
+		// Otherwise load the CFS config values
+		$group = $group ?: 'generator';
 		return Kohana::$config->load($group.'.'.$path);
 	}
 
