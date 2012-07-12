@@ -67,7 +67,8 @@ class Generator_Task_Generate_Generator extends Task_Generate
 		if ( ! $options['no-task'])
 		{
 			$builder->add_task('Generate_'.$options['name'])
-				->template('generator/type_task_generator');
+				->template('generator/type_task_generator')
+				->extend('Task_Generate');
 
 			if ($options['module'] AND ! $options['no-stub'])
 			{
