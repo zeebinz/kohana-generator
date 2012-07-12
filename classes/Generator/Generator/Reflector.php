@@ -183,7 +183,8 @@ class Generator_Generator_Reflector
 		$properties = array();
 		foreach ($class->getProperties() as $property)
 		{
-			$properties[$property->getName()] = $this->parse_reflection_property($property, $defaults);
+			$properties[$property->getName()] = $this->parse_reflection_property(
+				$property, $defaults);
 		}
 
 		// Get any declared methods

@@ -164,7 +164,7 @@ class Generator_Generator_Builder
 	{
 		$this->_pretend = (bool) $pretend;
 
-		$this->_is_prepared = FALSE;		
+		$this->_is_prepared = FALSE;
 		return $this;
 	}
 
@@ -204,10 +204,10 @@ class Generator_Generator_Builder
 	{
 		$this->_verify = (bool) $verify;
 
-		$this->_is_prepared = FALSE;		
+		$this->_is_prepared = FALSE;
 		return $this;
 	}
-  
+
 	/**
 	 * Sets the module folder under MODPATH in which each generator item
 	 * is to be created.
@@ -410,7 +410,7 @@ class Generator_Generator_Builder
 
 		// Any other undefined methods should throw an exception
 		throw new Generator_Exception("Method :method() is not defined for :class",
-			array(':method' => $method, ':class' => get_class($this)));		
+			array(':method' => $method, ':class' => get_class($this)));
 	}
 
 } // End Generator_Generator_Builder

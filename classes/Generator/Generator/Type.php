@@ -13,7 +13,7 @@
  * @license    BSD revised
  */
 class Generator_Generator_Type
-{	
+{
 	/**
 	 * The builder instances used to create this generator, if any
 	 * @var Generator_Builder
@@ -91,7 +91,6 @@ class Generator_Generator_Type
 	 * @var array
 	 */
 	protected $_log = array();
-
 
 	/**
 	 * Instantiates the generator; if created by a builder, stores a reference
@@ -212,7 +211,7 @@ class Generator_Generator_Type
 	 *
 	 * @param   array  $defaults  The parameter defaults
 	 * @return  array|Generator_Type  The current defaults or this instance
-	 */	
+	 */
 	public function defaults(array $defaults = NULL)
 	{
 		if ($defaults === NULL)
@@ -242,7 +241,7 @@ class Generator_Generator_Type
 	}
 
 	/**
-	 * Sets the force mode for the generator.  If TRUE, any existing files will 
+	 * Sets the force mode for the generator.  If TRUE, any existing files will
 	 * be over-written with the new generator output.
 	 *
 	 * @param   boolean  $force  The force mode to be used
@@ -293,7 +292,7 @@ class Generator_Generator_Type
 	 *
 	 * @param   Generator_Builder  $builder  A builder instance
 	 * @return  Generator_Type  This instance
-	 */	
+	 */
 	public function set_builder(Generator_Builder $builder)
 	{
 		$this->_builder = $builder;
@@ -338,7 +337,7 @@ class Generator_Generator_Type
 	 * @param   string  $status  The status message for this entry
 	 * @param   string  $item    The item affected
 	 * @return  array|Generator_Type  The current log or this instance
-	 */	
+	 */
 	public function log($status = NULL, $item = NULL)
 	{
 		if ($status === NULL)
@@ -528,7 +527,7 @@ class Generator_Generator_Type
 	 *
 	 * @param   string  $path  The full directory path
 	 * @return  void
-	 */	
+	 */
 	public function make_dir($directory)
 	{
 		mkdir($directory, 0777, TRUE);
