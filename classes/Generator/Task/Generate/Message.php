@@ -21,8 +21,8 @@ class Generator_Task_Generate_Message extends Task_Generate
 	/**
 	 * Validates the task options.
 	 *
-	 * @param  Validation  $validation  The validation object to add rules to
-	 * @return Validation
+	 * @param   Validation  $validation  The validation object to add rules to
+	 * @return  Validation
 	 */
 	public function build_validation(Validation $validation)
 	{
@@ -33,8 +33,8 @@ class Generator_Task_Generate_Message extends Task_Generate
 	/**
 	 * Creates a generator builder with the given configuration options.
 	 *
-	 * @param  array  $options  the selected task options
-	 * @return Generator_Builder
+	 * @param   array  $options  the selected task options
+	 * @return  Generator_Builder
 	 */
 	public function get_builder(array $options)
 	{

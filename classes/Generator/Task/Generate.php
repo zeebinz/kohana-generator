@@ -76,9 +76,9 @@ class Generator_Task_Generate extends Minion_Task
 	 * By default, this method runs in interactive mode, requesting user
 	 * confirmation before any destructive changes, allowing inspection, etc.
 	 *
-	 * @param  Generator_Builder  $builder  The builder to execute
-	 * @param  array  $options  The task options to use
-	 * @return void
+	 * @param   Generator_Builder  $builder  The builder to execute
+	 * @param   array  $options  The task options to use
+	 * @return  void
 	 */
 	public function run(Generator_Builder $builder, array $options)
 	{
@@ -122,9 +122,9 @@ class Generator_Task_Generate extends Minion_Task
 	 * Runs the given command on the generators and outputs the log, or only
 	 * lists the expected actions if we're in pretend mode.
 	 *
-	 * @param  string   $command  The command to be run
-	 * @param  Generator_Builder  $builder  The builder holding the generators
-	 * @return boolean  TRUE if some action has been logged
+	 * @param   string   $command  The command to be run
+	 * @param   Generator_Builder  $builder  The builder holding the generators
+	 * @return  boolean  TRUE if some action has been logged
 	 */
 	public function run_command($command, Generator_Builder $builder)
 	{
@@ -169,9 +169,9 @@ class Generator_Task_Generate extends Minion_Task
 	 * Convenience method for loading configuration values, optionally from
 	 * a given config group or an absolute file path.
 	 *
-	 * @param  array  $path   Array path to the config values
-	 * @param  array  $group  The config group of file to load
-	 * @return mixed  The config values or NULL
+	 * @param   array  $path   Array path to the config values
+	 * @param   array  $group  The config group of file to load
+	 * @return  mixed  The config values or NULL
 	 */
 	public function get_config($path, $group = NULL)
 	{
@@ -191,8 +191,8 @@ class Generator_Task_Generate extends Minion_Task
 	 * Returns a generator builder created with the given configuration options.
 	 * This method should be implemented in full by child classes.
 	 *
-	 * @param  array  $options  The selected task options
-	 * @return bool|Generator_Builder  FALSE if no builder is available
+	 * @param   array  $options  The selected task options
+	 * @return  boolean|Generator_Builder  FALSE if no builder is available
 	 */
 	public function get_builder(array $options)
 	{
@@ -203,8 +203,8 @@ class Generator_Task_Generate extends Minion_Task
 	 * Loads a builder and runs the task, or outputs the common help message
 	 * by default.
 	 *
-	 * @param  array  $params  The current task parameters
-	 * @return void
+	 * @param   array  $params  The current task parameters
+	 * @return  void
 	 */
 	protected function _execute(array $params)
 	{
@@ -220,9 +220,9 @@ class Generator_Task_Generate extends Minion_Task
 	/**
 	 * Writes a message directly to STDOUT.
 	 *
-	 * @param  string   $text  The message to write
-	 * @param  boolean  $eol   Should EOL be added?
-	 * @return void
+	 * @param   string   $text  The message to write
+	 * @param   boolean  $eol   Should EOL be added?
+	 * @return  void
 	 */
 	protected function _write($text, $eol = TRUE)
 	{
@@ -237,9 +237,9 @@ class Generator_Task_Generate extends Minion_Task
 	/**
 	 * Writes a formatted log message directly to STDOUT.
 	 *
-	 * @param  string  $status  The status message
-	 * @param  string  $item    The item affected
-	 * @return void
+	 * @param   string  $status  The status message
+	 * @param   string  $item    The item affected
+	 * @return  void
 	 */
 	protected function _write_log($status, $item)
 	{
@@ -252,10 +252,10 @@ class Generator_Task_Generate extends Minion_Task
 	 * Returns the given text with the correct color codes for a foreground and
 	 * optionally a background color.
 	 *
-	 * @param  string  $text        The text to color
-	 * @param  atring  $foreground  The foreground color
-	 * @param  string  $background  The background color
-	 * @return string  The color coded string
+	 * @param   string  $text        The text to color
+	 * @param   string  $foreground  The foreground color
+	 * @param   string  $background  The background color
+	 * @return  string  The color coded string
 	 */
 	public function _color($text, $foreground, $background = NULL)
 	{
@@ -268,9 +268,9 @@ class Generator_Task_Generate extends Minion_Task
 	/**
 	 * Reads user input from STDIN.
 	 *
-	 * @param  string  $text     text to show user before waiting for input
-	 * @param  array   $options  array of options the user is shown
-	 * @return string  the user input
+	 * @param   string  $text     text to show user before waiting for input
+	 * @param   array   $options  array of options the user is shown
+	 * @return  string  the user input
 	 */
 	protected function _read($text, array $options = NULL)
 	{
@@ -283,8 +283,8 @@ class Generator_Task_Generate extends Minion_Task
 	 * A list of available generators will be appended to the help only if the
 	 * current instance is the base generator task.
 	 *
-	 * @param  array  $params  The current task parameters
-	 * @return void
+	 * @param   array  $params  The current task parameters
+	 * @return  void
 	 */
 	protected function _help(array $params)
 	{
