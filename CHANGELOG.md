@@ -1,6 +1,23 @@
 Generator for Kohana - Changelog
 ================================
 
+- Fixed the tasks produced by generate:generator always to extend Task_Generate
+  rather than Minion_Task.
+- The get_config method for tasks can now accept an absolute path as the $group
+  parameter, and configuration will be loaded directly from that file.
+- Directory separators for any guessed filenames should now be consistent with
+  the value of DIRECTORY_SEPARATOR.
+- If any generated concrete class extends a parent that includes abstract methods,
+  skeleton methods for implementing these will be included by default along with
+	any interface methods. Abstract classes aren't affected, though.
+- Added the option to retrieve only abstract methods via reflection.	
+- The generate:class task now includes the --blank option to prevent any
+  skeleton methods from being included.
+- There should no longer be any duplicate 'remove' messages when removing,
+  although some extra info can still be viewed when using the --verbose option,
+	which is now disabled by default.
+- When removing, parent directories will now be igored if the child isn't empty.
+
 Version 0.5
 -----------
 
