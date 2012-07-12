@@ -165,6 +165,31 @@ class Generator_ReflectorTest extends Unittest_TestCase
 	}
 
 	/**
+	 * We should be able to convert stored abstract methods to concrete methods
+	 * for implementing in classes.
+	 *
+	 * @depends test_getting_class_methods
+	 */
+	public function test_make_abstract_method_concrete()
+	{
+		$class = new TestReflector('TestClass');
+
+		$methods = $class->get_methods();
+		$abstract = $methods['some_abstract_method'];
+		$this->assertTrue($abstract['abstract']);
+		$this->assertSame('abstract public', $abstract['modifiers']);
+
+		$abstract = $class->make_method_concrete($abstract, 'some_abstract_method');
+		$this->assertFalse($abstract['abstract']);
+		$this->assertSame('public', $abstract['modifiers']);
+
+		$methods = $class->get_methods();
+		$abstract = $methods['some_abstract_method'];
+		$this->assertFalse($abstract['abstract']);
+		$this->assertSame('public', $abstract['modifiers']);
+	}
+
+	/**
 	 * The method signatures should be returned as a parsable string, with any
 	 * array parameter values parsed recursively.
 	 *

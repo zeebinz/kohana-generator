@@ -354,15 +354,22 @@ class Generator_Generator_Reflector
 
 	/**
 	 * Converts a parsed abstract method definition to a concrete one for
-	 * storing locally.
+	 * storing locally, optionally updating an already stored definition.
 	 *
 	 * @param   array   $method  The method definition to convert
+	 * @param   string  $name    The stored method name to update
 	 * @return  array   The converted definition
 	 */
-	public function make_method_concrete(array $method)
+	public function make_method_concrete(array $method, $name = NULL)
 	{
 		$method['modifiers'] = trim(str_replace('abstract', '', $method['modifiers']));
 		$method['abstract'] = FALSE;
+
+		if ($name AND isset($this->_info['methods'][$name]))
+		{
+			// Update the stored definition
+			$this->_info['methods'][$name] = $method;
+		}
 
 		return $method;
 	}
