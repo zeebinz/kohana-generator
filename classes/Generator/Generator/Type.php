@@ -384,6 +384,9 @@ class Generator_Generator_Type
 		$file = $path.($this->_folder ? ($this->_folder.$ds) : '').$name;
 		$file = $convert ? ($file.EXT) : $file;
 
+		// Double check directory separators
+		$file = str_replace(array('\\', '/'), $ds, $file);
+
 		return $this->_file = $file;
 	}
 
