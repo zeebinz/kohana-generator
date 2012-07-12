@@ -32,7 +32,7 @@ class Generator_Task_Generate_Controller_View extends Task_Generate_Controller
 				->content('View for '.$options['name'].' controller'.PHP_EOL)
 				->pretend($options['pretend'])
 				->force($options['force'])
-			->prepare();
+			->builder();
 	}
 
 } // End Generator_Task_Generate_Controller_View

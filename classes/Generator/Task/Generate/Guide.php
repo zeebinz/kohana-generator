@@ -82,8 +82,7 @@ class Generator_Task_Generate_Guide extends Task_Generate
 		return $builder
 			->with_module($options['module'])
 			->with_pretend($options['pretend'])
-			->with_force($options['force'])
-			->prepare();
+			->with_force($options['force']);
 	}
 
 } // End Generator_Task_Generate_Guide

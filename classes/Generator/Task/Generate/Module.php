@@ -72,8 +72,7 @@ class Generator_Task_Generate_Module extends Task_Generate
 			->with_module($options['name'])
 			->with_pretend($options['pretend'])
 			->with_force($options['force'])
-			->with_verify(FALSE)
-			->prepare();
+			->with_verify(FALSE);
 	}
 
 } // End Generator_Task_Generate_Module

@@ -44,7 +44,7 @@ class Generator_Task_Generate_View extends Task_Generate
 				->pretend($options['pretend'])
 				->force($options['force'])
 				->content('Content of view '.$options['name'].PHP_EOL)
-			->prepare();
+			->builder();
 	}
 
 } // End Generator_Task_Generate_View

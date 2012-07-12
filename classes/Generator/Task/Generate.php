@@ -210,7 +210,7 @@ class Generator_Task_Generate extends Minion_Task
 	{
 		if ($builder = $this->get_builder($params))
 		{
-			$this->run($builder, $params);
+			$this->run($builder->prepare(), $params);
 			return;
 		}
 

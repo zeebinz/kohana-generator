@@ -82,8 +82,7 @@ class Generator_Task_Generate_Class extends Task_Generate
 			->with_module($options['module'])
 			->with_pretend($options['pretend'])
 			->with_force($options['force'])
-			->with_defaults($this->get_config('defaults.class', $options['config']))
-			->prepare();
+			->with_defaults($this->get_config('defaults.class', $options['config']));
 	}
 
 	/**

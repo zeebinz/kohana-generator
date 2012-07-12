@@ -49,8 +49,7 @@ class Generator_Task_Generate_Unittest extends Task_Generate
 				->template($options['template'])
 				->pretend($options['pretend'])
 				->force($options['force'])
-			->with_defaults($this->get_config('defaults.class', $options['config']))
-			->prepare();
+			->with_defaults($this->get_config('defaults.class', $options['config']));
 	}
 
 } // End Generator_Task_Generate_Unittest

@@ -44,7 +44,7 @@ class Generator_Task_Generate_Message extends Task_Generate
 				->module($options['module'])
 				->pretend($options['pretend'])
 				->force($options['force'])
-			->prepare();
+			->builder();
 	}
 
 } // End Generator_Task_Generate_Message
