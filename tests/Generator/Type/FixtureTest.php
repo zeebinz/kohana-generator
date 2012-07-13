@@ -55,7 +55,7 @@ class Generator_Type_FixtureTest extends Unittest_TestCase
 			$type->summary());
 		$this->assertSame('generate:class --name=Foo --module=foo',
 			$type->command());
-		$this->assertSame('The expectation string'.PHP_EOL,
+		$this->assertSame('The expectation string',
 			$type->expect());
 	}
 

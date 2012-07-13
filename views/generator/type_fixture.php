@@ -1,7 +1,7 @@
 ---SUMMARY---
 <?php echo $summary ?> 
 ---COMMAND---
-<?php echo $command ?>  
+<?php echo $command ?> 
 ---EXPECTED---
-<?php echo $expected ?>
+<?php echo $expected ?> 
 ---END---

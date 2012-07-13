@@ -143,7 +143,7 @@ class Generator_Task_Generate_Fixture extends Task_Generate
 			$i++;
 		}
 
-		return $expected;
+		return trim($expected);
 	}
 
 	/**

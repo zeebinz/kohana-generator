@@ -125,7 +125,7 @@ class Generator_Generator_Type_Fixture extends Generator_Type
 			---COMMAND---\s*
 			(?P<command>.*?)\s*
 			---EXPECTED---\s*
-			(?P<expected>.*?)
+			(?P<expected>.*?)\s*
 			---END---
 			/sx',
 			$contents, $matches);
@@ -133,8 +133,8 @@ class Generator_Generator_Type_Fixture extends Generator_Type
 		if ($matches AND isset($matches['expected']))
 		{
 			// Store the parsed values as parameters
-			$this->_params['summary']  = trim($matches['summary']);
-			$this->_params['command']  = trim($matches['command']);
+			$this->_params['summary']  = $matches['summary'];
+			$this->_params['command']  = $matches['command'];
 			$this->_params['expected'] = $matches['expected'];
 
 			return TRUE;
