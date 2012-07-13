@@ -304,4 +304,55 @@ class Generator_Task_Generate extends Minion_Task
 		}
 	}
 
+	/**
+	 * Parses a task command string, returning an array of arguments and
+	 * option values.
+	 *
+	 * @param   string  $command  The task command
+	 * @return  array   The parsed command arguments
+	 */
+	public function parse_task_command($command)
+	{
+		$command = explode(' ', trim($command), 2);
+
+		// Set the task name and initialize options
+		$result['task'] = $command[0];
+		$result['options'] = array();
+
+		if (isset($command[1]))
+		{
+			// Get the options arguments
+			preg_match_all("/--(?P<option>[\w\-]+)(=(?P<value>.*?))?(?:\s|\-|$)/",
+				$command[1], $matches, PREG_SET_ORDER);
+
+			foreach ($matches as $match)
+			{
+				// Set the options with or without values
+				$value = isset($match['value']) ? $match['value'] : NULL;
+				$result['options'][$match['option']] = $value;
+			}
+		}
+
+		return $result;
+	}
+
+	/**
+	 * Creates a task command string from an array of arguments, reversing
+	 * the results of parse_task_command().
+	 *
+	 * @param   array   $args  The command arguments
+	 * @return  string  The task command
+	 */
+	public function create_task_command(array $args)
+	{
+		$command = $args['task'];
+
+		foreach ($args['options'] as $key => $value)
+		{
+			$command .= ' --'.$key.($value ? ('='.$value) : '');
+		}
+
+		return $command;
+	}
+
 } // End Generator_Task_Generate

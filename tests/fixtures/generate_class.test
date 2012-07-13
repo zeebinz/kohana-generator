@@ -1,0 +1,97 @@
+---SUMMARY---
+Test fixture for the GENERATE:CLASS generator.
+---COMMAND---
+generate:class --name=Foo
+---EXPECTED---
+[ File 1 ] APPPATH/classes/Foo.php
+
+<?php defined('SYSPATH') OR die('No direct script access.');
+/**
+ * Class Foo.
+ *
+ * @package    package
+ * @category   category
+ * @author     Test Author
+ * @copyright  (c) 2012 Test Author
+ * @license    Test license
+ */
+class Foo
+{
+	/**
+	 * @var  string  some string
+	 */
+	public $some_string;
+
+	/**
+	 * Short description.
+	 *
+	 * Long method description.
+	 *
+	 * @param   string  $param  Some string
+	 * @return  void
+	 */
+	public function some_method($param)
+	{
+		// Method implementation
+	}
+
+} // End Foo
+[ File 2 ] APPPATH/tests/FooTest.php
+
+<?php defined('SYSPATH') OR die('No direct script access.');
+/**
+ * Test case for Foo.
+ *
+ * @group      group
+ *
+ * @package    package
+ * @category   Tests
+ * @author     Test Author
+ * @copyright  (c) 2012 Test Author
+ * @license    Test license
+ */
+class FooTest extends Unittest_TestCase
+{
+	/**
+	 * This method is called before any tests are run.
+	 */
+	public static function setUpBeforeClass()
+	{
+	}
+
+	/**
+	 * This method is called before each test is run.
+	 */
+	public function setUp()
+	{
+		parent::setUp();
+	}
+
+	/**
+	 * This method is called after each test is run.
+	 */
+	public function tearDown()
+	{
+		parent::tearDown();
+	}
+
+	/**
+	 * Test for Something.
+	 *
+	 * @covers  Something
+	 * @todo    Implement test_something()
+	 */
+	public function test_something()
+	{
+		$this->markTestIncomplete('This test has not been implemented yet');
+	}
+
+	/**
+	 * This method is called after all tests are run.
+	 */
+	public static function tearDownAfterClass()
+	{
+	}
+
+} // End FooTest
+---END---
