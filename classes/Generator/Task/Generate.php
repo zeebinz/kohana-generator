@@ -110,7 +110,7 @@ class Generator_Task_Generate extends Minion_Task
 			$this->_write('');
 
 			// Ask for user confirmation
-			if ('n' == $this->_read('Do you want to continue?', array('y', 'n')))
+			if ('y' !== $this->_read('Do you want to continue?', array('y', 'n')))
 				return;
 		}
 
