@@ -230,8 +230,6 @@ class Generator_Task_Generate extends Minion_Task
 			return;
 
 		echo ($eol ? ($text.PHP_EOL) : $text);
-
-		// Minion_CLI::write($text, $eol);
 	}
 
 	/**
