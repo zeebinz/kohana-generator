@@ -42,7 +42,7 @@ class Generator_Generator_Type_Clone extends Generator_Type_Class
 	/**
 	 * Sets whether the clone should include inherited properties and methods.
 	 *
-	 * @param   string  $inherit  Should the clone inherit?
+	 * @param   boolean  $inherit  Should the clone inherit?
 	 * @return  Generator_Type_Clone  This instance
 	 */
 	public function inherit($inherit)

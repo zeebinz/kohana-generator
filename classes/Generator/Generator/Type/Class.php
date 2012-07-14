@@ -110,7 +110,7 @@ class Generator_Generator_Type_Class extends Generator_Type
 	 *
 	 * @param   string|array  $sources  The source names to inspect
 	 * @param   string        $type     The inspected source type
-	 * @param   string        $inherit  Should inherited methods be included?
+	 * @param   boolean       $inherit  Should inherited methods be included?
 	 * @param   Generator_Reflector  $reflector  The reflector object to use, if any
 	 * @return  array   Details of the methods to be implemented
 	 */
