@@ -322,13 +322,13 @@ class Generator_Task_Generate extends Minion_Task
 		if (isset($command[1]))
 		{
 			// Get the options arguments
-			preg_match_all("/--(?P<option>[\w\-]+)(=(?P<value>.*?))?(?:\s|\-|$)/",
+			preg_match_all("/--(?P<option>[\w\-]+)(=(?P<value>(['\"].*?['\"]|.*?)))?(?:\s|\-|$)/",
 				$command[1], $matches, PREG_SET_ORDER);
 
 			foreach ($matches as $match)
 			{
 				// Set the options with or without values
-				$value = isset($match['value']) ? $match['value'] : NULL;
+				$value = isset($match['value']) ? trim($match['value'], "\"'") : NULL;
 				$result['options'][$match['option']] = $value;
 			}
 		}
@@ -349,6 +349,7 @@ class Generator_Task_Generate extends Minion_Task
 
 		foreach ($args['options'] as $key => $value)
 		{
+			$value = (strpos($value, ' ') !== FALSE) ? ('"'.$value.'"') : $value;
 			$command .= ' --'.$key.($value ? ('='.$value) : '');
 		}
 

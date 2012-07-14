@@ -40,7 +40,7 @@ class Generator_Task_Generate_Fixture extends Task_Generate
 	 */
 	public function get_builder(array $options)
 	{
-		$options['command'] = trim($options['command']);
+		$options['command'] = str_replace("'", '"', trim($options['command']));
 
 		// Parse the command into arguments
 		$args = $this->parse_task_command($options['command']);

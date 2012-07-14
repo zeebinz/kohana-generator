@@ -51,6 +51,58 @@ class Generator_Task_GenerateTest extends Unittest_TestCase
 	}
 
 	/**
+	 * Task commands should be parsable into arrays of arguments, and the process
+	 * should be reversable.
+	 *
+	 * @dataProvider provider_task_commands
+	 * @param  string  $command  The command string to parse
+	 * @param  array   $args     The parsed arguments
+	 */
+	public function test_parse_and_create_task_commands($command, $args)
+	{
+		$task = new Task_Generate;
+
+		// Parse the command
+		$actual = $task->parse_task_command($command);
+		$this->assertSame($args, $actual);
+
+		// Reverse by creating the command
+		$actual = $task->create_task_command($actual);
+		$this->assertSame($command, $actual);
+	}
+
+	/**
+	 * Provides sample data for test_parse_and_create_task_commands
+	 *
+	 * @return array
+	 */
+	public function provider_task_commands()
+	{
+		return array(
+			array(
+				'generate:class --name=Foo --no-test --pretend',
+				array('task' => 'generate:class', 'options' => array('name' => 'Foo', 'no-test' => NULL, 'pretend' => NULL)),
+			),
+			array(
+				'generate:class --name=Foo --implement="One, Two"',
+				array('task' => 'generate:class', 'options' => array('name' => 'Foo', 'implement' => 'One, Two')),
+			),
+			array(
+				'generate:class --name=Foo --implement=One,Two --inspect',
+				array('task' => 'generate:class', 'options' => array('name' => 'Foo', 'implement' => 'One,Two', 'inspect' => NULL)),
+			),
+			array(
+				'generate:config --name=foo --values="a.b|a, c|d"',
+				array('task' => 'generate:config', 'options' => array('name' => 'foo', 'values' => 'a.b|a, c|d')),
+			),
+			array(
+				'generate:controller:view --name=Foo',
+				array('task' => 'generate:controller:view', 'options' => array('name' => 'Foo')),
+			),
+		);
+	}
+
+	/**
 	 * This uses values from fixture files created by Generator_Type_Fixture
 	 * to test the expected output of the given generator commands. It's quite
 	 * basic functional testing, since all it does is repeat the process by
@@ -59,7 +111,7 @@ class Generator_Task_GenerateTest extends Unittest_TestCase
 	 * A data provider isn't used here because of the bugs with how exceptions
 	 * are handled when --group is specified.
 	 *
-	 * @param  Generator_Type_Fixture  $fixture
+	 * @depends  test_parse_and_create_task_commands
 	 */
 	public function test_generated_output_with_fixtures()
 	{
@@ -82,6 +134,8 @@ class Generator_Task_GenerateTest extends Unittest_TestCase
 	 * This should be a data provider, but it isn't because of this bug:
 	 *
 	 * @link https://github.com/sebastianbergmann/phpunit/issues/498
+	 *
+	 * @return  array  Instances of Generator_Type_Fixture
 	 */
 	protected function _get_test_fixtures()
 	{
@@ -97,7 +151,7 @@ class Generator_Task_GenerateTest extends Unittest_TestCase
 				continue;
 
 			// Load the fixture file
-			$fixt = new Generator_Type_Fixture();
+			$fixt = new Generator_Type_Fixture;
 			$fixt->name($name)->module($module);
 
 			// It doesn't hurt to use an assertion here
