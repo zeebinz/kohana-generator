@@ -139,7 +139,7 @@ class Generator_Task_Generate_Fixture extends Task_Generate
 				"[ File $i ] ".Debug::path($item['file'])).PHP_EOL.PHP_EOL;
 
 			// Add the rendered output
-			$expected .= $item['rendered'];
+			$expected .= $item['rendered'].PHP_EOL;
 			$i++;
 		}
 

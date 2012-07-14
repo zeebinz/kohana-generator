@@ -36,6 +36,7 @@ class Foo
 	}
 
 } // End Foo
+
 [ File 2 ] APPPATH/tests/FooTest.php
 
 <?php defined('SYSPATH') OR die('No direct script access.');
