@@ -393,11 +393,31 @@ class Generator_Generator_Type
 	 * Renders the generator output before saving to the destination file.
 	 *
 	 * The default implementation uses view templates, but any string may be
-	 * returned by child classes that override this method.
+	 * returned by child classes that override this method. Children may also
+	 * skip invoking parent::render() if they need to by instead calling the
+	 * render_template() method directly.
 	 *
 	 * @return  string  The rendered output
 	 */
 	public function render()
+	{
+		return $this->render_template();
+	}
+
+	/**
+	 * Renders the generator output from a view template.
+	 *
+	 * After merging the default parameters, all values in $_params are converted
+	 * automatically to named variables for use in the template files, and the
+	 * security string is prepended unless $_security is set to FALSE. Finally,
+	 * all pesky trailing spaces are stripped from the rendered string.
+	 *
+	 * This method can also be overridden to use a different templating system,
+	 * such as that provided by the Kostache module.
+	 *
+	 * @return  string  The rendered template output
+	 */
+	public function render_template()
 	{
 		// Create the view with initial parameters
 		$view = View::factory($this->_template)->set('name', $this->_name);
