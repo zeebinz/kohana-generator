@@ -421,7 +421,7 @@ class Generator_Generator_Reflector
 			// Return an indented array definition
 			return 'array('.PHP_EOL
 				.str_repeat("\t", $level)
-				.implode(",\n".str_repeat("\t", $level), $list).','.PHP_EOL
+				.implode(",".PHP_EOL.str_repeat("\t", $level), $list).','.PHP_EOL
 				.str_repeat("\t", $level - 1).')';
 		}
 
