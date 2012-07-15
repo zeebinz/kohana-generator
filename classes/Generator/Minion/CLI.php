@@ -9,7 +9,7 @@
  * This is only temporary, and is likely to be removed in a later version of
  * this module depending on how Minion develops.
  */
-class Kohana_Minion_CLI
+class Generator_Minion_CLI
 {
 	public static $wait_msg = 'Press any key to continue...';
 
