@@ -54,6 +54,8 @@ class Generator_Task_GenerateTest extends Unittest_TestCase
 	 * Task commands should be parsable into arrays of arguments, and the process
 	 * should be reversable.
 	 *
+	 * @group  generator.tasks.fixtures
+	 *
 	 * @dataProvider provider_task_commands
 	 * @param  string  $command  The command string to parse
 	 * @param  array   $args     The parsed arguments
@@ -72,9 +74,7 @@ class Generator_Task_GenerateTest extends Unittest_TestCase
 	}
 
 	/**
-	 * Provides sample data for test_parse_and_create_task_commands
-	 *
-	 * @return array
+	 * Provides test data for test_parse_and_create_task_commands
 	 */
 	public function provider_task_commands()
 	{
@@ -108,36 +108,42 @@ class Generator_Task_GenerateTest extends Unittest_TestCase
 	 * basic functional testing, since all it does is repeat the process by
 	 * which the fixture was first created, but it does the job.
 	 *
-	 * A data provider isn't used here because of the bugs with how exceptions
-	 * are handled when --group is specified.
+	 * @group  generator.tasks.fixtures
 	 *
+	 * @dataProvider  provider_test_fixtures
+	 * @param    Generator_Type_Fixture  $fixture  A fixture object
+	 * @param    string  $name  The name of the fixture file to load
 	 * @depends  test_parse_and_create_task_commands
 	 */
-	public function test_generated_output_with_fixtures()
+	public function test_generated_output_with_fixtures($fixture, $name)
 	{
-		foreach ($this->_get_test_fixtures() as $fixture)
-		{
-			$task = new Task_Generate_Fixture;
-			$args = $task->parse_task_command($fixture->command());
+		// First test loading up the fixture's file
+		$this->assertTrue($fixture->load_from_file(), "Couldn't load the fixture: '$name'");
 
-			$expected = $fixture->expect();
-			$actual   = $task->get_fixture_expectation($args);
+		// Create a new task with the fixture's command
+		$task = new Task_Generate_Fixture;
+		$args = $task->parse_task_command($fixture->command());
 
-			$this->assertSame($expected, $actual,
-				"Error matching the expectation of: '".$fixture->name()."'"
-			);
-		}
+		// Get the expectations
+		$expected = $fixture->expect();
+		$actual   = $task->get_fixture_expectation($args);
+
+		$this->assertSame($expected, $actual,
+			"Error matching the expectation of: '".$fixture->name()."'"
+		);
 	}
 
 	/**
-	 * Returns the values of the stored fixtures for functional testing.
-	 * This should be a data provider, but it isn't because of this bug:
+	 * Returns representations of stored fixtures for functional testing.
+	 *
+	 * [!!] Must make sure when using the --group option that the tests
+	 * aren't skipped silently due to this bug:
 	 *
 	 * @link https://github.com/sebastianbergmann/phpunit/issues/498
 	 *
 	 * @return  array  Instances of Generator_Type_Fixture
 	 */
-	protected function _get_test_fixtures()
+	public function provider_test_fixtures()
 	{
 		$module = basename(dirname(dirname(dirname(dirname(__FILE__)))));
 		$dir = dirname(dirname(dirname(__FILE__))).'/fixtures/';
@@ -150,16 +156,12 @@ class Generator_Task_GenerateTest extends Unittest_TestCase
 			if ($name[0] == '_')
 				continue;
 
-			// Load the fixture file
+			// Create the fixture object
 			$fixt = new Generator_Type_Fixture;
 			$fixt->name($name)->module($module);
 
-			// It doesn't hurt to use an assertion here
-			$this->assertTrue($fixt->load_from_file(),
-				"Couldn't load the fixture file: '$name'");
-
 			// Add the fixture to the list
-			$fixtures[] = $fixt;
+			$fixtures[] = array($fixt, $name);
 		}
 
 		return $fixtures;
