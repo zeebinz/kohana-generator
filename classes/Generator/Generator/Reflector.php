@@ -191,15 +191,7 @@ class Generator_Generator_Reflector
 		$methods = array();
 		foreach ($class->getMethods() as $method)
 		{
-			$m = $this->parse_reflection_method($method);
-
-			if ( ! $abstract AND $m['abstract'])
-			{
-				// We shouldn't have any abstract methods in a concrete class
-				$m = $this->make_method_concrete($m);
-			}
-
-			$methods[$method->getName()] = $m;
+			$methods[$method->getName()] = $this->parse_reflection_method($method);
 		}
 
 		// Return the parsed info
