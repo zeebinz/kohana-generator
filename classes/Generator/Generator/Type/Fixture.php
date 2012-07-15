@@ -114,8 +114,16 @@ class Generator_Generator_Type_Fixture extends Generator_Type
 	 */
 	public function load_from_file()
 	{
-		// Get the file contents
+		// Get the fixture filename
 		$file = $this->_file ?: $this->guess_filename();
+
+		if ( ! is_file($file))
+		{
+			throw new Generator_Exception('The fixture file could not be found at :path:',
+				array(':path' => $file));
+		}
+
+		// Get the file contents
 		$contents = file_get_contents($file);
 
 		// Parse the file contents

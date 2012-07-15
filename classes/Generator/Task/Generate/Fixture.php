@@ -16,6 +16,7 @@ class Generator_Task_Generate_Fixture extends Task_Generate
 	protected $_options = array(
 		'name'    => '',
 		'command' => '',
+		'refresh' => FALSE,
 	);
 
 	/**
@@ -26,9 +27,14 @@ class Generator_Task_Generate_Fixture extends Task_Generate
 	 */
 	public function build_validation(Validation $validation)
 	{
-		return parent::build_validation($validation)
-			->rule('name', 'not_empty')
-			->rule('command', 'not_empty');
+		$validation->rule('name', 'not_empty');
+
+		if ( ! $this->_options['refresh'])
+		{
+			$validation->rule('command', 'not_empty');
+		}
+
+		return parent::build_validation($validation);
 	}
 
 	/**
@@ -40,9 +46,21 @@ class Generator_Task_Generate_Fixture extends Task_Generate
 	 */
 	public function get_builder(array $options)
 	{
-		$options['command'] = str_replace("'", '"', trim($options['command']));
+		if ($options['refresh'])
+		{
+			// Get the values from an existing fixture file
+			$fixture = new Generator_Type_Fixture;
+			$fixture->name($options['name'])
+				->module($options['module'])
+				->load_from_file();
+
+			// We want only the stored command and summary
+			$options['command'] = $fixture->command();
+			$summary = $fixture->summary();
+		}
 
 		// Parse the command into arguments
+		$options['command'] = str_replace("'", '"', trim($options['command']));
 		$args = $this->parse_task_command($options['command']);
 
 		// Reverse it to guarantee that command and output match
@@ -57,7 +75,7 @@ class Generator_Task_Generate_Fixture extends Task_Generate
 		}
 
 		// Get the test summary
-		$summary = $this->get_fixture_summary($args);
+		$summary = isset($summary) ? $summary : $this->get_fixture_summary($args);
 
 		// Get the test expectation
 		$expected = $this->get_fixture_expectation($args);

@@ -10,16 +10,25 @@
  *     This sets the name of the fixture file. The '.test' extension will be
  *     added if it isn't already included in the name.
  *
- *   --command="COMMAND STRING" (required)
+ *   --command="COMMAND STRING" (required, unless refreshing)
  *
  *     A valid command string to be included in the fixture file, and which
  *     is run to create the expectation string. Note that single quotation
- *     marks must be used for option values.
+ *     marks must be used for option values in this case.
+ *
+ *   --refresh
+ *
+ *     With this option set, the expectation of an existing fixture file will
+ *     be regenerated, while the other file values will remain the same.
  *
  * Examples
  * ========
  * minion generate:fixture --name=generate_class --module=logger \
  *     --command="generate:class --name=Foo --implement='Bar, Baz' --no-test"
+ *
+ *     file : MODPATH/logger/tests/fixtures/generate_class.test
+ *
+ * minion generate:fixture --name=generate_class --module=logger --refresh
  *
  *     file : MODPATH/logger/tests/fixtures/generate_class.test
  *
