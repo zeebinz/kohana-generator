@@ -231,7 +231,7 @@ class Generator_ReflectorTest extends Unittest_TestCase
 	 * @dataProvider  provider_exported_variables
 	 * @param  mixed    $variable  The variable to export
 	 * @param  string   $exported  The exported string
-	 * @param  boolean  $exported  Should indentation be applied to arrays?
+	 * @param  boolean  $indent    Should indentation be applied to arrays?
 	 */
 	public function test_export_variable($variable, $exported, $indent = FALSE)
 	{
