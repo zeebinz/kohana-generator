@@ -75,7 +75,7 @@ class Generator_Task_Generate_Guide extends Task_Generate
 				->template('generator/type_guide_config')
 				->set('name', ucfirst($options['name']))
 				->set('module', $options['module'])
-				->defaults($this->get_config('defaults.guide', $options['config']))
+				->defaults($this->get_config('defaults.guide', $options['config']));
 		}
 
 		// Return the builder
