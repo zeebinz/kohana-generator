@@ -1,0 +1,39 @@
+---SUMMARY---
+Test fixture for the GENERATE:INTERFACE generator.
+---COMMAND---
+generate:interface --name=Some_Fooable --stub=Fooable --module=bar
+---EXPECTED---
+[ File 1 ] MODPATH/bar/Some/Fooable.php
+
+<?php defined('SYSPATH') OR die('No direct script access.');
+/**
+ * Some_Fooable interface.
+ *
+ * @package    Bar
+ * @category   Interfaces
+ * @author     Test Author
+ * @copyright  (c) 2012 Test Author
+ * @license    Test license
+ */
+interface Some_Fooable
+{
+
+} // End Some_Fooable
+
+[ File 2 ] MODPATH/bar/Fooable.php
+
+<?php defined('SYSPATH') OR die('No direct script access.');
+/**
+ * Fooable interface.
+ *
+ * @package    Bar
+ * @category   Interfaces
+ * @author     Test Author
+ * @copyright  (c) 2012 Test Author
+ * @license    Test license
+ */
+interface Fooable extends Some_Fooable
+{
+
+} // End Fooable
+---END---

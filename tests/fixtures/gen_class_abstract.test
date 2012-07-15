@@ -1,0 +1,39 @@
+---SUMMARY---
+Test fixture for the GENERATE:CLASS generator.
+---COMMAND---
+generate:class --name=Foo --abstract --no-test
+---EXPECTED---
+[ File 1 ] APPPATH/classes/Foo.php
+
+<?php defined('SYSPATH') OR die('No direct script access.');
+/**
+ * Class Foo.
+ *
+ * @package    package
+ * @category   category
+ * @author     Test Author
+ * @copyright  (c) 2012 Test Author
+ * @license    Test license
+ */
+abstract class Foo
+{
+	/**
+	 * @var  string  some string
+	 */
+	public $some_string;
+
+	/**
+	 * Short description.
+	 *
+	 * Long method description.
+	 *
+	 * @param   string  $param  Some string
+	 * @return  void
+	 */
+	public function some_method($param)
+	{
+		// Method implementation
+	}
+
+} // End Foo
+---END---

@@ -1,0 +1,22 @@
+---SUMMARY---
+Test fixture for the GENERATE:CONTROLLER generator.
+---COMMAND---
+generate:controller --name=Foo --blank
+---EXPECTED---
+[ File 1 ] APPPATH/classes/Controller/Foo.php
+
+<?php defined('SYSPATH') OR die('No direct script access.');
+/**
+ * Description of Controller_Foo.
+ *
+ * @package    package
+ * @category   Controllers
+ * @author     Test Author
+ * @copyright  (c) 2012 Test Author
+ * @license    Test license
+ */
+class Controller_Foo extends Controller
+{
+
+} // End Controller_Foo
+---END---

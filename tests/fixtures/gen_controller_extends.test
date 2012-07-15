@@ -1,0 +1,58 @@
+---SUMMARY---
+Test fixture for the GENERATE:CONTROLLER generator.
+---COMMAND---
+generate:controller --name=Foo --extend=Controller_Bar
+---EXPECTED---
+[ File 1 ] APPPATH/classes/Controller/Foo.php
+
+<?php defined('SYSPATH') OR die('No direct script access.');
+/**
+ * Description of Controller_Foo.
+ *
+ * @package    package
+ * @category   Controllers
+ * @author     Test Author
+ * @copyright  (c) 2012 Test Author
+ * @license    Test license
+ */
+class Controller_Foo extends Controller_Bar
+{
+	/**
+	 * Automatically executed before the controller action. Can be used to set
+	 * properties, do authorization checks, and execute other custom code.
+	 *
+	 * @return  void
+	 */
+	public function before()
+	{
+		parent::before();
+
+		// Nothing by default
+	}
+
+	/**
+	 * Index action.
+	 *
+	 * @return  void
+	 */
+	public function action_index()
+	{
+		// Nothing by default
+	}
+
+	/**
+	 * Automatically executed after the controller action. Can be used to
+	 * apply transformation to the response, add extra output, and execute
+	 * other custom code.
+	 *
+	 * @return  void
+	 */
+	public function after()
+	{
+		// Nothing by default
+
+		parent::after();
+	}
+
+} // End Controller_Foo
+---END---

@@ -1,0 +1,19 @@
+---SUMMARY---
+Test fixture for the GENERATE:CLASS generator.
+---COMMAND---
+generate:class --name=Foo --blank --no-test
+---EXPECTED---
+[ File 1 ] APPPATH/classes/Foo.php
+
+<?php defined('SYSPATH') OR die('No direct script access.');
+/**
+ * Class Foo.
+ *
+ * @package    package
+ * @category   category
+ * @author     Test Author
+ * @copyright  (c) 2012 Test Author
+ * @license    Test license
+ */
+class Foo {}
+---END---
