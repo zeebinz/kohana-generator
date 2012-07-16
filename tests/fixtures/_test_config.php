@@ -15,6 +15,6 @@ return array
 			'author'    => 'Test Author',
 			'copyright' => '(c) 2012 Test Author',
 			'license'   => 'Test license',
-		)		
+		),
 	)
 );
