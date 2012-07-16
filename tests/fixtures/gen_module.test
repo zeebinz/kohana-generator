@@ -57,7 +57,7 @@ return array
 			'description' => 'Module description.',
 
 			// Copyright message, shown in the footer for this module
-			'copyright' => '(c) Copyright',
+			'copyright' => '(c) 2012 Test Author',
 		)
 	)
 );

@@ -66,7 +66,7 @@ class Generator_Task_Generate_Module extends Task_Generate
 				->template('generator/type_guide_config')
 				->set('name', ucfirst($options['name']))
 				->set('module', $options['name'])
-				->set('copyright', '(c) Copyright')
+				->defaults($this->get_config('defaults.guide', $options['config']))
 
 			// Basic directory structure
 			->add_directory('classes')
