@@ -43,7 +43,7 @@ class Generator_Generator_Type_Directory extends Generator_Type
 	 */
 	public function render()
 	{
-		return 'This is a directory type, nothing to render.';
+		return 'This is a directory type, nothing to render.'.PHP_EOL;
 	}
 
 	/**
