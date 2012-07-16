@@ -54,6 +54,10 @@ class Generator_Task_Generate_Module extends Task_Generate
 
 			// Guide pages and config
 			->add_guide(ucfirst($options['name']))
+				->page('Getting Started|start')
+			->add_file('start.md')
+				->folder('guide'.$ds.$options['name'])
+				->content('# Getting Started'.PHP_EOL.PHP_EOL.'Coming soon.'.PHP_EOL)
 			->add_file('index.md')
 				->folder('guide'.$ds.$options['name'])
 				->content('# '.ucfirst($options['name']).' module'.PHP_EOL.PHP_EOL

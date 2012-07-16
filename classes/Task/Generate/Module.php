@@ -18,6 +18,7 @@
  *     file : MODPATH/mymodule/LICENSE
  *     file : MODPATH/mymodule/guide/mymodule/menu.md
  *     file : MODPATH/mymodule/guide/mymodule/index.md
+ *     file : MODPATH/mymodule/guide/mymodule/start.md
  *     file : MODPATH/mymodule/config/userguide.php
  *     dir  : MODPATH/mymodule/classes
  *     dir  : MODPATH/mymodule/tests
