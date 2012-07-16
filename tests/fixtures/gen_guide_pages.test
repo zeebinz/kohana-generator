@@ -1,0 +1,57 @@
+---SUMMARY---
+Test fixture for the GENERATE:GUIDE generator.
+---COMMAND---
+generate:guide --name=Foo --module=bar --pages="First Page|first, Second Page|second"
+---EXPECTED---
+[ File 1 ] MODPATH/bar/guide/bar/menu.md
+
+## [Foo]()
+
+ - [First Page](first)
+ - [Second Page](second)
+
+[ File 2 ] MODPATH/bar/guide/bar/first.md
+
+# First Page
+
+Content of this page.
+
+[ File 3 ] MODPATH/bar/guide/bar/second.md
+
+# Second Page
+
+Content of this page.
+
+[ File 4 ] MODPATH/bar/guide/bar/index.md
+
+# Foo
+
+Content of the index page.
+
+[ File 5 ] MODPATH/bar/config/userguide.php
+
+<?php defined('SYSPATH') OR die('No direct script access.');
+
+return array
+(
+	// Leave this alone
+	'modules' => array(
+
+		// This should be the path to this modules userguide pages, without the 'guide/'. Ex: '/guide/modulename/' would be 'modulename'
+		'bar' => array(
+
+			// Whether this modules userguide pages should be shown
+			'enabled' => TRUE,
+
+			// The name that should show up on the userguide index page
+			'name' => 'Foo',
+
+			// A short description of this module, shown on the index page
+			'description' => 'Module description.',
+
+			// Copyright message, shown in the footer for this module
+			'copyright' => '(c) 2012 Test Author',
+		)
+	)
+);
+---END---

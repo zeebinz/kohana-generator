@@ -2,13 +2,13 @@
 /**
  * Generator Guide type, creates a Guide menu file from page definitions.
  *
- * @package    Generator 
- * @category   Generator/Types 
- * @author     Zeebee 
- * @copyright  (c) 2012 Zeebee 
- * @license    BSD revised 
+ * @package    Generator
+ * @category   Generator/Types
+ * @author     Zeebee
+ * @copyright  (c) 2012 Zeebee
+ * @license    BSD revised
  */
-class Generator_Generator_Type_Guide extends Generator_Type 
+class Generator_Generator_Type_Guide extends Generator_Type
 {
 	protected $_template = 'generator/type_guide_menu';
 	protected $_name     = 'menu.md';
@@ -51,7 +51,18 @@ class Generator_Generator_Type_Guide extends Generator_Type
 	}
 
 	/**
-	 * Ensures that the filename is not guessed by converting the name to 
+	 * Returns the list of pages defined for the guide menu.
+	 *
+	 * @return  array  The menu pages
+	 */
+	public function get_menu_pages()
+	{
+		return empty($this->_params['pages']) ? array()
+			: $this->_parse_pages($this->_params['pages']);
+	}
+
+	/**
+	 * Ensures that the filename is not guessed by converting the name to
 	 * a path, replacing underscores, etc.
 	 *
 	 * @param   boolean  $convert  Should the name be converted to a file path?
@@ -90,7 +101,7 @@ class Generator_Generator_Type_Guide extends Generator_Type
 	}
 
 	/**
-	 * Converts an array of page definition strings into a final array of 
+	 * Converts an array of page definition strings into a final array of
 	 * menu items.
 	 *
 	 * @param   array  $pages  The list of page definitions
@@ -109,4 +120,4 @@ class Generator_Generator_Type_Guide extends Generator_Type
 		return $ret;
 	}
 
-} // End Generator_Generator_Type_Guide 
+} // End Generator_Generator_Type_Guide

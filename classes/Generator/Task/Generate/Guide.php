@@ -52,7 +52,7 @@ class Generator_Task_Generate_Guide extends Task_Generate
 		{
 			// Get any guide page definitions
 			$params = $builder->params();
-			$pages = $builder->parse_pages($params['pages']);
+			$pages = $builder->get_menu_pages();
 
 			foreach ($pages as $title => $file)
 			{
