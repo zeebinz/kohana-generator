@@ -1,0 +1,19 @@
+---SUMMARY---
+Test fixture for the GENERATE:CLASS generator.
+---COMMAND---
+generate:class --name=Foo --clone=Generator --no-test
+---EXPECTED---
+[ File 1 ] APPPATH/classes/Foo.php
+
+<?php defined('SYSPATH') OR die('No direct script access.');
+/**
+ * Alias for Generator_Builder class.
+ *
+ * @package    Foo
+ * @category   Builders
+ * @author     Zeebee
+ * @copyright  (c) 2012 Zeebee
+ * @license    BSD revised
+ */
+class Foo extends Generator_Builder {}
+---END---

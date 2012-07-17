@@ -25,8 +25,8 @@ class Generator_Task_Generate_Generator extends Task_Generate
 	/**
 	 * Validates the task options.
 	 *
-	 * @param  Validation  $validation  The validation object to add rules to
-	 * @return Validation
+	 * @param   Validation  $validation  The validation object to add rules to
+	 * @return  Validation
 	 */
 	public function build_validation(Validation $validation)
 	{
@@ -37,8 +37,8 @@ class Generator_Task_Generate_Generator extends Task_Generate
 	/**
 	 * Creates a generator builder with the given configuration options.
 	 *
-	 * @param  array  $options  The selected task options
-	 * @return Generator_Builder
+	 * @param   array  $options  The selected task options
+	 * @return  Generator_Builder
 	 */
 	public function get_builder(array $options)
 	{
@@ -67,7 +67,8 @@ class Generator_Task_Generate_Generator extends Task_Generate
 		if ( ! $options['no-task'])
 		{
 			$builder->add_task('Generate_'.$options['name'])
-				->template('generator/type_task_generator');
+				->template('generator/type_task_generator')
+				->extend('Task_Generate');
 
 			if ($options['module'] AND ! $options['no-stub'])
 			{
@@ -95,8 +96,7 @@ class Generator_Task_Generate_Generator extends Task_Generate
 			->with_module($options['module'])
 			->with_pretend($options['pretend'])
 			->with_force($options['force'])
-			->with_defaults($this->get_config('defaults.class', $options['config']))
-			->prepare();
+			->with_defaults($this->get_config('defaults.class', $options['config']));
 	}
 
 } // End Generator_Task_Generate_Generator

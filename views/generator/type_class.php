@@ -24,8 +24,8 @@
 	 *
 	 * Long method description.
 	 *
-	 * @param  string  $param  Some string
-	 * @return void
+	 * @param   string  $param  Some string
+	 * @return  void
 	 */
 	public function some_method($param)
 	{

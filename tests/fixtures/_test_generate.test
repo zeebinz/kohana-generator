@@ -1,0 +1,7 @@
+---SUMMARY---
+Test fixture for the GENERATE:FIXTURE generator.
+---COMMAND---
+generate:class --name=Foo --module=foo
+---EXPECTED---
+The expectation string
+---END---

@@ -40,11 +40,11 @@ And then enjoy creating your application or module resources in one line:
 
 See also the Guide pages for more information about different generator tasks and their options.
 
-Current tasks include: class, controller, model, view, unittest, task, generator, interface, guide, module, etc.
+Current tasks include: class, controller, model, view, unittest, task, generator, interface, guide, module, config, message, etc.
 
 ## Testing
 
-This module is unit tested using the [Unittest module](http://github.com/kohana/unittest). You can use the *generator* group to run only the generator tests.
+This module is unit tested using the [Unittest module](http://github.com/kohana/unittest). You can use the *generator* group to run only the generator tests. See also the files in the `tests/fixtures` directory for sample Minion commands and their generated output.
 
 ## Requirements
 

@@ -33,11 +33,12 @@ class Generator_Task_Generate extends Minion_Task
 	);
 
 	/**
-	 * Instantiates the task, and merges common and task options.
+	 * Instantiates the task, and merges common and task options.We make this
+	 * public here so we can handle different instances more easily.
 	 *
 	 * @return void
 	 */
-	protected function __construct()
+	public function __construct()
 	{
 		// Merge any task options with the common options
 		$this->_options = array_merge($this->_common_options, $this->_options);
@@ -47,7 +48,7 @@ class Generator_Task_Generate extends Minion_Task
 
 	/**
 	 * Sets the task options passed as parameters.
-	 * 
+	 *
 	 * Boolean parameters (i.e. switches without values) are handled here by
 	 * toggling their associated options on.
 	 *
@@ -75,9 +76,9 @@ class Generator_Task_Generate extends Minion_Task
 	 * By default, this method runs in interactive mode, requesting user
 	 * confirmation before any destructive changes, allowing inspection, etc.
 	 *
-	 * @param  Generator_Builder  $builder  The builder to execute
-	 * @param  array  $options  The task options to use
-	 * @return void
+	 * @param   Generator_Builder  $builder  The builder to execute
+	 * @param   array  $options  The task options to use
+	 * @return  void
 	 */
 	public function run(Generator_Builder $builder, array $options)
 	{
@@ -85,7 +86,7 @@ class Generator_Task_Generate extends Minion_Task
 		{
 			// Output debug info for each generator item
 			$i = 1;
-			foreach ($builder->inspect() as $num => $item)
+			foreach ($builder->inspect() as $item)
 			{
 				$this->_write('');
 				$this->_write($this->_color("[ File $i ] ".Debug::path($item['file']), 'brown'));
@@ -95,9 +96,6 @@ class Generator_Task_Generate extends Minion_Task
 			}
 			return;
 		}
-
-		// Set verbosity level
-		$this->_options['verbose'] = $options['remove'] ?: $this->_options['verbose'];
 
 		// Choose which command to run
 		$command = $options['remove'] ? Generator::REMOVE : Generator::CREATE;
@@ -112,7 +110,7 @@ class Generator_Task_Generate extends Minion_Task
 			$this->_write('');
 
 			// Ask for user confirmation
-			if ('n' == $this->_read('Do you want to continue?', array('y', 'n')))
+			if ('y' !== $this->_read('Do you want to continue?', array('y', 'n')))
 				return;
 		}
 
@@ -124,9 +122,9 @@ class Generator_Task_Generate extends Minion_Task
 	 * Runs the given command on the generators and outputs the log, or only
 	 * lists the expected actions if we're in pretend mode.
 	 *
-	 * @param  string   $command  The command to be run
-	 * @param  Generator_Builder  $builder  The builder holding the generators
-	 * @return boolean  TRUE if some action has been logged
+	 * @param   string   $command  The command to be run
+	 * @param   Generator_Builder  $builder  The builder holding the generators
+	 * @return  boolean  TRUE if some action has been logged
 	 */
 	public function run_command($command, Generator_Builder $builder)
 	{
@@ -146,9 +144,11 @@ class Generator_Task_Generate extends Minion_Task
 
 			foreach ($generator->log() as $msg)
 			{
-				if ($this->_options['verbose'] OR ! in_array($msg, $messages))
+				if (($this->_options['verbose'] AND $msg != end($messages))
+					OR ! in_array($msg, $messages))
 				{
-					// We only want unique messages, unless in verbose mode
+					// We only want unique messages, unless in verbose mode and
+					// the last message isn't being repeated
 					$this->_write_log($msg['status'], Debug::path($msg['item']));
 					$messages[] = $msg;
 				}
@@ -166,16 +166,24 @@ class Generator_Task_Generate extends Minion_Task
 	}
 
 	/**
-	 * Convenience method for loading configuration values.
+	 * Convenience method for loading configuration values, optionally from
+	 * a given config group or an absolute file path.
 	 *
-	 * @param  array  $path   Array path to the config values
-	 * @param  array  $group  The config group to load
-	 * @return mixed  The config values or NULL
+	 * @param   array  $path   Array path to the config values
+	 * @param   array  $group  The config group of file to load
+	 * @return  mixed  The config values or NULL
 	 */
 	public function get_config($path, $group = NULL)
 	{
-		$group = $group ?: 'generator';
+		if ($group !== NULL AND is_file($group))
+		{
+			// Return the values from the file
+			$config = include $group;
+			return Arr::path($config, $path);
+		}
 
+		// Otherwise load the CFS config values
+		$group = $group ?: 'generator';
 		return Kohana::$config->load($group.'.'.$path);
 	}
 
@@ -183,8 +191,8 @@ class Generator_Task_Generate extends Minion_Task
 	 * Returns a generator builder created with the given configuration options.
 	 * This method should be implemented in full by child classes.
 	 *
-	 * @param  array  $options  The selected task options
-	 * @return bool|Generator_Builder  FALSE if no builder is available
+	 * @param   array  $options  The selected task options
+	 * @return  boolean|Generator_Builder  FALSE if no builder is available
 	 */
 	public function get_builder(array $options)
 	{
@@ -195,14 +203,14 @@ class Generator_Task_Generate extends Minion_Task
 	 * Loads a builder and runs the task, or outputs the common help message
 	 * by default.
 	 *
-	 * @param  array  $params  The current task parameters	 
-	 * @return void
+	 * @param   array  $params  The current task parameters
+	 * @return  void
 	 */
 	protected function _execute(array $params)
 	{
 		if ($builder = $this->get_builder($params))
 		{
-			$this->run($builder, $params);
+			$this->run($builder->prepare(), $params);
 			return;
 		}
 
@@ -212,27 +220,25 @@ class Generator_Task_Generate extends Minion_Task
 	/**
 	 * Writes a message directly to STDOUT.
 	 *
-	 * @param  string   $text  The message to write
-	 * @param  boolean  $eol   Should EOL be added?
-	 * @return void
-	 */	
+	 * @param   string   $text  The message to write
+	 * @param   boolean  $eol   Should EOL be added?
+	 * @return  void
+	 */
 	protected function _write($text, $eol = TRUE)
 	{
 		if ($this->_options['quiet'])
 			return;
 
 		echo ($eol ? ($text.PHP_EOL) : $text);
-
-		// Minion_CLI::write($text, $eol);
 	}
 
 	/**
 	 * Writes a formatted log message directly to STDOUT.
 	 *
-	 * @param  string  $status  The status message
-	 * @param  string  $item    The item affected
-	 * @return void
-	 */	
+	 * @param   string  $status  The status message
+	 * @param   string  $item    The item affected
+	 * @return  void
+	 */
 	protected function _write_log($status, $item)
 	{
 		$color = in_array($status, array(Generator::CREATE, Generator::REMOVE)) ? 'green' : 'red';
@@ -244,10 +250,10 @@ class Generator_Task_Generate extends Minion_Task
 	 * Returns the given text with the correct color codes for a foreground and
 	 * optionally a background color.
 	 *
-	 * @param  string  $text        The text to color
-	 * @param  atring  $foreground  The foreground color
-	 * @param  string  $background  The background color
-	 * @return string  The color coded string
+	 * @param   string  $text        The text to color
+	 * @param   string  $foreground  The foreground color
+	 * @param   string  $background  The background color
+	 * @return  string  The color coded string
 	 */
 	public function _color($text, $foreground, $background = NULL)
 	{
@@ -260,10 +266,10 @@ class Generator_Task_Generate extends Minion_Task
 	/**
 	 * Reads user input from STDIN.
 	 *
-	 * @param  string  $text     text to show user before waiting for input
-	 * @param  array   $options  array of options the user is shown
-	 * @return string  the user input
-	 */	
+	 * @param   string  $text     text to show user before waiting for input
+	 * @param   array   $options  array of options the user is shown
+	 * @return  string  the user input
+	 */
 	protected function _read($text, array $options = NULL)
 	{
 		return Minion_CLI::read($text, $options);
@@ -275,9 +281,9 @@ class Generator_Task_Generate extends Minion_Task
 	 * A list of available generators will be appended to the help only if the
 	 * current instance is the base generator task.
 	 *
-	 * @param  array  $params  The current task parameters
-	 * @return void
-	 */	
+	 * @param   array  $params  The current task parameters
+	 * @return  void
+	 */
 	protected function _help(array $params)
 	{
 		parent::_help($params);
@@ -290,12 +296,64 @@ class Generator_Task_Generate extends Minion_Task
 			// Append the list to the help output
 			$this->_write('Available generators:');
 			$this->_write('');
-			foreach ($generators as $generator) 
+			foreach ($generators as $generator)
 			{
 				$this->_write('  * '.$generator);
 			}
 			$this->_write('');
 		}
+	}
+
+	/**
+	 * Parses a task command string, returning an array of arguments and
+	 * option values.
+	 *
+	 * @param   string  $command  The task command
+	 * @return  array   The parsed command arguments
+	 */
+	public function parse_task_command($command)
+	{
+		$command = explode(' ', trim($command), 2);
+
+		// Set the task name and initialize options
+		$result['task'] = $command[0];
+		$result['options'] = array();
+
+		if (isset($command[1]))
+		{
+			// Get the options arguments
+			preg_match_all("/--(?P<option>[\w\-]+)(=(?P<value>(['\"].*?['\"]|.*?)))?(?:\s|\-|$)/",
+				$command[1], $matches, PREG_SET_ORDER);
+
+			foreach ($matches as $match)
+			{
+				// Set the options with or without values
+				$value = isset($match['value']) ? trim($match['value'], "\"'") : NULL;
+				$result['options'][$match['option']] = $value;
+			}
+		}
+
+		return $result;
+	}
+
+	/**
+	 * Creates a task command string from an array of arguments, reversing
+	 * the results of parse_task_command().
+	 *
+	 * @param   array   $args  The command arguments
+	 * @return  string  The task command
+	 */
+	public function create_task_command(array $args)
+	{
+		$command = $args['task'];
+
+		foreach ($args['options'] as $key => $value)
+		{
+			$value = (strpos($value, ' ') !== FALSE) ? ('"'.$value.'"') : $value;
+			$command .= ' --'.$key.($value ? ('='.$value) : '');
+		}
+
+		return $command;
 	}
 
 } // End Generator_Task_Generate

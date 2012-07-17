@@ -183,22 +183,15 @@ class Generator_Generator_Reflector
 		$properties = array();
 		foreach ($class->getProperties() as $property)
 		{
-			$properties[$property->getName()] = $this->parse_reflection_property($property, $defaults);
+			$properties[$property->getName()] = $this->parse_reflection_property(
+				$property, $defaults);
 		}
 
 		// Get any declared methods
 		$methods = array();
 		foreach ($class->getMethods() as $method)
 		{
-			$m = $this->parse_reflection_method($method);
-
-			if ( ! $abstract AND $m['abstract'])
-			{
-				// We shouldn't have any abstract methods in a concrete class
-				$m = $this->make_method_concrete($m);
-			}
-
-			$methods[$method->getName()] = $m;
+			$methods[$method->getName()] = $this->parse_reflection_method($method);
 		}
 
 		// Return the parsed info
@@ -354,15 +347,22 @@ class Generator_Generator_Reflector
 
 	/**
 	 * Converts a parsed abstract method definition to a concrete one for
-	 * storing locally.
+	 * storing locally, optionally updating an already stored definition.
 	 *
 	 * @param   array   $method  The method definition to convert
+	 * @param   string  $name    The stored method name to update
 	 * @return  array   The converted definition
 	 */
-	public function make_method_concrete(array $method)
+	public function make_method_concrete(array $method, $name = NULL)
 	{
 		$method['modifiers'] = trim(str_replace('abstract', '', $method['modifiers']));
 		$method['abstract'] = FALSE;
+
+		if ($name AND isset($this->_info['methods'][$name]))
+		{
+			// Update the stored definition
+			$this->_info['methods'][$name] = $method;
+		}
 
 		return $method;
 	}
@@ -413,7 +413,7 @@ class Generator_Generator_Reflector
 			// Return an indented array definition
 			return 'array('.PHP_EOL
 				.str_repeat("\t", $level)
-				.implode(",\n".str_repeat("\t", $level), $list).','.PHP_EOL
+				.implode(",".PHP_EOL.str_repeat("\t", $level), $list).','.PHP_EOL
 				.str_repeat("\t", $level - 1).')';
 		}
 
@@ -430,7 +430,7 @@ class Generator_Generator_Reflector
 	public function get_variable_type($variable)
 	{
 		$type = gettype($variable);
-		$type = str_replace('NULL', 'mixed', $type);
+		$type = str_replace(array('NULL', 'double'), array('mixed', 'float'), $type);
 
 		return $type;
 	}
@@ -599,15 +599,32 @@ class Generator_Generator_Reflector
 
 	/**
 	 * Returns the list of methods with their parsed info from the current
-	 * source.
+	 * source, optionally limited to only abstract methods that may need
+	 * implementing.
 	 *
-	 * @return  array  The methods list
+	 * @param   boolean  $abstract  Only return abstract methods?
+	 * @return  array    The methods list
 	 */
-	public function get_methods()
+	public function get_methods($abstract = FALSE)
 	{
 		$this->is_analyzed() OR $this->analyze();
 
-		return $this->_info['methods'];
+		if ( ! $abstract)
+			return $this->_info['methods'];
+
+		// Start the methods list
+		$methods = array();
+
+		foreach ($this->_info['methods'] as $method => $m)
+		{
+			if ($m['abstract'])
+			{
+				// Only return abstract methods
+				$methods[$method] = $m;
+			}
+		}
+
+		return $methods;
 	}
 
 	/**

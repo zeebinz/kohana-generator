@@ -1,0 +1,31 @@
+---SUMMARY---
+Test fixture for the GENERATE:INTERFACE generator.
+---COMMAND---
+generate:interface --name=Fooable --clone=Fx_Countable --reflect
+---EXPECTED---
+[ File 1 ] APPPATH/classes/Fooable.php
+
+<?php defined('SYSPATH') OR die('No direct script access.');
+/**
+ * Interface Fooable, cloned from Fx_Countable.
+ *
+ * @package    package
+ * @category   Interfaces
+ * @author     Test Author
+ * @copyright  (c) 2012 Test Author
+ * @license    Test license
+ */
+interface Fooable
+{
+	// Declared in Fx_Countable
+	const CONST_COUNTABLE = 1;
+
+	/**
+	 * Declaration of Fx_Countable::count
+	 *
+	 * @return  void  **Needs editing**
+	 */
+	public function count();
+
+} // End Fooable
+---END---

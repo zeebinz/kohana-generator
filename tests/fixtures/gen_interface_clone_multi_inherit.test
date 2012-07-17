@@ -1,0 +1,46 @@
+---SUMMARY---
+Test fixture for the GENERATE:INTERFACE generator.
+---COMMAND---
+generate:interface --name=Fooable --clone=Fx_Iterable --reflect --inherit
+---EXPECTED---
+[ File 1 ] APPPATH/classes/Fooable.php
+
+<?php defined('SYSPATH') OR die('No direct script access.');
+/**
+ * Interface Fooable, cloned from Fx_Iterable.
+ *
+ * @package    package
+ * @category   Interfaces
+ * @author     Test Author
+ * @copyright  (c) 2012 Test Author
+ * @license    Test license
+ */
+interface Fooable extends Fx_Countable, Fx_Sortable
+{
+	// Declared in Fx_Iterable
+	const CONST_ITERABLE = 1;
+
+	/**
+	 * Declaration of Fx_Iterable::iter
+	 *
+	 * @return  void  **Needs editing**
+	 */
+	public function iter();
+
+	/**
+	 * Declaration of Fx_Countable::count
+	 *
+	 * @return  void  **Needs editing**
+	 */
+	public function count();
+
+	/**
+	 * Declaration of Fx_Sortable::sort
+	 *
+	 * @param   array  $list
+	 * @return  void  **Needs editing**
+	 */
+	public function sort(array $list);
+
+} // End Fooable
+---END---

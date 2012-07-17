@@ -12,4 +12,4 @@ interface <?php
 	if ( ! empty($extends)) {echo ' extends '.$extends;} ?> 
 {
 
-} // End <?php echo $name ?>
+} // End <?php echo $name ?> 

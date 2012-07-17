@@ -1,0 +1,142 @@
+---SUMMARY---
+Test fixture for the GENERATE:CLASS generator.
+---COMMAND---
+generate:class --name=Foo --clone=SplMinHeap --reflect --inherit --no-test
+---EXPECTED---
+[ File 1 ] APPPATH/classes/Foo.php
+
+<?php defined('SYSPATH') OR die('No direct script access.');
+/**
+ * Class Foo, cloned from SplMinHeap.
+ *
+ * @package    package
+ * @category   category
+ * @author     Test Author
+ * @copyright  (c) 2012 Test Author
+ * @license    Test license
+ */
+class Foo extends SplHeap implements Countable, Iterator
+{
+	/**
+	 * Implementation of SplHeap::extract
+	 *
+	 * @return  void  **Needs editing**
+	 */
+	public function extract()
+	{
+		parent::extract();
+	}
+
+	/**
+	 * Implementation of SplHeap::insert
+	 *
+	 * @param   mixed  $value
+	 * @return  void  **Needs editing**
+	 */
+	public function insert($value)
+	{
+		parent::insert($value);
+	}
+
+	/**
+	 * Implementation of SplHeap::top
+	 *
+	 * @return  void  **Needs editing**
+	 */
+	public function top()
+	{
+		parent::top();
+	}
+
+	/**
+	 * Implementation of Countable::count
+	 *
+	 * @return  void  **Needs editing**
+	 */
+	public function count()
+	{
+		// Method implementation
+	}
+
+	/**
+	 * Implementation of SplHeap::isEmpty
+	 *
+	 * @return  void  **Needs editing**
+	 */
+	public function isEmpty()
+	{
+		parent::isEmpty();
+	}
+
+	/**
+	 * Implementation of Iterator::rewind
+	 *
+	 * @return  void  **Needs editing**
+	 */
+	public function rewind()
+	{
+		// Method implementation
+	}
+
+	/**
+	 * Implementation of Iterator::current
+	 *
+	 * @return  void  **Needs editing**
+	 */
+	public function current()
+	{
+		// Method implementation
+	}
+
+	/**
+	 * Implementation of Iterator::key
+	 *
+	 * @return  void  **Needs editing**
+	 */
+	public function key()
+	{
+		// Method implementation
+	}
+
+	/**
+	 * Implementation of Iterator::next
+	 *
+	 * @return  void  **Needs editing**
+	 */
+	public function next()
+	{
+		// Method implementation
+	}
+
+	/**
+	 * Implementation of Iterator::valid
+	 *
+	 * @return  void  **Needs editing**
+	 */
+	public function valid()
+	{
+		// Method implementation
+	}
+
+	/**
+	 * Implementation of SplHeap::recoverFromCorruption
+	 *
+	 * @return  void  **Needs editing**
+	 */
+	public function recoverFromCorruption()
+	{
+		parent::recoverFromCorruption();
+	}
+
+	/**
+	 * Implementation of SplHeap::compare
+	 *
+	 * @return  void  **Needs editing**
+	 */
+	protected function compare()
+	{
+		// Method implementation
+	}
+
+} // End Foo
+---END---

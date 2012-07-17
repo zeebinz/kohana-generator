@@ -1,0 +1,14 @@
+---SUMMARY---
+Test fixture for the GENERATE:CONFIG generator.
+---COMMAND---
+generate:config --name=foo
+---EXPECTED---
+[ File 1 ] APPPATH/config/foo.php
+
+<?php defined('SYSPATH') OR die('No direct script access.');
+
+return array
+(
+	// Configuration
+);
+---END---

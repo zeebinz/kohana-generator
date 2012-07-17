@@ -63,7 +63,7 @@ class Generator_ReflectorTest extends Unittest_TestCase
 	 * Sources should only be inspected once per run or each time that
 	 * analyze() is called, and the method should also be chainable.
 	 */
-	public function test_analyze()
+	public function test_analyze_runs_only_once()
 	{
 		$refl = new TestReflector('TestInterface');
 
@@ -94,6 +94,42 @@ class Generator_ReflectorTest extends Unittest_TestCase
 	}
 
 	/**
+	 * The main source information should be stored locally as pre-parsed data,
+	 * including doccomment, parent, interfaces, constants, properties, etc.
+	 */
+	public function test_getting_source_information()
+	{
+		$refl = new TestReflector('TestClass');
+
+		$this->assertRegExp('/A test class/', $refl->get_doccomment());
+		$this->assertSame('abstract', $refl->get_modifiers());
+		$this->assertSame('TestParentClass', $refl->get_parent());
+		$this->assertSame(array('TestInterfaceCountable'), $refl->get_interfaces());
+
+		$constants = $refl->get_constants();
+		$this->assertArrayHasKey('CONSTANT_ONE', $constants);
+		$this->assertArrayHasKey('CONSTANT_TWO', $constants);
+
+		$properties = $refl->get_properties();
+		$this->assertArrayHasKey('prop_one', $properties);
+		$this->assertArrayHasKey('prop_two', $properties);
+
+		$this->assertSame(1, $refl->analysis_count);
+	}
+
+	/**
+	 * We need to be able to check easily if the source is abstract.
+	 */
+	public function test_source_is_abstract()
+	{
+		$refl = new TestReflector('TestClass');
+		$this->assertTrue($refl->is_abstract());
+
+		$refl = new TestReflector('TestParentClass');
+		$this->assertFalse($refl->is_abstract());
+	}
+
+	/**
 	 * The class methods should be stored locally after initial analysis.
 	 */
 	public function test_getting_class_methods()
@@ -109,6 +145,11 @@ class Generator_ReflectorTest extends Unittest_TestCase
 		$this->assertArrayHasKey('some_abstract_method', $methods);
 		$this->assertTrue($methods['some_abstract_method']['abstract']);
 		$this->assertSame('abstract public', $methods['some_abstract_method']['modifiers']);
+
+		// We can optionally get only abstract methods
+		$methods = $refl->get_methods(TRUE);
+		$this->assertCount(1, $methods);
+		$this->assertArrayHasKey('some_abstract_method', $methods);
 
 		$this->assertSame(1, $refl->analysis_count);
 	}
@@ -141,6 +182,10 @@ class Generator_ReflectorTest extends Unittest_TestCase
 		$this->assertArrayHasKey('count', $methods);
 		$this->assertTrue($methods['count']['abstract']);
 		$this->assertSame('public', $methods['count']['modifiers']);
+
+		// Interface methods should always be abstract
+		$methods = $refl->get_methods(TRUE);
+		$this->assertCount(4, $methods);
 	}
 
 	/**
@@ -165,12 +210,111 @@ class Generator_ReflectorTest extends Unittest_TestCase
 	}
 
 	/**
+	 * We should be able to convert stored abstract methods to concrete methods
+	 * for implementing in classes.
+	 *
+	 * @depends test_getting_class_methods
+	 */
+	public function test_make_abstract_method_concrete()
+	{
+		$class = new TestReflector('TestClass');
+
+		$methods = $class->get_methods();
+		$abstract = $methods['some_abstract_method'];
+		$this->assertTrue($abstract['abstract']);
+		$this->assertSame('abstract public', $abstract['modifiers']);
+
+		$abstract = $class->make_method_concrete($abstract, 'some_abstract_method');
+		$this->assertFalse($abstract['abstract']);
+		$this->assertSame('public', $abstract['modifiers']);
+
+		$methods = $class->get_methods();
+		$abstract = $methods['some_abstract_method'];
+		$this->assertFalse($abstract['abstract']);
+		$this->assertSame('public', $abstract['modifiers']);
+	}
+
+	/**
+	 * To support full method signatures etc., variables need to be exported as
+	 * parsable string representations. Arrays need to be exported recursively
+	 * and with optional indentation, objects should be ignored, capitalization
+	 * should be normalized.
+	 *
+	 * @dataProvider  provider_exported_variables
+	 * @param  mixed    $variable  The variable to export
+	 * @param  string   $exported  The exported string
+	 * @param  boolean  $indent    Should indentation be applied to arrays?
+	 */
+	public function test_export_variable($variable, $exported, $indent = FALSE)
+	{
+		$refl = new TestReflector('TestClass');
+
+		$this->assertSame($exported, $refl->export_variable($variable, $indent));
+	}
+
+	/**
+	 * Provides test data for test_export_variable.
+	 */
+	public function provider_exported_variables()
+	{
+		return array(
+			array('foo', "'foo'"),
+			array(1, '1'),
+			array(1.1, '1.1'),
+			array(TRUE, 'TRUE'),
+			array(FALSE, 'FALSE'),
+			array(NULL, 'NULL'),
+			array(new stdClass, NULL),
+			array(array('foo'), "array('foo')"),
+			array(array('foo', 'bar', 1), "array('foo', 'bar', 1)"),
+			array(array('foo'), 'array('.PHP_EOL."\t'foo',".PHP_EOL.")", TRUE),
+			array(array('foo', 'bar'), 'array('.PHP_EOL."\t'foo',".PHP_EOL."\t'bar',".PHP_EOL.")", TRUE),
+			array(array('foo' =>'bar', 'baz' => 1), "array('foo' => 'bar', 'baz' => 1)"),
+			array(array('foo' => array('baz' => 1)), "array('foo' => array('baz' => 1))"),
+			array(array('foo' => array('baz' => false)), "array('foo' => array('baz' => FALSE))"),
+			array(array('foo' => array('baz', true)), "array('foo' => array('baz', TRUE))"),
+		);
+	}
+
+	/**
+	 * Variable type names should be normalized for use in doccomments.
+	 *
+	 * @dataProvider  provider_variable_types
+	 * @param  mixed    $variable  The variable to test
+	 * @param  string   $type      The expected type
+	 */
+	public function test_get_variable_type($variable, $type)
+	{
+		$refl = new TestReflector('TestClass');
+
+		$this->assertSame($type, $refl->get_variable_type($variable));
+	}
+
+	/**
+	 * Provides test data for test_get_variable_type.
+	 */
+	public function provider_variable_types()
+	{
+		return array(
+			array('foo', 'string'),
+			array(1, 'integer'),
+			array(1.01, 'float'),
+			array(array(), 'array'),
+			array(TRUE, 'boolean'),
+			array(FALSE, 'boolean'),
+			array(NULL, 'mixed'),
+			array(new stdClass, 'object'),
+		);
+	}
+
+	/**
 	 * The method signatures should be returned as a parsable string, with any
 	 * array parameter values parsed recursively.
 	 *
 	 * @covers Generator_Reflector::get_method_signature
 	 * @covers Generator_Reflector::get_method_param_signatures
 	 * @covers Generator_Reflector::get_param_signature
+	 * @depends test_export_variable
 	 */
 	public function test_get_method_signature()
 	{
@@ -190,31 +334,9 @@ class Generator_ReflectorTest extends Unittest_TestCase
 	}
 
 	/**
-	 * The main source information should be stored locally as pre-parsed data,
-	 * including doccomment, parent, interfaces, constants, properties, etc.
-	 */
-	public function test_getting_source_information()
-	{
-		$refl = new TestReflector('TestClass');
-
-		$this->assertRegExp('/A test class/', $refl->get_doccomment());
-		$this->assertSame('abstract', $refl->get_modifiers());
-		$this->assertSame('TestParentClass', $refl->get_parent());
-		$this->assertSame(array('TestInterfaceCountable'), $refl->get_interfaces());
-
-		$constants = $refl->get_constants();
-		$this->assertArrayHasKey('CONSTANT_ONE', $constants);
-		$this->assertArrayHasKey('CONSTANT_TWO', $constants);
-
-		$properties = $refl->get_properties();
-		$this->assertArrayHasKey('prop_one', $properties);
-		$this->assertArrayHasKey('prop_two', $properties);
-
-		$this->assertSame(1, $refl->analysis_count);
-	}
-
-	/**
 	 * Constant declarations should be returned as parsable strings.
+	 *
+	 * @depends test_export_variable
 	 */
 	public function test_get_constant_declarations()
 	{
@@ -228,6 +350,8 @@ class Generator_ReflectorTest extends Unittest_TestCase
 
 	/**
 	 * Property declarations should be returned as parsable strings.
+	 *
+	 * @depends test_export_variable
 	 */
 	public function test_get_property_declarations()
 	{

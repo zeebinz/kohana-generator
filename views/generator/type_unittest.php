@@ -16,7 +16,7 @@ class <?php echo $name ?> extends <?php echo $extends ?>
 <?php	if (empty($blank)): ?>
 	/**
 	 * This method is called before any tests are run.
-	 */	
+	 */
 	public static function setUpBeforeClass()
 	{
 	}
@@ -50,7 +50,7 @@ class <?php echo $name ?> extends <?php echo $extends ?>
 
 	/**
 	 * This method is called after all tests are run.
-	 */	
+	 */
 	public static function tearDownAfterClass()
 	{
 	}

@@ -1,0 +1,162 @@
+---SUMMARY---
+Test fixture for the GENERATE:GENERATOR generator.
+---COMMAND---
+generate:generator --name=Foo
+---EXPECTED---
+[ File 1 ] APPPATH/classes/Generator/Type/Foo.php
+
+<?php defined('SYSPATH') OR die('No direct script access.');
+/**
+ * Generator Foo type.
+ *
+ * @package    package
+ * @category   Generator/Types
+ * @author     Test Author
+ * @copyright  (c) 2012 Test Author
+ * @license    Test license
+ */
+class Generator_Type_Foo extends Generator_Type
+{
+	protected $_template = 'generator/type_foo';
+	protected $_folder   = 'classes';
+
+	/**
+	 * Finalizes parameters and renders the template.
+	 *
+	 * @return  string  The rendered output
+	 */
+	public function render()
+	{
+		return parent::render();
+	}
+
+} // End Generator_Type_Foo
+
+[ File 2 ] APPPATH/classes/Task/Generate/Foo.php
+
+<?php defined('SYSPATH') OR die('No direct script access.');
+/**
+ * Description of Task_Generate_Foo.
+ *
+ * Additional options:
+ *
+ *   --option1=VALUE1
+ *
+ *     Description of this option.
+ *
+ *   --option2=VALUE2
+ *
+ *     Description of this option.
+ *
+ * Examples
+ * ========
+ * minion task --option1=value1
+ *
+ *     Description of this example.
+ *
+ * minion task --option1=value1 --option2=value2
+ *
+ *     Description of this example.
+ *
+ * @package    package
+ * @category   Tasks
+ * @author     Test Author
+ * @copyright  (c) 2012 Test Author
+ * @license    Test license
+ */
+class Task_Generate_Foo extends Task_Generate
+{
+	/**
+	 * @var  array  The task options
+	 */
+	protected $_options = array(
+		'name' => '',
+	);
+
+	/**
+	 * Validates the task options.
+	 *
+	 * @param   Validation  $validation  The validation object to add rules to
+	 * @return  Validation
+	 */
+	public function build_validation(Validation $validation)
+	{
+		return parent::build_validation($validation)
+			->rule('name', 'not_empty');
+	}
+
+	/**
+	 * Creates a generator builder with the given configuration options.
+	 *
+	 * @param   array  $options  The selected task options
+	 * @return  Generator_Builder
+	 */
+	public function get_builder(array $options)
+	{
+		$builder = Generator::build();
+
+		return $builder;
+	}
+
+} // End Task_Generate_Foo
+
+[ File 3 ] APPPATH/tests/Generator/Type/FooTest.php
+
+<?php defined('SYSPATH') OR die('No direct script access.');
+/**
+ * Test case for Generator_Type_Foo.
+ *
+ * @group      generator
+ * @group      generator.types
+ *
+ * @package    package
+ * @category   Tests
+ * @author     Test Author
+ * @copyright  (c) 2012 Test Author
+ * @license    Test license
+ */
+class Generator_Type_FooTest extends Unittest_TestCase
+{
+	/**
+	 * This method is called before any tests are run.
+	 */
+	public static function setUpBeforeClass()
+	{
+	}
+
+	/**
+	 * This method is called before each test is run.
+	 */
+	public function setUp()
+	{
+		parent::setUp();
+	}
+
+	/**
+	 * This method is called after each test is run.
+	 */
+	public function tearDown()
+	{
+		parent::tearDown();
+	}
+
+	/**
+	 * Test for Something.
+	 *
+	 * @covers  Something
+	 * @todo    Implement test_something()
+	 */
+	public function test_something()
+	{
+		$this->markTestIncomplete('This test has not been implemented yet');
+	}
+
+	/**
+	 * This method is called after all tests are run.
+	 */
+	public static function tearDownAfterClass()
+	{
+	}
+
+} // End Generator_Type_FooTest
+---END---

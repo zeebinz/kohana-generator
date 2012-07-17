@@ -64,6 +64,10 @@ This is probably one of the most useful to use either directly or extend yoursel
 
 This type actually extends `Generator_Type_Class`, and adds methods for magically setting the correct class name, and adding a list of controller actions that you want included in the rendered output. It's quite a short class, so it's worth spending a few minutes looking through the source code to see how it modifies the behaviour of its parent. It's a good example of how you can do the same with your own custom generators.
 
+#### Generator_Type_Clone
+
+This type also extends the Class type, but instead uses reflection to gather information about classes or interfaces, and automatically adds their methods and properties to the generated output. This is a bit more complicated than the other types, so you'll probably want to read [Using the Reflector](reflector) first for more details about how it all works before using this type in your own builders and tasks.
+
 #### Generator_Type_File
 
 This is one of two special generators that don't use view templates. Instead, the file content can be set directly like so:

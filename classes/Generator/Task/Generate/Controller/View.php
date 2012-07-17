@@ -14,8 +14,8 @@ class Generator_Task_Generate_Controller_View extends Task_Generate_Controller
 	/**
 	 * Creates a generator builder with the given configuration options.
 	 *
-	 * @param  array  $options  The selected task options
-	 * @return Generator_Builder
+	 * @param   array  $options  The selected task options
+	 * @return  Generator_Builder
 	 */
 	public function get_builder(array $options)
 	{
@@ -32,7 +32,7 @@ class Generator_Task_Generate_Controller_View extends Task_Generate_Controller
 				->content('View for '.$options['name'].' controller'.PHP_EOL)
 				->pretend($options['pretend'])
 				->force($options['force'])
-			->prepare();
+			->builder();
 	}
 
 } // End Generator_Task_Generate_Controller_View

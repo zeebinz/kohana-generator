@@ -1,0 +1,49 @@
+---SUMMARY---
+Test fixture for the GENERATE:CLASS generator.
+---COMMAND---
+generate:class --name=Foo --clone=Fx_ImplClass --reflect --no-test
+---EXPECTED---
+[ File 1 ] APPPATH/classes/Foo.php
+
+<?php defined('SYSPATH') OR die('No direct script access.');
+/**
+ * Class Foo, cloned from Fx_ImplClass.
+ *
+ * @package    package
+ * @category   category
+ * @author     Test Author
+ * @copyright  (c) 2012 Test Author
+ * @license    Test license
+ */
+class Foo extends Fx_Class implements Fx_Countable, Fx_Sortable
+{
+	/**
+	 * Declared in Fx_ImplClass
+	 *
+	 * @var  mixed  $impl_prop
+	 */
+	public $impl_prop;
+
+	/**
+	 * Implementation of Fx_Countable::count
+	 *
+	 * @return  void  **Needs editing**
+	 */
+	public function count()
+	{
+		// Method implementation
+	}
+
+	/**
+	 * Implementation of Fx_Sortable::sort
+	 *
+	 * @param   array  $list
+	 * @return  void  **Needs editing**
+	 */
+	public function sort(array $list)
+	{
+		// Method implementation
+	}
+
+} // End Foo
+---END---

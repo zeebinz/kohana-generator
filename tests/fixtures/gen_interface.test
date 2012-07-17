@@ -1,0 +1,22 @@
+---SUMMARY---
+Test fixture for the GENERATE:INTERFACE generator.
+---COMMAND---
+generate:interface --name=Fooable
+---EXPECTED---
+[ File 1 ] APPPATH/Fooable.php
+
+<?php defined('SYSPATH') OR die('No direct script access.');
+/**
+ * Fooable interface.
+ *
+ * @package    package
+ * @category   Interfaces
+ * @author     Test Author
+ * @copyright  (c) 2012 Test Author
+ * @license    Test license
+ */
+interface Fooable
+{
+
+} // End Fooable
+---END---

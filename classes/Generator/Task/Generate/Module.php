@@ -20,8 +20,8 @@ class Generator_Task_Generate_Module extends Task_Generate
 	/**
 	 * Validates the task options.
 	 *
-	 * @param  Validation  $validation  The validation object to add rules to
-	 * @return Validation
+	 * @param   Validation  $validation  The validation object to add rules to
+	 * @return  Validation
 	 */
 	public function build_validation(Validation $validation)
 	{
@@ -32,8 +32,8 @@ class Generator_Task_Generate_Module extends Task_Generate
 	/**
 	 * Creates a generator builder with the given configuration options.
 	 *
-	 * @param  array  $options  The selected task options
-	 * @return Generator_Builder
+	 * @param   array  $options  The selected task options
+	 * @return  Generator_Builder
 	 */
 	public function get_builder(array $options)
 	{
@@ -54,6 +54,10 @@ class Generator_Task_Generate_Module extends Task_Generate
 
 			// Guide pages and config
 			->add_guide(ucfirst($options['name']))
+				->page('Getting Started|start')
+			->add_file('start.md')
+				->folder('guide'.$ds.$options['name'])
+				->content('# Getting Started'.PHP_EOL.PHP_EOL.'Coming soon.'.PHP_EOL)
 			->add_file('index.md')
 				->folder('guide'.$ds.$options['name'])
 				->content('# '.ucfirst($options['name']).' module'.PHP_EOL.PHP_EOL
@@ -62,7 +66,7 @@ class Generator_Task_Generate_Module extends Task_Generate
 				->template('generator/type_guide_config')
 				->set('name', ucfirst($options['name']))
 				->set('module', $options['name'])
-				->set('copyright', '(c) Copyright')
+				->defaults($this->get_config('defaults.guide', $options['config']))
 
 			// Basic directory structure
 			->add_directory('classes')
@@ -72,8 +76,7 @@ class Generator_Task_Generate_Module extends Task_Generate
 			->with_module($options['name'])
 			->with_pretend($options['pretend'])
 			->with_force($options['force'])
-			->with_verify(FALSE)
-			->prepare();
+			->with_verify(FALSE);
 	}
 
 } // End Generator_Task_Generate_Module

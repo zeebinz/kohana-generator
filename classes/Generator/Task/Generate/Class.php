@@ -20,6 +20,7 @@ class Generator_Task_Generate_Class extends Task_Generate
 		'stub'      => '',
 		'abstract'  => FALSE,
 		'no-test'   => FALSE,
+		'blank'     => FALSE,
 		'clone'     => '',
 		'reflect'   => FALSE,
 		'inherit'   => FALSE,
@@ -28,8 +29,8 @@ class Generator_Task_Generate_Class extends Task_Generate
 	/**
 	 * Validates the task options.
 	 *
-	 * @param  Validation  $validation  The validation object to add rules to
-	 * @return Validation
+	 * @param   Validation  $validation  The validation object to add rules to
+	 * @return  Validation
 	 */
 	public function build_validation(Validation $validation)
 	{
@@ -40,8 +41,8 @@ class Generator_Task_Generate_Class extends Task_Generate
 	/**
 	 * Creates a generator builder with the given configuration options.
 	 *
-	 * @param  array  $options  The selected task options
-	 * @return Generator_Builder
+	 * @param   array  $options  The selected task options
+	 * @return  Generator_Builder
 	 */
 	public function get_builder(array $options)
 	{
@@ -57,6 +58,7 @@ class Generator_Task_Generate_Class extends Task_Generate
 					->extend($options['extend'])
 					->implement($options['implement'])
 					->template($options['template'])
+					->blank($options['blank'])
 				->builder();
 		}
 
@@ -72,24 +74,24 @@ class Generator_Task_Generate_Class extends Task_Generate
 		{
 			$name = $options['stub'] ? $builder->name() : $options['name'];
 			$builder->add_unittest($name)
-				->group($options['module']);
+				->group($options['module'])
+				->blank($options['blank']);
 		}
 
 		return $builder
 			->with_module($options['module'])
 			->with_pretend($options['pretend'])
 			->with_force($options['force'])
-			->with_defaults($this->get_config('defaults.class', $options['config']))
-			->prepare();
+			->with_defaults($this->get_config('defaults.class', $options['config']));
 	}
 
 	/**
 	 * Creates a generator builder that clones an existing class, either from
 	 * an existing file or from an internal class definition.
 	 *
-	 * @param  array  $options  The selected task options
-	 * @param  array  $type     The source type to clone
-	 * @return Generator_Builder
+	 * @param   array  $options  The selected task options
+	 * @param   array  $type     The source type to clone
+	 * @return  Generator_Builder
 	 */
 	public function get_clone(array $options, $type = Generator_Reflector::TYPE_CLASS)
 	{

@@ -21,8 +21,8 @@ class Generator_Task_Generate_Guide extends Task_Generate
 	/**
 	 * Validates the task options.
 	 *
-	 * @param  Validation  $validation  The validation object to add rules to
-	 * @return Validation
+	 * @param   Validation  $validation  The validation object to add rules to
+	 * @return  Validation
 	 */
 	public function build_validation(Validation $validation)
 	{
@@ -33,8 +33,8 @@ class Generator_Task_Generate_Guide extends Task_Generate
 	/**
 	 * Creates a generator builder with the given configuration options.
 	 *
-	 * @param  array  $options  The selected task options
-	 * @return Generator_Builder
+	 * @param   array  $options  The selected task options
+	 * @return  Generator_Builder
 	 */
 	public function get_builder(array $options)
 	{
@@ -52,7 +52,7 @@ class Generator_Task_Generate_Guide extends Task_Generate
 		{
 			// Get any guide page definitions
 			$params = $builder->params();
-			$pages = $builder->parse_pages($params['pages']);
+			$pages = $builder->get_menu_pages();
 
 			foreach ($pages as $title => $file)
 			{
@@ -75,15 +75,14 @@ class Generator_Task_Generate_Guide extends Task_Generate
 				->template('generator/type_guide_config')
 				->set('name', ucfirst($options['name']))
 				->set('module', $options['module'])
-				->defaults($this->get_config('defaults.guide', $options['config']))
+				->defaults($this->get_config('defaults.guide', $options['config']));
 		}
 
 		// Return the builder
 		return $builder
 			->with_module($options['module'])
 			->with_pretend($options['pretend'])
-			->with_force($options['force'])
-			->prepare();
+			->with_force($options['force']);
 	}
 
 } // End Generator_Task_Generate_Guide

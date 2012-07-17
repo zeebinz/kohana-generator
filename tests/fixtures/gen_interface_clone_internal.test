@@ -1,0 +1,63 @@
+---SUMMARY---
+Test fixture for the GENERATE:INTERFACE generator.
+---COMMAND---
+generate:interface --name=Fooable --clone=OuterIterator --reflect --inherit
+---EXPECTED---
+[ File 1 ] APPPATH/classes/Fooable.php
+
+<?php defined('SYSPATH') OR die('No direct script access.');
+/**
+ * Interface Fooable, cloned from OuterIterator.
+ *
+ * @package    package
+ * @category   Interfaces
+ * @author     Test Author
+ * @copyright  (c) 2012 Test Author
+ * @license    Test license
+ */
+interface Fooable extends Iterator
+{
+	/**
+	 * Declaration of OuterIterator::getInnerIterator
+	 *
+	 * @return  void  **Needs editing**
+	 */
+	public function getInnerIterator();
+
+	/**
+	 * Declaration of Iterator::current
+	 *
+	 * @return  void  **Needs editing**
+	 */
+	public function current();
+
+	/**
+	 * Declaration of Iterator::next
+	 *
+	 * @return  void  **Needs editing**
+	 */
+	public function next();
+
+	/**
+	 * Declaration of Iterator::key
+	 *
+	 * @return  void  **Needs editing**
+	 */
+	public function key();
+
+	/**
+	 * Declaration of Iterator::valid
+	 *
+	 * @return  void  **Needs editing**
+	 */
+	public function valid();
+
+	/**
+	 * Declaration of Iterator::rewind
+	 *
+	 * @return  void  **Needs editing**
+	 */
+	public function rewind();
+
+} // End Fooable
+---END---

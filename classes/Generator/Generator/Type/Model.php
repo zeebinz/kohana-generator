@@ -25,7 +25,7 @@ class Generator_Generator_Type_Model extends Generator_Type_Class
 			return $this->_name;
 
 		// Prepend 'Model_' to the class name if not already present
-		$this->_name = (strpos($name, 'Model_') === FALSE) ? ('Model_'.$name) : $name;
+		$this->_name = (strpos($name, 'Model') === FALSE) ? ('Model_'.$name) : $name;
 
 		return $this;
 	}

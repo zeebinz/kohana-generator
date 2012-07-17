@@ -1,0 +1,9 @@
+---SUMMARY---
+Test fixture for the GENERATE:VIEW generator.
+---COMMAND---
+generate:view --name=foo
+---EXPECTED---
+[ File 1 ] APPPATH/views/foo.php
+
+Content of view foo
+---END---

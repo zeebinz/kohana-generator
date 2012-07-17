@@ -1,0 +1,64 @@
+---SUMMARY---
+Test fixture for the GENERATE:UNITTEST generator.
+---COMMAND---
+generate:unittest --name=Foo --extend=Bar_TestCase
+---EXPECTED---
+[ File 1 ] APPPATH/tests/FooTest.php
+
+<?php defined('SYSPATH') OR die('No direct script access.');
+/**
+ * Test case for Foo.
+ *
+ * @group      group
+ *
+ * @package    package
+ * @category   Tests
+ * @author     Test Author
+ * @copyright  (c) 2012 Test Author
+ * @license    Test license
+ */
+class FooTest extends Bar_TestCase
+{
+	/**
+	 * This method is called before any tests are run.
+	 */
+	public static function setUpBeforeClass()
+	{
+	}
+
+	/**
+	 * This method is called before each test is run.
+	 */
+	public function setUp()
+	{
+		parent::setUp();
+	}
+
+	/**
+	 * This method is called after each test is run.
+	 */
+	public function tearDown()
+	{
+		parent::tearDown();
+	}
+
+	/**
+	 * Test for Something.
+	 *
+	 * @covers  Something
+	 * @todo    Implement test_something()
+	 */
+	public function test_something()
+	{
+		$this->markTestIncomplete('This test has not been implemented yet');
+	}
+
+	/**
+	 * This method is called after all tests are run.
+	 */
+	public static function tearDownAfterClass()
+	{
+	}
+
+} // End FooTest
+---END---

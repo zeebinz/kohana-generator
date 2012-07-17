@@ -1,6 +1,6 @@
 <?php defined('SYSPATH') OR die('No direct script access.');
 /**
- * Generates application classes from templates. The class can be created in 
+ * Generates application classes from templates. The class can be created in
  * either the application folder or a module folder, and can optionally be
  * configured for transparent extension.
  *
@@ -18,10 +18,10 @@
  *
  *     If set, this empty class will be created as a transparent extension
  *     of the main class.
- * 
+ *
  *   --implement=INTERFACE[,INTERFACE[,...]]
  *
- *     A comma-separated list of any interfaces that this class should 
+ *     A comma-separated list of any interfaces that this class should
  *     implement.
  *
  *   --clone=CLASS
@@ -31,15 +31,20 @@
  *     will be used for internal classes, or if the --reflect option is set,
  *     and inherited methods and properties may be included with --inherit.
  *
+ *   --abstract
+ *
+ *     The class will be marked as abstract if this option is set.
+
  *   --no-test
  *
  *     A test case will be created automatically for the class unless this
  *     option is set.
  *
- *   --abstract
+ *   --blank
  *
- *     The class will be marked as abstract if this option is set.
- *  
+ *     The skelton methods for both the class and the test will be omitted
+ *     if this option is set.
+ *
  * Examples
  * ========
  * minion generate:class --name=Log_Reader --implement="Countable,ArrayAccess"
@@ -47,7 +52,7 @@
  *     class : Log_Reader implements Countable, ArrayAccess
  *     file  : APPPATH/classes/Log/Reader.php
  *     class : Log_ReaderTest extends Unittest_TestCase
- *     file  : APPPATH/tests/Log/ReaderTest.php 
+ *     file  : APPPATH/tests/Log/ReaderTest.php
  *
  * minion generate:class --name=Logger_Log_Reader --extend=Logger_Reader \
  *     --module=logger --stub=Log_Reader --no-test
@@ -62,10 +67,10 @@
  *     class : Log extends SplHeap implements Countable, Traversable, Iterator
  *     file  : APPPATH/classes/Log.php
  *
- * @package    Generator 
- * @category   Tasks 
- * @author     Zeebee 
- * @copyright  (c) 2012 Zeebee 
- * @license    BSD revised 
+ * @package    Generator
+ * @category   Tasks
+ * @author     Zeebee
+ * @copyright  (c) 2012 Zeebee
+ * @license    BSD revised
  */
-class Task_Generate_Class extends Generator_Task_Generate_Class {} 
+class Task_Generate_Class extends Generator_Task_Generate_Class {}

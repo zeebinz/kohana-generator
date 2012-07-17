@@ -1,0 +1,46 @@
+---SUMMARY---
+Test fixture for the GENERATE:CLASS generator.
+---COMMAND---
+generate:class --name=Foo --clone=Fx_ChildClass --reflect --no-test
+---EXPECTED---
+[ File 1 ] APPPATH/classes/Foo.php
+
+<?php defined('SYSPATH') OR die('No direct script access.');
+/**
+ * Class Foo, cloned from Fx_ChildClass.
+ *
+ * @package    package
+ * @category   category
+ * @author     Test Author
+ * @copyright  (c) 2012 Test Author
+ * @license    Test license
+ */
+class Foo extends Fx_Class
+{
+	// Declared in Fx_ChildClass
+	const CONST_ONE = 'one';
+
+	// Declared in Fx_ChildClass
+	const CONST_THREE = 3;
+
+	/**
+	 * Declared in Fx_ChildClass
+	 *
+	 * @var  mixed  $prop_one
+	 */
+	public static $prop_one;
+
+	/**
+	 * Implementation of Fx_ChildClass::_method_five
+	 *
+	 * @param   SomeClass  $class
+	 * @param   mixed  $two
+	 * @return  void  **Needs editing**
+	 */
+	protected function _method_five(SomeClass $class, $two)
+	{
+		// Method implementation
+	}
+
+} // End Foo
+---END---

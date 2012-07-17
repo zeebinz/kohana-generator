@@ -1,0 +1,72 @@
+---SUMMARY---
+Test fixture for the GENERATE:MODULE generator.
+---COMMAND---
+generate:module --name=mymodule
+---EXPECTED---
+[ File 1 ] MODPATH/mymodule/init.php
+
+<?php defined('SYSPATH') OR die('No direct script access.');
+
+[ File 2 ] MODPATH/mymodule/README.md
+
+# Mymodule module
+
+Information about this module.
+
+[ File 3 ] MODPATH/mymodule/LICENSE
+
+License info
+
+[ File 4 ] MODPATH/mymodule/guide/mymodule/menu.md
+
+## [Mymodule]()
+
+ - [Getting Started](start)
+
+[ File 5 ] MODPATH/mymodule/guide/mymodule/start.md
+
+# Getting Started
+
+Coming soon.
+
+[ File 6 ] MODPATH/mymodule/guide/mymodule/index.md
+
+# Mymodule module
+
+Index page for this module.
+
+[ File 7 ] MODPATH/mymodule/config/userguide.php
+
+<?php defined('SYSPATH') OR die('No direct script access.');
+
+return array
+(
+	// Leave this alone
+	'modules' => array(
+
+		// This should be the path to this modules userguide pages, without the 'guide/'. Ex: '/guide/modulename/' would be 'modulename'
+		'mymodule' => array(
+
+			// Whether this modules userguide pages should be shown
+			'enabled' => TRUE,
+
+			// The name that should show up on the userguide index page
+			'name' => 'Mymodule',
+
+			// A short description of this module, shown on the index page
+			'description' => 'Module description.',
+
+			// Copyright message, shown in the footer for this module
+			'copyright' => '(c) 2012 Test Author',
+		)
+	)
+);
+
+[ File 8 ] MODPATH/mymodule/classes
+
+This is a directory type, nothing to render.
+
+[ File 9 ] MODPATH/mymodule/tests
+
+This is a directory type, nothing to render.
+---END---

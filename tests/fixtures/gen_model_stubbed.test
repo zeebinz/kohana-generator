@@ -1,0 +1,112 @@
+---SUMMARY---
+Test fixture for the GENERATE:MODEL generator.
+---COMMAND---
+generate:model --name=Foo_Model --stub=Bar
+---EXPECTED---
+[ File 1 ] APPPATH/classes/Foo/Model.php
+
+<?php defined('SYSPATH') OR die('No direct script access.');
+/**
+ * Class Foo_Model.
+ *
+ * @package    package
+ * @category   Models
+ * @author     Test Author
+ * @copyright  (c) 2012 Test Author
+ * @license    Test license
+ */
+class Foo_Model extends Model
+{
+	/**
+	 * @var  string  some string
+	 */
+	public $some_string;
+
+	/**
+	 * Short description.
+	 *
+	 * Long method description.
+	 *
+	 * @param   string  $param  Some string
+	 * @return  void
+	 */
+	public function some_method($param)
+	{
+		// Method implementation
+	}
+
+} // End Foo_Model
+
+[ File 2 ] APPPATH/classes/Model/Bar.php
+
+<?php defined('SYSPATH') OR die('No direct script access.');
+/**
+ * Class Model_Bar.
+ *
+ * @package    package
+ * @category   Models
+ * @author     Test Author
+ * @copyright  (c) 2012 Test Author
+ * @license    Test license
+ */
+class Model_Bar extends Foo_Model {}
+
+[ File 3 ] APPPATH/tests/Model/BarTest.php
+
+<?php defined('SYSPATH') OR die('No direct script access.');
+/**
+ * Test case for Model_Bar.
+ *
+ * @group      group
+ *
+ * @package    package
+ * @category   Tests
+ * @author     Test Author
+ * @copyright  (c) 2012 Test Author
+ * @license    Test license
+ */
+class Model_BarTest extends Unittest_TestCase
+{
+	/**
+	 * This method is called before any tests are run.
+	 */
+	public static function setUpBeforeClass()
+	{
+	}
+
+	/**
+	 * This method is called before each test is run.
+	 */
+	public function setUp()
+	{
+		parent::setUp();
+	}
+
+	/**
+	 * This method is called after each test is run.
+	 */
+	public function tearDown()
+	{
+		parent::tearDown();
+	}
+
+	/**
+	 * Test for Something.
+	 *
+	 * @covers  Something
+	 * @todo    Implement test_something()
+	 */
+	public function test_something()
+	{
+		$this->markTestIncomplete('This test has not been implemented yet');
+	}
+
+	/**
+	 * This method is called after all tests are run.
+	 */
+	public static function tearDownAfterClass()
+	{
+	}
+
+} // End Model_BarTest
+---END---
