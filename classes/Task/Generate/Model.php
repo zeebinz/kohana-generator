@@ -8,7 +8,7 @@
  *
  *   --name=MODEL (required)
  *
- *     The name of this Model. If 'Model_' is not included in the name, it
+ *     The name of this Model. If 'Model' is not included in the name, it
  *     will be prepended automatically.
  *
  *   --extend=CLASS
@@ -18,7 +18,7 @@
  *   --stub=MODEL
  *
  *     If set, this stub will be created as a transparent extension of the 
- *     model; the 'Model_' prefix may also be omitted.
+ *     model; the 'Model' prefix may also be omitted.
  *
  *   --no-test
  *

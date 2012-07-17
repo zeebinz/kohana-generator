@@ -58,7 +58,8 @@ class Generator_Task_Generate_Model extends Task_Generate
 
 		if ( ! $options['no-test'])
 		{
-			$builder->add_unittest($model)
+			$name = $options['stub'] ? $builder->name() : $model;
+			$builder->add_unittest($name)
 				->group($options['module']);
 		}
 
