@@ -1,6 +1,18 @@
 Generator for Kohana - Changelog
 ================================
 
+Version 0.6
+-----------
+
+- Added a new guide page: 'Using the Reflector', includes tips on cloning.
+- Fixed naming of Models and their tests when stubbed.
+- Replaced Kohana_Minion_CLI with Generator_Minion_CLI to be more friendly to
+  other modules - still only included temporarily, though.
+- Fixed the mixed line ending types for exported arrays with indentation.
+- Added a new render_template() method to Generator_Type for easier overriding
+  of the templating system.
+- Added a new Fixture generator for creating simple test fixtures, with some new
+  functional tests for the Minion tasks that use them.
 - Fixed the tasks produced by generate:generator always to extend Task_Generate
   rather than Minion_Task.
 - The get_config method for tasks can now accept an absolute path as the $group
@@ -9,14 +21,14 @@ Generator for Kohana - Changelog
   the value of DIRECTORY_SEPARATOR.
 - If any generated concrete class extends a parent that includes abstract methods,
   skeleton methods for implementing these will be included by default along with
-	any interface methods. Abstract classes aren't affected, though.
+  any interface methods. Abstract classes aren't affected, though.
 - Added the option to retrieve only abstract methods via reflection.	
-- The generate:class task now includes the --blank option to prevent any
-  skeleton methods from being included.
+- The generate:class task now includes the --blank option to prevent any skeleton
+  methods from being included.
 - There should no longer be any duplicate 'remove' messages when removing,
   although some extra info can still be viewed when using the --verbose option,
-	which is now disabled by default.
-- When removing, parent directories will now be igored if the child isn't empty.
+  which is now disabled by default.
+- When removing directories, parents will now be ignored if the child isn't empty.
 
 Version 0.5
 -----------
