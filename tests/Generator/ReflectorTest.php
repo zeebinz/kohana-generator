@@ -118,6 +118,18 @@ class Generator_ReflectorTest extends Unittest_TestCase
 	}
 
 	/**
+	 * We need to be able to check easily if the source is abstract.
+	 */
+	public function test_source_is_abstract()
+	{
+		$refl = new TestReflector('TestClass');
+		$this->assertTrue($refl->is_abstract());
+
+		$refl = new TestReflector('TestParentClass');
+		$this->assertFalse($refl->is_abstract());
+	}
+
+	/**
 	 * The class methods should be stored locally after initial analysis.
 	 */
 	public function test_getting_class_methods()
