@@ -430,7 +430,7 @@ class Generator_Generator_Reflector
 	public function get_variable_type($variable)
 	{
 		$type = gettype($variable);
-		$type = str_replace('NULL', 'mixed', $type);
+		$type = str_replace(array('NULL', 'double'), array('mixed', 'float'), $type);
 
 		return $type;
 	}

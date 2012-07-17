@@ -277,6 +277,37 @@ class Generator_ReflectorTest extends Unittest_TestCase
 	}
 
 	/**
+	 * Variable type names should be normalized for use in doccomments.
+	 *
+	 * @dataProvider  provider_variable_types
+	 * @param  mixed    $variable  The variable to test
+	 * @param  string   $type      The expected type
+	 */
+	public function test_get_variable_type($variable, $type)
+	{
+		$refl = new TestReflector('TestClass');
+
+		$this->assertSame($type, $refl->get_variable_type($variable));
+	}
+
+	/**
+	 * Provides test data for test_get_variable_type.
+	 */
+	public function provider_variable_types()
+	{
+		return array(
+			array('foo', 'string'),
+			array(1, 'integer'),
+			array(1.01, 'float'),
+			array(array(), 'array'),
+			array(TRUE, 'boolean'),
+			array(FALSE, 'boolean'),
+			array(NULL, 'mixed'),
+			array(new stdClass, 'object'),
+		);
+	}
+
+	/**
 	 * The method signatures should be returned as a parsable string, with any
 	 * array parameter values parsed recursively.
 	 *
