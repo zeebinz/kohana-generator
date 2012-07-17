@@ -1,0 +1,24 @@
+---SUMMARY---
+Test fixture for the GENERATE:UNITTEST generator.
+---COMMAND---
+generate:unittest --name=Foo_Bar --blank
+---EXPECTED---
+[ File 1 ] APPPATH/tests/Foo/BarTest.php
+
+<?php defined('SYSPATH') OR die('No direct script access.');
+/**
+ * Test case for Foo_Bar.
+ *
+ * @group      group
+ *
+ * @package    package
+ * @category   Tests
+ * @author     Test Author
+ * @copyright  (c) 2012 Test Author
+ * @license    Test license
+ */
+class Foo_BarTest extends Unittest_TestCase
+{
+
+} // End Foo_BarTest
+---END---
