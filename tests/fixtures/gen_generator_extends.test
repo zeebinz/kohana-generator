@@ -1,0 +1,34 @@
+---SUMMARY---
+Test fixture for the GENERATE:GENERATOR generator.
+---COMMAND---
+generate:generator --name=Foo --extend=Type_Class --no-test --no-task
+---EXPECTED---
+[ File 1 ] APPPATH/classes/Generator/Type/Foo.php
+
+<?php defined('SYSPATH') OR die('No direct script access.');
+/**
+ * Generator Foo type.
+ *
+ * @package    package
+ * @category   Generator/Types
+ * @author     Test Author
+ * @copyright  (c) 2012 Test Author
+ * @license    Test license
+ */
+class Generator_Type_Foo extends Type_Class
+{
+	protected $_template = 'generator/type_foo';
+	protected $_folder   = 'classes';
+
+	/**
+	 * Finalizes parameters and renders the template.
+	 *
+	 * @return  string  The rendered output
+	 */
+	public function render()
+	{
+		return parent::render();
+	}
+
+} // End Generator_Type_Foo
+---END---
