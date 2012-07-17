@@ -1,0 +1,125 @@
+---SUMMARY---
+Test fixture for the GENERATE:CLASS generator.
+---COMMAND---
+generate:class --name=Foo_Bar --clone=Fx_ChildClass --stub=Foo --reflect --inherit --no-test
+---EXPECTED---
+[ File 1 ] APPPATH/classes/Foo/Bar.php
+
+<?php defined('SYSPATH') OR die('No direct script access.');
+/**
+ * Class Foo_Bar, cloned from Fx_ChildClass.
+ *
+ * @package    package
+ * @category   category
+ * @author     Test Author
+ * @copyright  (c) 2012 Test Author
+ * @license    Test license
+ */
+class Foo_Bar extends Fx_Class
+{
+	// Declared in Fx_ChildClass
+	const CONST_ONE = 'one';
+
+	// Declared in Fx_Class
+	const CONST_TWO = 2;
+
+	// Declared in Fx_ChildClass
+	const CONST_THREE = 3;
+
+	/**
+	 * Declared in Fx_ChildClass
+	 *
+	 * @var  mixed  $prop_one
+	 */
+	public static $prop_one;
+
+	/**
+	 * Declared in Fx_Class
+	 *
+	 * @var  string  $_prop_two
+	 */
+	protected static $_prop_two = 'two';
+
+	/**
+	 * Implementation of Fx_Class::method_one
+	 *
+	 * @param   mixed  $one
+	 * @param   string  $two
+	 * @param   integer  $three
+	 * @param   float  $four
+	 * @return  void  **Needs editing**
+	 */
+	public static function method_one($one, $two = 'two', $three = 3, $four = 4.01)
+	{
+		parent::method_one($one, $two, $three, $four);
+	}
+
+	/**
+	 * Implementation of Fx_Class::_method_two
+	 *
+	 * @param   SomeClass  $class
+	 * @return  void  **Needs editing**
+	 */
+	protected static function _method_two(SomeClass $class = NULL)
+	{
+		parent::_method_two($class);
+	}
+
+	/**
+	 * Declared in Fx_Class
+	 *
+	 * @var  array  $prop_three
+	 */
+	public $prop_three = array();
+
+	/**
+	 * Declared in Fx_Class
+	 *
+	 * @var  float  $prop_four
+	 */
+	public $prop_four = 4.001;
+
+	/**
+	 * Implementation of Fx_Class::method_three
+	 *
+	 * @param   array  $list
+	 * @return  void  **Needs editing**
+	 */
+	public function method_three(array $list)
+	{
+		parent::method_three($list);
+	}
+
+	/**
+	 * A protected property
+	 */
+	protected $_prop_five = array();
+
+	/**
+	 * Implementation of Fx_ChildClass::_method_five
+	 *
+	 * @param   SomeClass  $class
+	 * @param   mixed  $two
+	 * @return  void  **Needs editing**
+	 */
+	protected function _method_five(SomeClass $class, $two)
+	{
+		// Method implementation
+	}
+
+} // End Foo_Bar
+
+[ File 2 ] APPPATH/classes/Foo.php
+
+<?php defined('SYSPATH') OR die('No direct script access.');
+/**
+ * Class Foo.
+ *
+ * @package    package
+ * @category   category
+ * @author     Test Author
+ * @copyright  (c) 2012 Test Author
+ * @license    Test license
+ */
+class Foo extends Foo_Bar {}
+---END---

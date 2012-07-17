@@ -1,0 +1,127 @@
+---SUMMARY---
+Test fixture for the GENERATE:CLASS generator.
+---COMMAND---
+generate:class --name=Foo --clone=Fx_AbstractClass --reflect --inherit --no-test
+---EXPECTED---
+[ File 1 ] APPPATH/classes/Foo.php
+
+<?php defined('SYSPATH') OR die('No direct script access.');
+/**
+ * Class Foo, cloned from Fx_AbstractClass.
+ *
+ * @package    package
+ * @category   category
+ * @author     Test Author
+ * @copyright  (c) 2012 Test Author
+ * @license    Test license
+ */
+abstract class Foo extends Fx_Class
+{
+	// Declared in Fx_Class
+	const CONST_ONE = 1;
+
+	// Declared in Fx_Class
+	const CONST_TWO = 2;
+
+	/**
+	 * Declared in Fx_Class
+	 *
+	 * @var  mixed  $prop_one
+	 */
+	public static $prop_one;
+
+	/**
+	 * Declared in Fx_Class
+	 *
+	 * @var  string  $_prop_two
+	 */
+	protected static $_prop_two = 'two';
+
+	/**
+	 * Implementation of Fx_Class::method_one
+	 *
+	 * @param   mixed  $one
+	 * @param   string  $two
+	 * @param   integer  $three
+	 * @param   float  $four
+	 * @return  void  **Needs editing**
+	 */
+	public static function method_one($one, $two = 'two', $three = 3, $four = 4.01)
+	{
+		// Method implementation
+	}
+
+	/**
+	 * Implementation of Fx_Class::_method_two
+	 *
+	 * @param   SomeClass  $class
+	 * @return  void  **Needs editing**
+	 */
+	protected static function _method_two(SomeClass $class = NULL)
+	{
+		// Method implementation
+	}
+
+	/**
+	 * Declared in Fx_AbstractClass
+	 *
+	 * @var  mixed  $abstract_prop
+	 */
+	public $abstract_prop;
+
+	/**
+	 * Declared in Fx_Class
+	 *
+	 * @var  array  $prop_three
+	 */
+	public $prop_three = array();
+
+	/**
+	 * Declared in Fx_Class
+	 *
+	 * @var  float  $prop_four
+	 */
+	public $prop_four = 4.001;
+
+	/**
+	 * Implementation of Fx_Class::method_three
+	 *
+	 * @param   array  $list
+	 * @return  void  **Needs editing**
+	 */
+	public function method_three(array $list)
+	{
+		// Method implementation
+	}
+
+	/**
+	 * Declaration of Fx_AbstractClass::abstract_method_one
+	 *
+	 * @param   mixed  $one
+	 * @return  void  **Needs editing**
+	 */
+	abstract public function abstract_method_one($one);
+
+	/**
+	 * Declaration of Fx_AbstractClass::_abstract_method_two
+	 *
+	 * @param   integer  $two
+	 * @return  void  **Needs editing**
+	 */
+	abstract protected function _abstract_method_two($two = 2);
+
+	/**
+	 * A protected property
+	 */
+	protected $_prop_five = array();
+
+	/**
+	 * A protected method
+	 */
+	protected function _method_five(SomeClass $class, $two)
+	{
+		// Implementation of Fx_Class::_method_five
+	}
+
+} // End Foo
+---END---
