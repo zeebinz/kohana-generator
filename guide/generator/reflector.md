@@ -121,4 +121,4 @@ The `--clone` option is also available for generating user-defined or internal i
 
 	./minion generate:interface --name=Fooable --clone=ArrayAccess
 	
-There's a lot more to cloning, but this is one of those cases where trying it out yourself with different sources and options is really the best way of learning all the different things you can do with it. Apart from Kohana's own classes, you could try playing with the [Standard PHP Library](http://uk3.php.net/manual/en/book.spl.php). There are also some other examples of commands and generated output in the `tests/fixtures` directory.
+There's a lot more to cloning, but this is one of those cases where trying it out yourself with different sources and options is really the best way of learning all the different things you can do with it. Apart from Kohana's own classes, you could try playing with the [Standard PHP Library](http://www.php.net/manual/en/book.spl.php). There are also some other examples of commands and generated output in the `tests/fixtures` directory.
