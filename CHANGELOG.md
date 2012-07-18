@@ -1,6 +1,11 @@
 Generator for Kohana - Changelog
 ================================
 
+- When refreshing fixtures, wildcards may now be used in the --name option to
+  match a list of fixture files (e.g. `--name=gen_model*`).
+- Generators from different builders may now be merged via the new merge()
+  method of Generator_Builder.
+
 Version 0.6
 -----------
 
