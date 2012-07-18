@@ -112,19 +112,17 @@ class Generator_Task_GenerateTest extends Unittest_TestCase
 	 *
 	 * @dataProvider  provider_test_fixtures
 	 * @param    Generator_Type_Fixture  $fixture  A fixture object
-	 * @param    string  $name  The name of the fixture file to load
 	 * @depends  test_parse_and_create_task_commands
 	 */
-	public function test_generated_output_with_fixtures($fixture, $name)
+	public function test_generated_output_with_fixtures($fixture)
 	{
-		$module = basename(dirname(dirname(dirname(dirname(__FILE__)))));
-
 		// First test loading up the fixture's file
-		$this->assertTrue($fixture->load_from_file(), "Couldn't load the fixture: '$name'");
+		$this->assertTrue($fixture->load_from_file(),
+			"Couldn't load the fixture: '".$fixture->name()."'");
 
 		// Create a new task with the fixture's command
 		$task = new Task_Generate_Fixture;
-		$task->set_options(array('module' => $module));
+		$task->set_options(array('module' => $fixture->module()));
 		$args = $task->parse_task_command($fixture->command());
 
 		// Get the expectations
@@ -164,7 +162,7 @@ class Generator_Task_GenerateTest extends Unittest_TestCase
 			$fixt->name($name)->module($module);
 
 			// Add the fixture to the list
-			$fixtures[] = array($fixt, $name);
+			$fixtures[] = array($fixt);
 		}
 
 		return $fixtures;
