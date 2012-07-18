@@ -1,17 +1,17 @@
 <?php defined('SYSPATH') OR die('No direct script access.');
 /**
  * Test case for Generator_Builder.
- * 
- * @group      generator 
- * @group      generator.builder 
  *
- * @package    Generator 
- * @category   Tests 
- * @author     Zeebee 
- * @copyright  (c) 2012 Zeebee 
- * @license    BSD revised 
+ * @group      generator
+ * @group      generator.builder
+ *
+ * @package    Generator
+ * @category   Tests
+ * @author     Zeebee
+ * @copyright  (c) 2012 Zeebee
+ * @license    BSD revised
  */
-class Generator_BuilderTest extends Unittest_TestCase 
+class Generator_BuilderTest extends Unittest_TestCase
 {
 	/**
 	 * The build() method is a factory method for the Builder.
@@ -184,7 +184,7 @@ class Generator_BuilderTest extends Unittest_TestCase
 	}
 
 	/**
-	 * The execute() method should call create() on each stored item, which 
+	 * The execute() method should call create() on each stored item, which
 	 * in turn should keep a log of any actions.
 	 */
 	public function test_execute()
@@ -220,4 +220,36 @@ class Generator_BuilderTest extends Unittest_TestCase
 		$this->assertEmpty($builder->get_log());
 	}
 
-} // End Generator_BuilderTest 
+	/**
+	 * Generators from different builder instances may be merged into each other,
+	 * possibly with the different prepared settings for each.
+	 */
+	public function test_merging_builders()
+	{
+		$builder_a = Generator::build()
+			->add_type('class', 'Foo')
+				->module('baz')
+				->verify(FALSE)
+			->builder();
+
+		$builder_b = Generator::build()
+			->add_type('class', 'Bar')
+				->module('qux')
+				->verify(FALSE)
+			->builder();
+
+		$builder_a->merge($builder_b);
+
+		$generators = $builder_a->generators();
+		$this->assertCount(2, $generators);
+
+		$this->assertSame('Foo', $generators[0]->name());
+		$this->assertNotEmpty($generators[0]->file());
+		$this->assertSame('baz', $generators[0]->module());
+
+		$this->assertSame('Bar', $generators[1]->name());
+		$this->assertNotEmpty($generators[1]->file());
+		$this->assertSame('qux', $generators[1]->module());
+	}
+
+} // End Generator_BuilderTest

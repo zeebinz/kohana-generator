@@ -273,6 +273,25 @@ class Generator_Generator_Builder
 	}
 
 	/**
+	 * Merges the generators from a given builder object into the current
+	 * instance, preserving any prepared settings for each.
+	 *
+	 * @param   Generator_Builder  $builder  The builder to merge
+	 * @return  Generator_Builder  This instance
+	 */
+	public function merge(Generator_Builder $builder)
+	{
+		// Prepare the generators
+		$this->_is_prepared OR $this->prepare();
+		$builder->prepare();
+
+		// Merge the generators lists
+		$this->_generators = array_merge($this->_generators, $builder->generators());
+
+		return $this;
+	}
+
+	/**
 	 * Runs the given command on all added generators in one action.
 	 *
 	 * In practice it's more convenient to iterate over each generator
