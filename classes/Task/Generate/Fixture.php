@@ -8,7 +8,8 @@
  *   --name=FIXTURE (required)
  *
  *     This sets the name of the fixture file. The '.test' extension will be
- *     added if it isn't already included in the name.
+ *     added if it isn't already included in the name. If the --refresh option
+ *     is used, wildcards may also be used in the name.
  *
  *   --command="COMMAND STRING" (required, unless refreshing)
  *
@@ -19,7 +20,8 @@
  *   --refresh
  *
  *     With this option set, the expectation of an existing fixture file will
- *     be regenerated, while the other file values will remain the same.
+ *     be regenerated, while the other file values will remain the same. If
+ *     wildcards are used in the name, all matching files will be regenerated.
  *
  * Examples
  * ========
