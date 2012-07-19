@@ -379,19 +379,23 @@ class Generator_Task_Generate extends Minion_Task
 	{
 		$inspector = new ReflectionClass($this);
 
+		// Parse the doccomment for the class
 		list($description, $tags) = $this->_parse_doccomment($inspector->getDocComment());
 		$arguments = '';
 
 		if (is_subclass_of($this, 'Task_Generate'))
 		{
+			// Add details of any positonal arguments
 			$arguments = strtoupper(implode(' ', $this->_arguments));
 			$arguments = ($arguments != '') ? ($arguments.' ') : $arguments;
 		}
 
+		// Create the usage info string
 		$usage = 'minion '.Minion_Task::convert_class_to_task($this).' '
 			.$this->_color($arguments, 'green')
-			.$this->_color('[--option1=value1] [--option2=value2]', 'brown');
+			.$this->_color('[--option=value] [--option]', 'brown');
 
+		// Render the initial view
 		$view = View::factory('generator/task_help')
 			->set('description', $description)
 			->set('tags', (array) $tags)
