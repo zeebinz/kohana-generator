@@ -116,10 +116,41 @@ class Generator_BuilderTest extends Unittest_TestCase
 	}
 
 	/**
+	 * Module names should be converted to valid module paths. Names must be
+	 * defined in the bootstrap, or should be folders under MODPATH.
+	 */
+	public function test_converts_module_names_to_paths()
+	{
+		$ds = DIRECTORY_SEPARATOR;
+
+		$modules = Kohana::modules();
+		$module = array_search(dirname(dirname(__DIR__)).$ds, $modules);
+
+		$this->assertSame($modules[$module], Generator::get_module_path($module));
+
+		// Verification can be disabled
+		$path = MODPATH.'nonexistantmod'.$ds;
+		$this->assertSame($path, Generator::get_module_path('nonexistantmod', FALSE));
+	}
+
+	/**
+	 * Only valid module paths are allowed if verification is enabled.
+	 *
+	 * @expectedException Generator_Exception
+	 */
+	public function test_missing_module_throws_exception_if_verifying()
+	{
+		$ds = DIRECTORY_SEPARATOR;
+
+		$path = MODPATH.'nonexistantmod'.$ds;
+		$this->assertSame($path, Generator::get_module_path('nonexistantmod', TRUE));
+	}
+
+	/**
 	 * The prepare() method sets final configuration on each Type, and
 	 * completes essential functions like determining filenames.
 	 */
-	public function test_prepare()
+	public function test_prepare_configures_stored_types()
 	{
 		$builder = Generator::build()->add_type('class', 'Foo');
 		$this->assertAttributeEmpty('_file', $builder);
@@ -131,7 +162,7 @@ class Generator_BuilderTest extends Unittest_TestCase
 	 * The inspect() method can be used to view rendered output either
 	 * before or after each Type item has been prepared.
 	 */
-	public function test_inspect()
+	public function test_inspect_returns_rendered_output()
 	{
 		$builder = Generator::build()->add_type('class', 'Foo');
 		$inspect = $builder->inspect(FALSE);
@@ -153,7 +184,7 @@ class Generator_BuilderTest extends Unittest_TestCase
 	/**
 	 * Global settings can be set on each Type via the Builder's with_* methods.
 	 */
-	public function test_global_settings()
+	public function test_with_methods_apply_global_settings_to_types()
 	{
 		$builder = Generator::build()->add_type('class', 'Foo')
 			->with_defaults(array('package' => 'Tester'))
@@ -187,7 +218,7 @@ class Generator_BuilderTest extends Unittest_TestCase
 	 * The execute() method should call create() on each stored item, which
 	 * in turn should keep a log of any actions.
 	 */
-	public function test_execute()
+	public function test_execute_calls_create_on_stored_types()
 	{
 		$builder = Generator::build()->add_type('class', 'Foo')
 			->pretend()->execute();
@@ -199,7 +230,7 @@ class Generator_BuilderTest extends Unittest_TestCase
 	/**
 	 * Generating via execute() should produce a status log for each action.
 	 */
-	public function test_execution_logs()
+	public function test_stored_type_execution_logs_are_accessible()
 	{
 		$log = Generator::build()->add_type('class', 'Foo')
 			->pretend()->execute()->get_log();
@@ -212,7 +243,7 @@ class Generator_BuilderTest extends Unittest_TestCase
 	/**
 	 * Executing an empty builder should do nothing.
 	 */
-	public function test_execute_empty_builder()
+	public function test_executing_empty_builder_does_nothing()
 	{
 		$builder = Generator::build()->prepare()->execute();
 
@@ -225,7 +256,7 @@ class Generator_BuilderTest extends Unittest_TestCase
 	 * possibly with the different prepared settings for each. Merged generators
 	 * should reference the new builder object.
 	 */
-	public function test_merging_builders()
+	public function test_builders_can_merge_types_from_other_builders()
 	{
 		$builder_a = Generator::build()
 			->add_type('class', 'Foo')

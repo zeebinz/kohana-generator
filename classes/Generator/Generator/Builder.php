@@ -83,6 +83,35 @@ class Generator_Generator_Builder
 	}
 
 	/**
+	 * Returns full paths for loaded module names (or folder names under MODPATH),
+	 * optionally with a check for the path's existence.
+	 *
+	 * @param   string   $module  The module name or folder
+	 * @param   boolean  $verify  Should the existence of the path be checked?
+	 * @return  string   The full path to the module
+	 * @throws  Generator_Exception  On missing module path
+	 */
+	public static function get_module_path($module, $verify = TRUE)
+	{
+		$modules = Kohana::modules();
+
+		// Return the loaded module path
+		if (isset($modules[$module]))
+			return $modules[$module];
+
+		// Search under MODPATH for the folder instead
+		$path = MODPATH.$module.DIRECTORY_SEPARATOR;
+
+		if ($verify AND ! file_exists($path))
+		{
+			throw new Generator_Exception("Module ':module' is not loaded or does not exist",
+				array(':module' => $module));
+		}
+
+		return $path;
+	}
+
+	/**
 	 * Adds a new type to the builder list, and returns the type instance
 	 * so that it can be configured via the fluent interface. Note that
 	 * the __call() method allows simple aliasing of this function, so these
@@ -209,10 +238,11 @@ class Generator_Generator_Builder
 	}
 
 	/**
-	 * Sets the module folder under MODPATH in which each generator item
-	 * is to be created.
+	 * Sets the name of the module in which each generator item is to be created.
+	 * This must be either the name of a loaded module as defined in the bootstrap,
+	 * or a valid folder under the current MODPATH.
 	 *
-	 * @param   string  $module  The module folder name
+	 * @param   string  $module  The module name
 	 * @return  Generator_Builder  This instance
 	 */
 	public function with_module($module)

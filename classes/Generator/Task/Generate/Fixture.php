@@ -224,7 +224,8 @@ class Generator_Task_Generate_Fixture extends Task_Generate
 	{
 		$ds = DIRECTORY_SEPARATOR;
 
-		$path = $this->_options['module'] ? MODPATH.$this->_options['module'].$ds : APPPATH;
+		$path = $this->_options['module'] ? Generator::get_module_path(
+			$this->_options['module']) : APPPATH;
 
 		return $path.'tests'.$ds.'fixtures'.$ds;
 	}
