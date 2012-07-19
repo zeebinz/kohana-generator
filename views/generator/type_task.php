@@ -62,6 +62,7 @@ class <?php
 	 */
 	protected function _execute(array $params)
 	{
+		// Method implementation
 	}
 
 } // End <?php echo $name ?>
