@@ -222,7 +222,8 @@ class Generator_BuilderTest extends Unittest_TestCase
 
 	/**
 	 * Generators from different builder instances may be merged into each other,
-	 * possibly with the different prepared settings for each.
+	 * possibly with the different prepared settings for each. Merged generators
+	 * should reference the new builder object.
 	 */
 	public function test_merging_builders()
 	{
@@ -246,10 +247,12 @@ class Generator_BuilderTest extends Unittest_TestCase
 		$this->assertSame('Foo', $generators[0]->name());
 		$this->assertNotEmpty($generators[0]->file());
 		$this->assertSame('baz', $generators[0]->module());
+		$this->assertSame($builder_a, $generators[0]->builder());
 
 		$this->assertSame('Bar', $generators[1]->name());
 		$this->assertNotEmpty($generators[1]->file());
 		$this->assertSame('qux', $generators[1]->module());
+		$this->assertSame($builder_a, $generators[1]->builder());
 	}
 
 } // End Generator_BuilderTest

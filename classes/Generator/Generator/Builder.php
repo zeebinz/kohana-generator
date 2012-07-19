@@ -288,6 +288,12 @@ class Generator_Generator_Builder
 		// Merge the generators lists
 		$this->_generators = array_merge($this->_generators, $builder->generators());
 
+		foreach ($this->_generators as $generator)
+		{
+			// Set all references to this instance
+			$generator->set_builder($this);
+		}
+
 		return $this;
 	}
 
