@@ -41,7 +41,7 @@ class Generator_Task_Generate_Fixture extends Task_Generate
 	 *
 	 * @param   array  $options  The selected task options
 	 * @return  Generator_Builder
-	 * @throws  Generator_Exception
+	 * @throws  Generator_Exception  On failure to parse command
 	 */
 	public function get_builder(array $options)
 	{
@@ -109,7 +109,7 @@ class Generator_Task_Generate_Fixture extends Task_Generate
 	 *
 	 * @param   array   $args  The arguments for running the given task
 	 * @return  string  The expected output
-	 * @throws  Generator_Exception
+	 * @throws  Generator_Exception  On unsupported command
 	 */
 	public function get_fixture_expectation(array $args)
 	{
@@ -180,7 +180,7 @@ class Generator_Task_Generate_Fixture extends Task_Generate
 	 *
 	 * @param   array  $args  The arguments for running the given task
 	 * @return  Minion_Task   The task instance
-	 * @throws  Generator_Exception
+	 * @throws  Generator_Exception  On failed validation
 	 */
 	public function get_fixture_task(array $args)
 	{
@@ -225,8 +225,7 @@ class Generator_Task_Generate_Fixture extends Task_Generate
 	 * Returns the names of any currently stored fixtures, optionally limited to
 	 * fixture names that match a given pattern (with wildcards).
 	 *
-	 * @return  string  $pattern    A pattern for the fixture names to match
-	 * @return  string  $directory  The directory to search
+	 * @return  string  $pattern  A pattern for the fixture names to match
 	 * @return  array   The list of fixture names
 	 */
 	public function get_fixtures_list($pattern = NULL)
@@ -271,7 +270,7 @@ class Generator_Task_Generate_Fixture extends Task_Generate
 	 *
 	 * @param   array  $params  The current task parameters
 	 * @return  void
-	 * @throws  Generator_Exception
+	 * @throws  Generator_Exception  On empty fixtures list
 	 */
 	protected function _execute(array $params)
 	{
