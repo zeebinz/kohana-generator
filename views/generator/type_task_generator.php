@@ -42,6 +42,13 @@ class <?php
 	);
 
 	/**
+	 * @var  array  Arguments mapped to options
+	 */
+	protected $_arguments = array(
+		1 => 'name',
+	);
+
+	/**
 	 * Validates the task options.
 	 *
 	 * @param   Validation  $validation  The validation object to add rules to

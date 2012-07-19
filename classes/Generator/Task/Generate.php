@@ -27,9 +27,18 @@ class Generator_Task_Generate extends Minion_Task
 		'remove'   => FALSE,
 		'verbose'  => FALSE,
 		'no-ansi'  => FALSE,
+		'name'     => '',
 		'module'   => '',
 		'template' => '',
 		'config'   => '',
+	);
+
+	/**
+	 * The default mapping of positional arguments to task options
+	 * @var  array
+	 */
+	protected $_arguments = array(
+		1 => 'name',
 	);
 
 	/**
@@ -47,7 +56,8 @@ class Generator_Task_Generate extends Minion_Task
 	}
 
 	/**
-	 * Sets the task options passed as parameters.
+	 * Sets the task options passed as parameters, and maps any positional
+	 * arguments to options.
 	 *
 	 * Boolean parameters (i.e. switches without values) are handled here by
 	 * toggling their associated options on.
@@ -57,6 +67,9 @@ class Generator_Task_Generate extends Minion_Task
 	 */
 	public function set_options(array $options)
 	{
+		// Map any positional arguments to options
+		$options = $this->convert_arguments($options, $this->_arguments);
+
 		foreach ($options as $key => $value)
 		{
 			if ($value === NULL AND isset($this->_options[$key])
@@ -68,6 +81,32 @@ class Generator_Task_Generate extends Minion_Task
 		}
 
 		return parent::set_options($options);
+	}
+
+	/**
+	 * Converts any positional arguments to option values depending on the given
+	 * mapping (where the key is the argument position starting at 1, and the
+	 * value is the option name), then removes them.
+	 *
+	 * @param   array  $options  The options to process
+	 * @param   array  $mapping  The argument to option mappings
+	 * @return  array  The options with converted arguments
+	 */
+	public function convert_arguments(array $options, array $mapping)
+	{
+		foreach ($mapping as $position => $name)
+		{
+			if (isset($options[$position]))
+			{
+				// Set the option to the argument value
+				$options[$name] = empty($options[$name]) ? $options[$position] : $options[$name];
+
+				// We need to remove numeric keys for validation
+				unset($options[$position]);
+			}
+		}
+
+		return $options;
 	}
 
 	/**
@@ -338,7 +377,27 @@ class Generator_Task_Generate extends Minion_Task
 	 */
 	protected function _help(array $params)
 	{
-		parent::_help($params);
+		$inspector = new ReflectionClass($this);
+
+		list($description, $tags) = $this->_parse_doccomment($inspector->getDocComment());
+		$arguments = '';
+
+		if (is_subclass_of($this, 'Task_Generate'))
+		{
+			$arguments = strtoupper(implode(' ', $this->_arguments));
+			$arguments = ($arguments != '') ? ($arguments.' ') : $arguments;
+		}
+
+		$usage = 'minion '.Minion_Task::convert_class_to_task($this).' '
+			.$this->_color($arguments, 'green')
+			.$this->_color('[--option1=value1] [--option2=value2]', 'brown');
+
+		$view = View::factory('generator/task_help')
+			->set('description', $description)
+			->set('tags', (array) $tags)
+			->set('usage', $usage);
+
+		$this->_write($view);
 
 		if ( ! is_subclass_of($this, 'Task_Generate'))
 		{

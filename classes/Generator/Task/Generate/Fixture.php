@@ -20,6 +20,14 @@ class Generator_Task_Generate_Fixture extends Task_Generate
 	);
 
 	/**
+	 * @var  array  Arguments mapped to options
+	 */
+	protected $_arguments = array(
+		1 => 'name',
+		2 => 'command',
+	);
+
+	/**
 	 * Validates the task options.
 	 *
 	 * @param   Validation  $validation  The validation object to add rules to

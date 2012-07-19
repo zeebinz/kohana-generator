@@ -51,6 +51,36 @@ class Generator_Task_GenerateTest extends Unittest_TestCase
 	}
 
 	/**
+	 * Positional arguments may be mapped to defined option names.
+	 */
+	public function test_mapping_positional_arguments_to_options()
+	{
+		$task = Minion_Task::factory(array('task' => 'generate', 'name' => 'Foo'));
+
+		// Using manual mappings
+		$options    = $task->get_options();
+		$options[1] = 'baz';
+		$options[2] = 'qux';
+		$mapping    = array(1 => 'someopt', 2 => 'name');
+		$options    = $task->convert_arguments($options, $mapping);
+
+		$this->assertSame('Foo', $options['name']);
+		$this->assertSame('baz', $options['someopt']);
+		$this->assertArrayNotHasKey(1, $options);
+		$this->assertArrayNotHasKey(2, $options);
+
+		// Using the default mappings
+		$task = Minion_Task::factory(array(
+			'task' => 'generate',
+			1 => 'Foo',
+		));
+
+		$options = $task->get_options();
+		$this->assertSame('Foo', $options['name']);
+		$this->assertArrayNotHasKey(1, $options);
+	}
+
+	/**
 	 * Task commands should be parsable into arrays of arguments, and the process
 	 * should be reversable.
 	 *

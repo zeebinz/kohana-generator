@@ -1,6 +1,8 @@
 Generator for Kohana - Changelog
 ================================
 
+- Positional arguments are now supported by generator tasks - see the 'Usage'
+  info in the task `--help` to see which options may be passed as arguments.
 - When refreshing fixtures, wildcards may now be used in the --name option to
   match a list of fixture files (e.g. `--name=gen_model*`).
 - Generators from different builders may now be merged via the new merge()

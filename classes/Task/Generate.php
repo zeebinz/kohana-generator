@@ -3,7 +3,7 @@
  * Generates application and module files from templates using
  * different configurable generators.
  *
- * Usage: minion generate:GENERATOR [options]
+ * Usage: minion generate:GENERATOR [arguments] [options]
  *
  * Common options for all generators:
  *
