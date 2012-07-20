@@ -1,6 +1,10 @@
 Generator for Kohana - Changelog
 ================================
 
+- Task help pages now support style tags for colorization of output with any
+  consoles that support it (use `--no-ansi` to disable).
+- References to modules are now treated either as module names defined in the
+  bootstrap or as folders located under MODPATH.
 - Positional arguments are now supported by generator tasks - see the 'Usage'
   info in the task `--help` to see which options may be passed as arguments.
 - When refreshing fixtures, wildcards may now be used in the --name option to

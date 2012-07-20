@@ -401,7 +401,7 @@ class Generator_Task_Generate extends Minion_Task
 			->set('tags', (array) $tags)
 			->set('usage', $usage);
 
-		$this->_write($view);
+		$this->_write($this->_apply_styles($view));
 
 		if ( ! is_subclass_of($this, 'Task_Generate'))
 		{
@@ -409,7 +409,7 @@ class Generator_Task_Generate extends Minion_Task
 			$generators = $this->_compile_task_list(Kohana::list_files('classes/task/generate'));
 
 			// Append the list to the help output
-			$this->_write('Available generators:');
+			$this->_write($this->_color('Available generators:', 'brown'));
 			$this->_write('');
 			foreach ($generators as $generator)
 			{
@@ -417,6 +417,21 @@ class Generator_Task_Generate extends Minion_Task
 			}
 			$this->_write('');
 		}
+	}
+
+	/**
+	 * Substitutes any style tags in the text with the defined styles.
+	 *
+	 * @param   string  $text  The text with style tags
+	 * @return  string  The text with styles applied
+	 */
+	protected function _apply_styles($text)
+	{
+		$text = preg_replace('@<comment>(.*?)</comment>@s', $this->_color('$1', 'brown'), $text);
+		$text = preg_replace('@<info>(.*?)</info>@s', $this->_color('$1', 'green'), $text);
+		$text = preg_replace('@<alert>(.*?)</alert>@s', $this->_color('$1', 'red'), $text);
+
+		return $text;
 	}
 
 } // End Generator_Task_Generate
