@@ -291,6 +291,38 @@ class Generator_Task_Generate extends Minion_Task
 	}
 
 	/**
+	 * Execute the task with the specified set of options.
+	 *
+	 * The Minion_Task method is overridden here mainly to handle validation
+	 * errors and command output differently.
+	 *
+	 * @return  void
+	 */
+	public function execute()
+	{
+		$options = $this->get_options();
+
+		// Validate $options
+		$validation = Validation::factory($options);
+		$validation = $this->build_validation($validation);
+
+		if ($this->_method != '_help' AND ! $validation->check())
+		{
+			$view = View::factory('generator/error/validation')
+				->set('task', Minion_Task::convert_class_to_task($this))
+				->set('errors', $validation->errors($this->get_errors_file()));
+
+			$this->_write($this->_apply_styles($view), FALSE);
+		}
+		else
+		{
+			// Finally, run the task
+			$method = $this->_method;
+			$this->_write($this->{$method}($options), FALSE);
+		}
+	}
+
+	/**
 	 * Loads a builder and runs the task, or outputs the common help message
 	 * by default.
 	 *
@@ -396,7 +428,7 @@ class Generator_Task_Generate extends Minion_Task
 			.$this->_color('[--option=value] [--option]', 'brown');
 
 		// Render the initial view
-		$view = View::factory('generator/task_help')
+		$view = View::factory('generator/help/task')
 			->set('description', $description)
 			->set('tags', (array) $tags)
 			->set('usage', $usage);

@@ -1,6 +1,8 @@
 Generator for Kohana - Changelog
 ================================
 
+- Replaced the Minion validation error template, the new one now has the right
+  help info and includes style tags.
 - Task help pages now support style tags for colorization of output with any
   consoles that support it (use `--no-ansi` to disable).
 - References to modules are now treated either as module names defined in the
