@@ -2,23 +2,23 @@
  * Description of <?php echo $name ?>.
  *
 <?php if ( ! empty($help)): ?>
- * Additional options:
+ * <comment>Additional options:</comment>
  *
- *   --option1=VALUE1
- *
- *     Description of this option.
- *
- *   --option2=VALUE2
+ *   <info>--option1=VALUE1</info>
  *
  *     Description of this option.
  *
- * Examples
+ *   <info>--option2=VALUE2</info>
+ *
+ *     Description of this option.
+ *
+ * <comment>Examples</comment>
  * ========
- * minion task --option1=value1
+ * <info>minion task --option1=value1</info>
  *
  *     Description of this example.
  *
- * minion task --option1=value1 --option2=value2
+ * <info>minion task --option1=value1 --option2=value2</info>
  *
  *     Description of this example.
  *

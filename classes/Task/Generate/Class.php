@@ -4,65 +4,65 @@
  * either the application folder or a module folder, and can optionally be
  * configured for transparent extension.
  *
- * Additional options:
+ * <comment>Additional options:</comment>
  *
- *   --name=CLASS (required)
+ *   <info>--name=CLASS</info> <alert>(required)</alert>
  *
  *     The full name of the class to be created, with capitalization.
  *
- *   --extend=CLASS
+ *   <info>--extend=CLASS</info>
  *
  *     The name of the parent class from which this is optionally extended.
  *
- *   --stub=CLASS
+ *   <info>--stub=CLASS</info>
  *
  *     If set, this empty class will be created as a transparent extension
  *     of the main class.
  *
- *   --implement=INTERFACE[,INTERFACE[,...]]
+ *   <info>--implement=INTERFACE[,INTERFACE[,...]]</info>
  *
  *     A comma-separated list of any interfaces that this class should
  *     implement.
  *
- *   --clone=CLASS
+ *   <info>--clone=CLASS</info>
  *
  *     If a valid class name is set with this option, its properties and
  *     methods will be copied directly from its class file.  Reflection
- *     will be used for internal classes, or if the --reflect option is set,
- *     and inherited methods and properties may be included with --inherit.
+ *     will be used for internal classes, or if the <info>--reflect</info> option is set,
+ *     and inherited methods and properties may be included with <info>--inherit</info>.
  *
- *   --abstract
+ *   <info>--abstract</info>
  *
  *     The class will be marked as abstract if this option is set.
 
- *   --no-test
+ *   <info>--no-test</info>
  *
  *     A test case will be created automatically for the class unless this
  *     option is set.
  *
- *   --blank
+ *   <info>--blank</info>
  *
  *     The skelton methods for both the class and the test will be omitted
  *     if this option is set.
  *
- * Examples
+ * <comment>Examples</comment>
  * ========
- * minion generate:class --name=Log_Reader --implement="Countable,ArrayAccess"
+ * <info>minion generate:class --name=Log_Reader --implement=Countable,ArrayAccess</info>
  *
  *     class : Log_Reader implements Countable, ArrayAccess
  *     file  : APPPATH/classes/Log/Reader.php
  *     class : Log_ReaderTest extends Unittest_TestCase
  *     file  : APPPATH/tests/Log/ReaderTest.php
  *
- * minion generate:class --name=Logger_Log_Reader --extend=Logger_Reader \
- *     --module=logger --stub=Log_Reader --no-test
+ * <info>minion generate:class --name=Logger_Log_Reader --extend=Logger_Reader \
+ *     --module=logger --stub=Log_Reader --no-test</info>
  *
  *     class : Logger_Log_Reader extends Logger_Reader
  *     file  : MODPATH/logger/classes/Logger/Log/Reader.php
  *     class : Log_Reader extends Logger_Log_Reader
  *     file  : MODPATH/logger/classes/Log/Reader.php
  *
- * minion generate:class --name=Log --clone=SplMinHeap --inherit --no-test
+ * <info>minion generate:class --name=Log --clone=SplMinHeap --inherit --no-test</info>
  *
  *     class : Log extends SplHeap implements Countable, Traversable, Iterator
  *     file  : APPPATH/classes/Log.php

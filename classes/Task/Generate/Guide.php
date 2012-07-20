@@ -4,21 +4,21 @@
  * content, and the userguide config file. The menu will include entries
  * for any given page definitions.
  *
- * Additional options:
+ * <comment>Additional options:</comment>
  *
- *   --name=MENU (required)
+ *   <info>--name=MENU</info> <alert>(required)</alert>
  *
  *     This will set the top level of the Guide menu in the menu file.
  *
- *   --pages=PAGES
+ *   <info>--pages=PAGES</info>
  *
  *     Page definitions may be added as a comma-separated list in the
  *     format: "Page Title|filename".
  *
- * Examples
+ * <comment>Examples</comment>
  * ========
- * minion generate:guide --name=Logging --module=logger \
- *     --pages="Setting up|setup, Running the tasks|tasks"
+ * <info>minion generate:guide --name=Logging --module=logger \
+ *     --pages="Setting up|setup, Running the tasks|tasks"</info>
  *
  *     file : MODPATH/logger/guide/logger/menu.md
  *     file : MODPATH/logger/guide/logger/index.md

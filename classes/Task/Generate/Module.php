@@ -3,15 +3,15 @@
  * Generates a new module skeleton, with a basic directory structure
  * and initial files.
  *
- * Additional options:
+ * <comment>Additional options:</comment>
  *
- *   --name=MODULE (required)
+ *   <info>--name=MODULE</info> <alert>(required)</alert>
  *
  *     The name of the module folder to be created.
  *
- * Examples
+ * <comment>Examples</comment>
  * ========
- * minion generate:module --name=mymodule
+ * <info>minion generate:module --name=mymodule</info>
  *
  *     file : MODPATH/mymodule/init.php
  *     file : MODPATH/mymodule/README.md

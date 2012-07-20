@@ -3,21 +3,21 @@
  * Generates message files, optionally with simple message entries
  * passed as value definitions.
  *
- * Additional options:
+ * <comment>Additional options:</comment>
  *
- *   --name=MESSAGE (required)
+ *   <info>--name=MESSAGE</info> <alert>(required)</alert>
  *
  *     This sets the name of the message file.
  *
- *   --values=VALUES
+ *   <info>--values=VALUES</info>
  *
  *     Value definitions may be added as a comma-separated list in the
  *     format: "array.path.key|value".
  *
- * Examples
+ * <comment>Examples</comment>
  * ========
- * minion generate:message --name=logger --module=logger \
- *     --values="logging.some_message|some_value"
+ * <info>minion generate:message --name=logger --module=logger \
+ *     --values="logging.some_message|some_value"</info>
  *
  *     file : MODPATH/logger/messages/logger.php
  *

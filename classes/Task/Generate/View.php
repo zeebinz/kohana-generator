@@ -2,16 +2,16 @@
 /**
  * Generates a simple view template file.
  *
- * Additional options:
+ * <comment>Additional options:</comment>
  *
- *   --name=VIEW (required)
+ *   <info>--name=VIEW</info> <alert>(required)</alert>
  *
  *     The name of the view template to be created in the views folder,
  *     without the file extension.
  *
- * Examples
+ * <comment>Examples</comment>
  * ========
- * minion generate:view --name=foo/bar
+ * <info>minion generate:view --name=foo/bar</info>
  *
  *     file : APPPATH/views/foo/bar.php
  *
