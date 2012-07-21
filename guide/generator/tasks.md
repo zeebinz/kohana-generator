@@ -18,34 +18,35 @@ It's well advised to read the Minion guide at least once (it's short) so you und
 
 This should give you the main help page for the Generator module in the usual Minion format. Along with general info, it should include something like this:
 	
-	Usage: minion generate:GENERATOR [options]
+	Usage: minion generate:GENERATOR [arguments] [options]
 	
 	Common options for all generators:
 	
-	  --help      # Show each generator's options and usage
-	  --pretend   # Run the generator without making changes
-	  --force     # Replace any existing files
-	  --quiet     # Don't output any status messages
-	  --inspect   # View the rendered output only
-	  --no-ask    # Don't ask for any user input
-	  --remove    # Delete files and empty directories
-	  --verbose   # Show more information when running
-	  --no-ansi   # Disable ANSI output, e.g. colors
+	  --help       :  Show each generator's options and usage
+	  --pretend    :  Run the generator without making changes
+	  --force      :  Replace any existing files
+	  --quiet      :  Don't output any status messages
+	  --inspect    :  View the rendered output only
+	  --no-ask     :  Don't ask for any user input
+	  --remove     :  Delete files and empty directories
+	  --verbose    :  Show more information when running
+	  --no-ansi    :  Disable ANSI output, e.g. colors
 	
 	  --template=VIEW
 	
-	    The view to use instead of the default view template, 
-	    stored in the views folder.
+	    The view to use instead of the default view template, stored in 
+	    the /views folder.
 	
-	  --module=FOLDER
+	  --module=NAME|FOLDER
 	
-	    A valid module folder under MODPATH in which to create
-	    the files instead of the default APPPATH.
+	    Either a loaded module name as defined in the bootstrap, or a valid
+	    folder name under MODPATH in which to create the files instead of
+	    the default APPPATH.
 	
 	  --config=GROUP
 	
-	    The config group to use with this task instead of the
-	    default 'generator'.
+	    The config group to use with this task instead of the default
+	    value 'generator'.
 	
 	Available generators:
 	
@@ -58,6 +59,10 @@ Following this should be a list of the available generators on your system. You 
 The options listed in the general help are common to all generators, and each generator help page lists any extra options, along with examples of usage. For instance, the help for the `config` generator (one of the simplest) includes this:
 
 	./minion generate:config --help
+	
+	Usage
+	=====
+	minion generate:config NAME VALUES [--option=value] [--option]
 	
 	...
 	
@@ -83,8 +88,12 @@ The options listed in the general help are common to all generators, and each ge
 	    --values="logger.file.name|log, logger.file.ext|txt, logger.debug|1"
 	
 	    file : MODPATH/logger/config/logger.php
-
+	
 	...
+
+As can be seen from the Usage info, the `name` and `values` options can be passed as the first two arguments, or set explicitly using the syntax in the examples.  Each task defines which positional arguments may be used, but the examples always use the full syntax to keep things clear. Just note for now that this is also possible:
+
+	minion generate:config logger "logger.file.name|log" --module=logger
 
 This should be plenty to get you started.  The examples in the help cover the most common cases, and the source code for the tasks is generally quite short and simple to read. All of the tasks use the [Generator Builder](builder), so you should read about that if you haven't already.
 
