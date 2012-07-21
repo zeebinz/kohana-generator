@@ -3,21 +3,21 @@
  * Generates configuration files, optionally with simple config entries
  * passed as value definitions.
  *
- * Additional options:
+ * <comment>Additional options:</comment>
  *
- *   --name=CONFIG (required)
+ *   <info>--name=CONFIG</info> <alert>(required)</alert>
  *
  *     This sets the name of the config file.
  *
- *   --values=VALUES
+ *   <info>--values=VALUES</info>
  *
  *     Value definitions may be added as a comma-separated list in the
  *     format: "array.path.key|value".
  *
- * Examples
+ * <comment>Examples</comment>
  * ========
- * minion generate:config --name=logger --module=logger \
- *     --values="logger.file.name|log, logger.file.ext|txt, logger.debug|1"
+ * <info>minion generate:config --name=logger --module=logger \
+ *     --values="logger.file.name|log, logger.file.ext|txt, logger.debug|1"</info>
  *
  *     file : MODPATH/logger/config/logger.php
  *

@@ -4,36 +4,36 @@
  * The task can be created in either the application folder or a module
  * folder, and can optionally be configured for transparent extension.
  *
- * Additional options:
+ * <comment>Additional options:</comment>
  *
- *   --name=TASK (required)
+ *   <info>--name=TASK</info> <alert>(required)</alert>
  *
  *     The name of this task. The class pefixes will be added automatically,
  *     so e.g. don't include 'Task_Generate' in the name.
  *
- *   --extend=CLASS
+ *   <info>--extend=CLASS</info>
  *
  *     The name of the parent class from which this is extended, if none
  *     is given then Task_Generate will be used by default.
  *
- *   --prefix=PREFIX
+ *   <info>--prefix=PREFIX</info>
  *
  *     If created in a module and extended transparently with a stub, the
  *     task will be prefixed with the module name by default unless the
  *     value is set with this option.
  *
- *   --no-stub
+ *   <info>--no-stub</info>
  *
  *     The task will not be extended transparently if this option is set. 
  *
- * Examples
+ * <comment>Examples</comment>
  * ========
- * minion generate:task:generator --name=Log
+ * <info>minion generate:task:generator --name=Log</info>
  *
  *     class : Task_Generate_Log extends Task_Generate
  *     file  : APPPATH/classes/Task/Generate/Log.php
  *
- * minion generate:task:generator --name=Log --module=logger --prefix=Kohana
+ * <info>minion generate:task:generator --name=Log --module=logger --prefix=Kohana</info>
  *
  *     class : Kohana_Task_Generate_Log extends Task_Generate
  *     file  : MODPATH/logger/classes/Kohana/Task/Generate/Log.php

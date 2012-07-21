@@ -4,33 +4,33 @@
  * either the application folder or a module folder, and can optionally be
  * configured for transparent extension.
  *
- * Additional options:
+ * <comment>Additional options:</comment>
  *
- *   --name=TASK (required)
+ *   <info>--name=TASK</info> <alert>(required)</alert>
  *
  *     The name of this task. If 'Task_' is not included in the name, it
  *     will be prepended automatically.
  *
- *   --extend=CLASS
+ *   <info>--extend=CLASS</info>
  *
  *     The name of the parent class from which this is extended, if none
  *     is given then Minion_Task will be used by default.
  *
- *   --stub=TASK
+ *   <info>--stub=TASK</info>
  *
  *     If set, this empty task will be created as a transparent extension,
  *     and usage info will be added to the stub instead; the 'Task_' prefix
  *     may also be omitted from the stub name.
  *
- * Examples
+ * <comment>Examples</comment>
  * ========
- * minion generate:task --name=Logs_Rotate
+ * <info>minion generate:task --name=Logs_Rotate</info>
  *
  *     class : Task_Logs_Rotate extends Minion_Task
  *     file  : APPPATH/classes/Task/Logs/Rotate.php
  *
- * minion generate:task --name=Logger_Task_Logs_Rotate --module=logger \
- *     --stub=Logs_Rotate
+ * <info>minion generate:task --name=Logger_Task_Logs_Rotate --module=logger \
+ *     --stub=Logs_Rotate</info>
  *
  *     class : Logger_Task_Logs_Rotate extends Minion_Task
  *     file  : MODPATH/logger/classes/Logger/Task/Logs/Rotate.php

@@ -1,17 +1,17 @@
 <?php defined('SYSPATH') OR die('No direct script access.');
 /**
  * Test case for Generator_Builder.
- * 
- * @group      generator 
- * @group      generator.builder 
  *
- * @package    Generator 
- * @category   Tests 
- * @author     Zeebee 
- * @copyright  (c) 2012 Zeebee 
- * @license    BSD revised 
+ * @group      generator
+ * @group      generator.builder
+ *
+ * @package    Generator
+ * @category   Tests
+ * @author     Zeebee
+ * @copyright  (c) 2012 Zeebee
+ * @license    BSD revised
  */
-class Generator_BuilderTest extends Unittest_TestCase 
+class Generator_BuilderTest extends Unittest_TestCase
 {
 	/**
 	 * The build() method is a factory method for the Builder.
@@ -116,10 +116,41 @@ class Generator_BuilderTest extends Unittest_TestCase
 	}
 
 	/**
+	 * Module names should be converted to valid module paths. Names must be
+	 * defined in the bootstrap, or should be folders under MODPATH.
+	 */
+	public function test_converts_module_names_to_paths()
+	{
+		$ds = DIRECTORY_SEPARATOR;
+
+		$modules = Kohana::modules();
+		$module = array_search(dirname(dirname(__DIR__)).$ds, $modules);
+
+		$this->assertSame($modules[$module], Generator::get_module_path($module));
+
+		// Verification can be disabled
+		$path = MODPATH.'nonexistantmod'.$ds;
+		$this->assertSame($path, Generator::get_module_path('nonexistantmod', FALSE));
+	}
+
+	/**
+	 * Only valid module paths are allowed if verification is enabled.
+	 *
+	 * @expectedException Generator_Exception
+	 */
+	public function test_missing_module_throws_exception_if_verifying()
+	{
+		$ds = DIRECTORY_SEPARATOR;
+
+		$path = MODPATH.'nonexistantmod'.$ds;
+		$this->assertSame($path, Generator::get_module_path('nonexistantmod', TRUE));
+	}
+
+	/**
 	 * The prepare() method sets final configuration on each Type, and
 	 * completes essential functions like determining filenames.
 	 */
-	public function test_prepare()
+	public function test_prepare_configures_stored_types()
 	{
 		$builder = Generator::build()->add_type('class', 'Foo');
 		$this->assertAttributeEmpty('_file', $builder);
@@ -131,7 +162,7 @@ class Generator_BuilderTest extends Unittest_TestCase
 	 * The inspect() method can be used to view rendered output either
 	 * before or after each Type item has been prepared.
 	 */
-	public function test_inspect()
+	public function test_inspect_returns_rendered_output()
 	{
 		$builder = Generator::build()->add_type('class', 'Foo');
 		$inspect = $builder->inspect(FALSE);
@@ -153,7 +184,7 @@ class Generator_BuilderTest extends Unittest_TestCase
 	/**
 	 * Global settings can be set on each Type via the Builder's with_* methods.
 	 */
-	public function test_global_settings()
+	public function test_with_methods_apply_global_settings_to_types()
 	{
 		$builder = Generator::build()->add_type('class', 'Foo')
 			->with_defaults(array('package' => 'Tester'))
@@ -184,10 +215,10 @@ class Generator_BuilderTest extends Unittest_TestCase
 	}
 
 	/**
-	 * The execute() method should call create() on each stored item, which 
+	 * The execute() method should call create() on each stored item, which
 	 * in turn should keep a log of any actions.
 	 */
-	public function test_execute()
+	public function test_execute_calls_create_on_stored_types()
 	{
 		$builder = Generator::build()->add_type('class', 'Foo')
 			->pretend()->execute();
@@ -199,7 +230,7 @@ class Generator_BuilderTest extends Unittest_TestCase
 	/**
 	 * Generating via execute() should produce a status log for each action.
 	 */
-	public function test_execution_logs()
+	public function test_stored_type_execution_logs_are_accessible()
 	{
 		$log = Generator::build()->add_type('class', 'Foo')
 			->pretend()->execute()->get_log();
@@ -212,7 +243,7 @@ class Generator_BuilderTest extends Unittest_TestCase
 	/**
 	 * Executing an empty builder should do nothing.
 	 */
-	public function test_execute_empty_builder()
+	public function test_executing_empty_builder_does_nothing()
 	{
 		$builder = Generator::build()->prepare()->execute();
 
@@ -220,4 +251,39 @@ class Generator_BuilderTest extends Unittest_TestCase
 		$this->assertEmpty($builder->get_log());
 	}
 
-} // End Generator_BuilderTest 
+	/**
+	 * Generators from different builder instances may be merged into each other,
+	 * possibly with the different prepared settings for each. Merged generators
+	 * should reference the new builder object.
+	 */
+	public function test_builders_can_merge_types_from_other_builders()
+	{
+		$builder_a = Generator::build()
+			->add_type('class', 'Foo')
+				->module('baz')
+				->verify(FALSE)
+			->builder();
+
+		$builder_b = Generator::build()
+			->add_type('class', 'Bar')
+				->module('qux')
+				->verify(FALSE)
+			->builder();
+
+		$builder_a->merge($builder_b);
+
+		$generators = $builder_a->generators();
+		$this->assertCount(2, $generators);
+
+		$this->assertSame('Foo', $generators[0]->name());
+		$this->assertNotEmpty($generators[0]->file());
+		$this->assertSame('baz', $generators[0]->module());
+		$this->assertSame($builder_a, $generators[0]->builder());
+
+		$this->assertSame('Bar', $generators[1]->name());
+		$this->assertNotEmpty($generators[1]->file());
+		$this->assertSame('qux', $generators[1]->module());
+		$this->assertSame($builder_a, $generators[1]->builder());
+	}
+
+} // End Generator_BuilderTest

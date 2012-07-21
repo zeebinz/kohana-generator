@@ -25,6 +25,13 @@ class Baz_Task_Generate_Foo extends Task_Generate
 	);
 
 	/**
+	 * @var  array  Arguments mapped to options
+	 */
+	protected $_arguments = array(
+		1 => 'name',
+	);
+
+	/**
 	 * Validates the task options.
 	 *
 	 * @param   Validation  $validation  The validation object to add rules to
@@ -57,23 +64,23 @@ class Baz_Task_Generate_Foo extends Task_Generate
 /**
  * Description of Task_Generate_Foo.
  *
- * Additional options:
+ * <comment>Additional options:</comment>
  *
- *   --option1=VALUE1
- *
- *     Description of this option.
- *
- *   --option2=VALUE2
+ *   <info>--option1=VALUE1</info>
  *
  *     Description of this option.
  *
- * Examples
+ *   <info>--option2=VALUE2</info>
+ *
+ *     Description of this option.
+ *
+ * <comment>Examples</comment>
  * ========
- * minion task --option1=value1
+ * <info>minion task --option1=value1</info>
  *
  *     Description of this example.
  *
- * minion task --option1=value1 --option2=value2
+ * <info>minion task --option1=value1 --option2=value2</info>
  *
  *     Description of this example.
  *

@@ -4,44 +4,44 @@
  * created in either the application folder or a module folder, and can
  * optionally be configured for transparent extension.
  *
- * Additional options:
+ * <comment>Additional options:</comment>
  *
- *   --name=INTERFACE (required)
+ *   <info>--name=INTERFACE</info> <alert>(required)</alert>
  *
  *     The full name of the interface to be created, with capitalization.
  *
- *   --extend=INTERFACE[,INTERFACE[,...]]
+ *   <info>--extend=INTERFACE[,INTERFACE[,...]]</info>
  *
  *     A comma-separated list of any interfaces that this interface should 
  *     extend (multiple inheritance is possible).
  *
- *   --clone=INTERFACE
+ *   <info>--clone=INTERFACE</info>
  *
  *     If a valid interface name is given, its definition will be copied
  *     directly from its file.  Reflection will be used for any internal
- *     interfaces, or if the --reflect option is set, and any inherited
- *     method definitions may be included with --inherit.
+ *     interfaces, or if the <info>--reflect</info> option is set, and any inherited
+ *     method definitions may be included with <info>--inherit</info>.
  *
- *   --stub=INTERFACE
+ *   <info>--stub=INTERFACE</info>
  *
  *     If set, this stub will be created as a transparent extension.
  *
- * Examples
+ * <comment>Examples</comment>
  * ========
- * minion generate:interface --name=Loggable --extend=Countable,Iterator
+ * <info>minion generate:interface --name=Loggable --extend=Countable,Iterator</info>
  *
  *     interface : Loggable extends Countable, Iterator
  *     file      : APPPATH/classes/Loggable.php
  *
- * minion generate:interface --name=Logger_Loggable --stub=Loggable \
- *     --module=logger
+ * <info>minion generate:interface --name=Logger_Loggable --stub=Loggable \
+ *     --module=logger</info>
  *
  *     interface : Logger_Loggable
  *     file      : MODPATH/logger/classes/Logger/Loggable.php
  *     interface : Loggable extends Logger_Loggable
  *     file      : MODPATH/logger/classes/Loggable.php 
  *
- * minion generate:interface --name=Loggable --clone=SeekableIterator
+ * <info>minion generate:interface --name=Loggable --clone=SeekableIterator</info>
  *
  *     interface : Loggable extends Traversable
  *     file      : APPPATH/classes/Log.php

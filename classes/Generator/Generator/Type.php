@@ -174,10 +174,11 @@ class Generator_Generator_Type
 	}
 
 	/**
-	 * Setter and getter for the module folder in which generator items will
-	 * be created.  This must be a valid folder under the current MODPATH.
+	 * Setter and getter for the module in which generator items will be created.
+	 * This must be either the name of a loaded module as defined in the bootstrap,
+	 * or a valid folder under the current MODPATH.
 	 *
-	 * @param   string  $module  The module folder name
+	 * @param   string  $module  The module name
 	 * @return  string|Generator_Type  The current module name or this instance
 	 */
 	public function module($module = NULL)
@@ -368,13 +369,8 @@ class Generator_Generator_Type
 		$ds = DIRECTORY_SEPARATOR;
 
 		// Determine the base path for the file
-		$path = $this->_module ? (MODPATH.$this->_module.$ds) : APPPATH;
-
-		if ($this->_verify AND ! file_exists($path))
-		{
-			throw new Generator_Exception("Path ':dir' does not exist", array(
-				':dir' => Debug::path($path)));
-		}
+		$path = $this->_module ? Generator::get_module_path($this->_module,
+			$this->_verify)	: APPPATH;
 
 		// Get the file name, optionally converting it to a path
 		$name = $convert ? (str_replace('_', $ds, $this->_name)) : $this->_name;
@@ -648,7 +644,8 @@ class Generator_Generator_Type
 
 	/**
 	 * Returns a list of all the directory paths related to the current item,
-	 * (i.e. that will be created or removed), not including APPPATH or MODPATH.
+	 * (i.e. that will be created or removed), not including the application
+	 * or module path.
 	 *
 	 * @param   boolean  $reverse  Should the list be reversed?
 	 * @return  array    The list of directories
@@ -665,7 +662,8 @@ class Generator_Generator_Type
 		$tree = array();
 
 		// Set the base path
-		$base = rtrim(($this->_module ? MODPATH : APPPATH), $ds);
+		$base = rtrim(($this->_module ? dirname(Generator::get_module_path(
+			$this->_module, $this->_verify)) : APPPATH), $ds);
 
 		// Remove each leaf from the path
 		while (($path = substr($path, 0, strrpos($path, $ds)))

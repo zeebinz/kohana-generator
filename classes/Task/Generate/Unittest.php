@@ -2,29 +2,29 @@
 /**
  * Generates a unit test case with optional skeleton methods.
  *
- * Additional options:
+ * <comment>Additional options:</comment>
  *
- *   --name=TEST (required)
+ *   <info>--name=TEST</info> <alert>(required)</alert>
  *
  *     The full class name of this test. The 'Test' suffix will be added
  *     automatically if not already included in the name.
  *
- *   --extend=CLASS
+ *   <info>--extend=CLASS</info>
  *
  *     The name of the parent class from which the test case is extended,
  *     if none is given then Unittest_TestCase will be used by default.
  *
- *   --groups=GROUP[,GROUP[,...]]
+ *   <info>--groups=GROUP[,GROUP[,...]]</info>
  *
  *     A comma-separated list of the group parameters for this test case.
  *
- *   --blank
+ *   <info>--blank</info>
  *
  *     The skelton methods will be omitted if this option is set.
  *
- * Examples
+ * <comment>Examples</comment>
  * ========
- * minion generate:test --name=Logger_Logs_Rotate --groups="logger,logger.tasks"
+ * <info>minion generate:test --name=Logger_Logs_Rotate --groups="logger,logger.tasks"</info>
  *
  *     class : Logger_Logs_RotateTest extends Unittest_TestCase
  *     file  : APPPATH/tests/Logger/Logs/RotateTest.php

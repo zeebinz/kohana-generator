@@ -8,6 +8,5 @@ return array
 } else {
 	$refl = new Generator_Reflector;
 	$values = $refl->export_variable($values, TRUE);
-	echo "return $values;";
+	echo "return $values;", PHP_EOL;
 }
-?> 

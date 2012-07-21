@@ -20,6 +20,14 @@ class Generator_Task_Generate_Fixture extends Task_Generate
 	);
 
 	/**
+	 * @var  array  Arguments mapped to options
+	 */
+	protected $_arguments = array(
+		1 => 'name',
+		2 => 'command',
+	);
+
+	/**
 	 * Validates the task options.
 	 *
 	 * @param   Validation  $validation  The validation object to add rules to
@@ -27,10 +35,9 @@ class Generator_Task_Generate_Fixture extends Task_Generate
 	 */
 	public function build_validation(Validation $validation)
 	{
-		$validation->rule('name', 'not_empty');
-
 		if ( ! $this->_options['refresh'])
 		{
+			$validation->rule('name', 'not_empty');
 			$validation->rule('command', 'not_empty');
 		}
 
@@ -42,7 +49,7 @@ class Generator_Task_Generate_Fixture extends Task_Generate
 	 *
 	 * @param   array  $options  The selected task options
 	 * @return  Generator_Builder
-	 * @throws  Generator_Exception
+	 * @throws  Generator_Exception  On failure to parse command
 	 */
 	public function get_builder(array $options)
 	{
@@ -105,13 +112,12 @@ class Generator_Task_Generate_Fixture extends Task_Generate
 	 * Generates the expected output for the task with the given arguments.
 	 *
 	 * As we're creating a fixture file and so need reproducible output, we
-	 * As we're creating a fixture file and so need reproducible output, we
-	 * have to use the fixtures configuration and dummy classes or interfaces
+	 * should use the fixtures configuration and dummy classes or interfaces
 	 * defined for use only by the fixtures.
 	 *
 	 * @param   array   $args  The arguments for running the given task
 	 * @return  string  The expected output
-	 * @throws  Generator_Exception
+	 * @throws  Generator_Exception  On unsupported command
 	 */
 	public function get_fixture_expectation(array $args)
 	{
@@ -134,10 +140,9 @@ class Generator_Task_Generate_Fixture extends Task_Generate
 		$fixtures = $this->get_fixtures_directory();
 
 		// Include any test dummies
-		require_once $fixtures.'_test_interfaces.php';
-		require_once $fixtures.'_test_classes.php';
+		$this->include_fixture_dummies($fixtures);
 
-		// Add the test config
+		// Add the test config, if any
 		$task->set_options(array('config' => $fixtures.'_test_config.php'));
 
 		// Get the builder and override its options
@@ -165,12 +170,25 @@ class Generator_Task_Generate_Fixture extends Task_Generate
 	}
 
 	/**
+	 * Includes any test dummy files required by the fixture, such as dummy classes
+	 * or interfaces.
+	 *
+	 * @param   string  $directory  The directory to search
+	 * @return  void
+	 */
+	public function include_fixture_dummies($directory)
+	{
+		require_once $directory.'_test_interfaces.php';
+		require_once $directory.'_test_classes.php';
+	}
+
+	/**
 	 * Returns a valid task instance to be used for creating a fixture
 	 * expectation.
 	 *
 	 * @param   array  $args  The arguments for running the given task
 	 * @return  Minion_Task   The task instance
-	 * @throws  Generator_Exception
+	 * @throws  Generator_Exception  On failed validation
 	 */
 	public function get_fixture_task(array $args)
 	{
@@ -204,7 +222,39 @@ class Generator_Task_Generate_Fixture extends Task_Generate
 	 */
 	public function get_fixtures_directory()
 	{
-		return dirname(dirname(dirname(dirname(dirname(__FILE__))))).'/tests/fixtures/';
+		$ds = DIRECTORY_SEPARATOR;
+
+		$path = $this->_options['module'] ? Generator::get_module_path(
+			$this->_options['module']) : APPPATH;
+
+		return $path.'tests'.$ds.'fixtures'.$ds;
+	}
+
+	/**
+	 * Returns the names of any currently stored fixtures, optionally limited to
+	 * fixture names that match a given pattern (with wildcards).
+	 *
+	 * @return  string  $pattern  A pattern for the fixture names to match
+	 * @return  array   The list of fixture names
+	 */
+	public function get_fixtures_list($pattern = NULL)
+	{
+		$dir = $this->get_fixtures_directory();
+		$pattern = $pattern ?: '*test';
+		$fixtures = array();
+
+		foreach (glob($dir.$pattern) as $file)
+		{
+			// Skip names starting with underscores
+			$name = basename($file);
+			if ($name[0] == '_')
+				continue;
+
+			// Add the fixture name to the list
+			$fixtures[] = $name;
+		}
+
+		return $fixtures;
 	}
 
 	/**
@@ -221,6 +271,48 @@ class Generator_Task_Generate_Fixture extends Task_Generate
 	{
 		throw new Generator_Exception('The :opt option is not currently supported',
 			array(':opt' => '--remove'));
+	}
+
+	/**
+	 * Loads a builder, or merges different builders when refreshing a set of
+	 * fixtures, and runs the task.
+	 *
+	 * @param   array  $params  The current task parameters
+	 * @return  void
+	 * @throws  Generator_Exception  On empty fixtures list
+	 */
+	protected function _execute(array $params)
+	{
+		if ($params['name'] AND (strpos($params['name'], '*') === FALSE))
+		{
+			// We only want a single fixture
+			$builder = $this->get_builder($params);
+		}
+		elseif ($params['refresh'])
+		{
+			// Get the list of fixtures to refresh
+			if ( ! ($fixtures = $this->get_fixtures_list($params['name'])))
+			{
+				throw new Generator_Exception('No fixtures were found at: :path',
+					array(':path' => $this->get_fixtures_directory()));
+			}
+
+			// Start with a base builder
+			$builder = new Generator_Builder;
+
+			foreach ($fixtures as $name)
+			{
+				// Set the options for the new builder
+				$options = $params;
+				$options['name'] = $name;
+
+				// Merge the new builder into the base
+				$builder->merge($this->get_builder($options));
+			}
+		}
+
+		// Run the task
+		$this->run($builder->prepare(), $params);
 	}
 
 } // End Generator_Task_Generate_Fixture

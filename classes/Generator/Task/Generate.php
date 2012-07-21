@@ -27,16 +27,27 @@ class Generator_Task_Generate extends Minion_Task
 		'remove'   => FALSE,
 		'verbose'  => FALSE,
 		'no-ansi'  => FALSE,
+		'name'     => '',
 		'module'   => '',
 		'template' => '',
 		'config'   => '',
 	);
 
 	/**
-	 * Instantiates the task, and merges common and task options.We make this
-	 * public here so we can handle different instances more easily.
+	 * The default mapping of positional arguments to task options
+	 * @var  array
+	 */
+	protected $_arguments = array(
+		1 => 'name',
+	);
+
+	/**
+	 * Instantiates the task, and merges common and task options.
 	 *
-	 * @return void
+	 * This is re-declared public here so we can handle different instances more
+	 * easily without having to use the factory method.
+	 *
+	 * @return  void
 	 */
 	public function __construct()
 	{
@@ -47,16 +58,20 @@ class Generator_Task_Generate extends Minion_Task
 	}
 
 	/**
-	 * Sets the task options passed as parameters.
+	 * Sets the task options passed as parameters, and converts any positional
+	 * arguments to options.
 	 *
 	 * Boolean parameters (i.e. switches without values) are handled here by
 	 * toggling their associated options on.
 	 *
-	 * @param   array  $options  The options to set
+	 * @param   array  $options  The task options to set
 	 * @return  Minion_Task  This instance
 	 */
 	public function set_options(array $options)
 	{
+		// Convert any positional arguments to options
+		$options = $this->convert_arguments($options, $this->_arguments);
+
 		foreach ($options as $key => $value)
 		{
 			if ($value === NULL AND isset($this->_options[$key])
@@ -68,6 +83,32 @@ class Generator_Task_Generate extends Minion_Task
 		}
 
 		return parent::set_options($options);
+	}
+
+	/**
+	 * Converts any positional arguments to option values depending on the given
+	 * mapping (where the key is the argument position starting at 1, and the
+	 * value is the option name), then removes them.
+	 *
+	 * @param   array  $options  The options to process
+	 * @param   array  $mapping  The argument to option mappings
+	 * @return  array  The options with converted arguments
+	 */
+	public function convert_arguments(array $options, array $mapping)
+	{
+		foreach ($mapping as $position => $name)
+		{
+			if (isset($options[$position]))
+			{
+				// Set the option to the argument value
+				$options[$name] = empty($options[$name]) ? $options[$position] : $options[$name];
+
+				// Remove the argument for validation
+				unset($options[$position]);
+			}
+		}
+
+		return $options;
 	}
 
 	/**
@@ -169,21 +210,21 @@ class Generator_Task_Generate extends Minion_Task
 	 * Convenience method for loading configuration values, optionally from
 	 * a given config group or an absolute file path.
 	 *
-	 * @param   array  $path   Array path to the config values
-	 * @param   array  $group  The config group of file to load
+	 * @param   array  $path    Array path to the config values
+	 * @param   array  $source  The config group or file to load
 	 * @return  mixed  The config values or NULL
 	 */
-	public function get_config($path, $group = NULL)
+	public function get_config($path, $source = NULL)
 	{
-		if ($group !== NULL AND is_file($group))
+		if ($source !== NULL AND is_file($source))
 		{
 			// Return the values from the file
-			$config = include $group;
+			$config = include $source;
 			return Arr::path($config, $path);
 		}
 
 		// Otherwise load the CFS config values
-		$group = $group ?: 'generator';
+		$group = $source ?: 'generator';
 		return Kohana::$config->load($group.'.'.$path);
 	}
 
@@ -200,113 +241,8 @@ class Generator_Task_Generate extends Minion_Task
 	}
 
 	/**
-	 * Loads a builder and runs the task, or outputs the common help message
-	 * by default.
-	 *
-	 * @param   array  $params  The current task parameters
-	 * @return  void
-	 */
-	protected function _execute(array $params)
-	{
-		if ($builder = $this->get_builder($params))
-		{
-			$this->run($builder->prepare(), $params);
-			return;
-		}
-
-		$this->_help($params);
-	}
-
-	/**
-	 * Writes a message directly to STDOUT.
-	 *
-	 * @param   string   $text  The message to write
-	 * @param   boolean  $eol   Should EOL be added?
-	 * @return  void
-	 */
-	protected function _write($text, $eol = TRUE)
-	{
-		if ($this->_options['quiet'])
-			return;
-
-		echo ($eol ? ($text.PHP_EOL) : $text);
-	}
-
-	/**
-	 * Writes a formatted log message directly to STDOUT.
-	 *
-	 * @param   string  $status  The status message
-	 * @param   string  $item    The item affected
-	 * @return  void
-	 */
-	protected function _write_log($status, $item)
-	{
-		$color = in_array($status, array(Generator::CREATE, Generator::REMOVE)) ? 'green' : 'red';
-
-		$this->_write($this->_color(sprintf('%10s  %s', $status, $item), $color));
-	}
-
-	/**
-	 * Returns the given text with the correct color codes for a foreground and
-	 * optionally a background color.
-	 *
-	 * @param   string  $text        The text to color
-	 * @param   string  $foreground  The foreground color
-	 * @param   string  $background  The background color
-	 * @return  string  The color coded string
-	 */
-	public function _color($text, $foreground, $background = NULL)
-	{
-		if ($this->_options['no-ansi'])
-			return $text;
-
-		return Minion_CLI::color($text, $foreground, $background);
-	}
-
-	/**
-	 * Reads user input from STDIN.
-	 *
-	 * @param   string  $text     text to show user before waiting for input
-	 * @param   array   $options  array of options the user is shown
-	 * @return  string  the user input
-	 */
-	protected function _read($text, array $options = NULL)
-	{
-		return Minion_CLI::read($text, $options);
-	}
-
-	/**
-	 * Outputs the help message for the given generator task.
-	 *
-	 * A list of available generators will be appended to the help only if the
-	 * current instance is the base generator task.
-	 *
-	 * @param   array  $params  The current task parameters
-	 * @return  void
-	 */
-	protected function _help(array $params)
-	{
-		parent::_help($params);
-
-		if ( ! is_subclass_of($this, 'Task_Generate'))
-		{
-			// Get the list of available generators
-			$generators = $this->_compile_task_list(Kohana::list_files('classes/task/generate'));
-
-			// Append the list to the help output
-			$this->_write('Available generators:');
-			$this->_write('');
-			foreach ($generators as $generator)
-			{
-				$this->_write('  * '.$generator);
-			}
-			$this->_write('');
-		}
-	}
-
-	/**
 	 * Parses a task command string, returning an array of arguments and
-	 * option values.
+	 * option values, should be reversible by create_task_command().
 	 *
 	 * @param   string  $command  The task command
 	 * @return  array   The parsed command arguments
@@ -354,6 +290,182 @@ class Generator_Task_Generate extends Minion_Task
 		}
 
 		return $command;
+	}
+
+	/**
+	 * Execute the task with the specified set of options.
+	 *
+	 * The Minion_Task method is overridden here mainly to handle validation
+	 * errors and command output differently.
+	 *
+	 * @return  void
+	 */
+	public function execute()
+	{
+		$options = $this->get_options();
+
+		// Validate $options
+		$validation = Validation::factory($options);
+		$validation = $this->build_validation($validation);
+
+		if ($this->_method != '_help' AND ! $validation->check())
+		{
+			$view = View::factory('generator/error/validation')
+				->set('task', Minion_Task::convert_class_to_task($this))
+				->set('errors', $validation->errors($this->get_errors_file()));
+
+			$this->_write($this->_apply_styles($view), FALSE);
+		}
+		else
+		{
+			// Finally, run the task
+			$method = $this->_method;
+			$this->_write($this->{$method}($options), FALSE);
+		}
+	}
+
+	/**
+	 * Loads a builder and runs the task, or outputs the common help message
+	 * by default.
+	 *
+	 * @param   array  $params  The current task parameters
+	 * @return  void
+	 */
+	protected function _execute(array $params)
+	{
+		if ($builder = $this->get_builder($params))
+		{
+			$this->run($builder->prepare(), $params);
+			return;
+		}
+
+		$this->_help($params);
+	}
+
+	/**
+	 * Writes a message to the console, with optional new line.
+	 *
+	 * @param   string   $text  The message to write
+	 * @param   boolean  $eol   Should EOL be added?
+	 * @return  void
+	 */
+	protected function _write($text, $eol = TRUE)
+	{
+		if ($this->_options['quiet'])
+			return;
+
+		echo $text, ($eol ? PHP_EOL : '');
+	}
+
+	/**
+	 * Writes a formatted log message to the console.
+	 *
+	 * @param   string  $status  The status message
+	 * @param   string  $item    The item affected
+	 * @return  void
+	 */
+	protected function _write_log($status, $item)
+	{
+		$color = in_array($status, array(Generator::CREATE, Generator::REMOVE)) ? 'green' : 'red';
+
+		$this->_write($this->_color(sprintf('%10s  %s', $status, $item), $color));
+	}
+
+	/**
+	 * Returns the given text with the correct color codes for a foreground and
+	 * optionally a background color.
+	 *
+	 * @param   string  $text        The text to color
+	 * @param   string  $foreground  The foreground color
+	 * @param   string  $background  The background color
+	 * @return  string  The color coded string
+	 */
+	protected function _color($text, $foreground, $background = NULL)
+	{
+		if ($this->_options['no-ansi'])
+			return $text;
+
+		return Minion_CLI::color($text, $foreground, $background);
+	}
+
+	/**
+	 * Reads user input from STDIN.
+	 *
+	 * @param   string  $text     Text to show user before waiting for input
+	 * @param   array   $options  Array of options the user is shown
+	 * @return  string  The user input
+	 */
+	protected function _read($text, array $options = NULL)
+	{
+		return Minion_CLI::read($text, $options);
+	}
+
+	/**
+	 * Outputs the help message for the given generator task.
+	 *
+	 * A list of available generators will be appended to the help only if the
+	 * current instance is the base generator task.
+	 *
+	 * @param   array  $params  The current task parameters
+	 * @return  void
+	 */
+	protected function _help(array $params)
+	{
+		$refl = new ReflectionClass($this);
+
+		// Parse the doccomment for the class
+		list($description, $tags) = $this->_parse_doccomment($refl->getDocComment());
+		$arguments = '';
+
+		if (is_subclass_of($this, 'Task_Generate'))
+		{
+			// Add details of any positonal arguments
+			$arguments = strtoupper(implode(' ', $this->_arguments));
+			$arguments = ($arguments != '') ? ($arguments.' ') : $arguments;
+		}
+
+		// Create the usage info string
+		$usage = 'minion '.Minion_Task::convert_class_to_task($this).' '
+			.$this->_color($arguments, 'green')
+			.$this->_color('[--option=value] [--option]', 'brown');
+
+		// Render the initial view
+		$view = View::factory('generator/help/task')
+			->set('description', $description)
+			->set('tags', (array) $tags)
+			->set('usage', $usage);
+
+		$this->_write($this->_apply_styles($view));
+
+		if ( ! is_subclass_of($this, 'Task_Generate'))
+		{
+			// Get the list of available generators
+			$generators = $this->_compile_task_list(Kohana::list_files('classes/task/generate'));
+
+			// Append the list to the help output
+			$this->_write($this->_color('Available generators:', 'brown'));
+			$this->_write('');
+			foreach ($generators as $generator)
+			{
+				$this->_write('  * '.$generator);
+			}
+			$this->_write('');
+		}
+	}
+
+	/**
+	 * Substitutes any style tags in the text with the defined styles.
+	 *
+	 * @param   string  $text  The text with style tags
+	 * @return  string  The text with styles applied
+	 */
+	protected function _apply_styles($text)
+	{
+		$text = preg_replace('@<comment>(.*?)</comment>@s', $this->_color('$1', 'brown'), $text);
+		$text = preg_replace('@<info>(.*?)</info>@s', $this->_color('$1', 'green'), $text);
+		$text = preg_replace('@<alert>(.*?)</alert>@s', $this->_color('$1', 'red'), $text);
+
+		return $text;
 	}
 
 } // End Generator_Task_Generate

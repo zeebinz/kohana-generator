@@ -7,7 +7,7 @@
  * @copyright  <?php echo $copyright ?> 
  * @license    <?php echo $license ?> 
  */
-class <?php echo $name.' extends '.$extends;
+class <?php echo $name, ' extends ', $extends;
 	if ( ! empty($blank)) {echo ' {}';} else { ?> 
 {
 	protected $_template = 'generator/<?php echo $type_template ?>';

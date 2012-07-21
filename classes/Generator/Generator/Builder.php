@@ -18,7 +18,7 @@
 class Generator_Generator_Builder
 {
 	// Release version
-	const VERSION = '0.6';
+	const VERSION = '0.7';
 
 	// Generator commands
 	const CREATE = 'create';
@@ -80,6 +80,35 @@ class Generator_Generator_Builder
 	public static function build()
 	{
 		return new Generator;
+	}
+
+	/**
+	 * Returns full paths for loaded module names (or folder names under MODPATH),
+	 * optionally with a check for the path's existence.
+	 *
+	 * @param   string   $module  The module name or folder
+	 * @param   boolean  $verify  Should the existence of the path be checked?
+	 * @return  string   The full path to the module
+	 * @throws  Generator_Exception  On missing module path
+	 */
+	public static function get_module_path($module, $verify = TRUE)
+	{
+		$modules = Kohana::modules();
+
+		// Return the loaded module path
+		if (isset($modules[$module]))
+			return $modules[$module];
+
+		// Search under MODPATH for the folder instead
+		$path = MODPATH.$module.DIRECTORY_SEPARATOR;
+
+		if ($verify AND ! file_exists($path))
+		{
+			throw new Generator_Exception("Module ':module' is not loaded or does not exist",
+				array(':module' => $module));
+		}
+
+		return $path;
 	}
 
 	/**
@@ -209,10 +238,11 @@ class Generator_Generator_Builder
 	}
 
 	/**
-	 * Sets the module folder under MODPATH in which each generator item
-	 * is to be created.
+	 * Sets the name of the module in which each generator item is to be created.
+	 * This must be either the name of a loaded module as defined in the bootstrap,
+	 * or a valid folder under the current MODPATH.
 	 *
-	 * @param   string  $module  The module folder name
+	 * @param   string  $module  The module name
 	 * @return  Generator_Builder  This instance
 	 */
 	public function with_module($module)
@@ -270,6 +300,31 @@ class Generator_Generator_Builder
 		}
 
 		return $generators;
+	}
+
+	/**
+	 * Merges the generators from a given builder object into the current
+	 * instance, preserving any prepared settings for each.
+	 *
+	 * @param   Generator_Builder  $builder  The builder to merge
+	 * @return  Generator_Builder  This instance
+	 */
+	public function merge(Generator_Builder $builder)
+	{
+		// Prepare the generators
+		$this->_is_prepared OR $this->prepare();
+		$builder->prepare();
+
+		// Merge the generators lists
+		$this->_generators = array_merge($this->_generators, $builder->generators());
+
+		foreach ($this->_generators as $generator)
+		{
+			// Set all references to this instance
+			$generator->set_builder($this);
+		}
+
+		return $this;
 	}
 
 	/**

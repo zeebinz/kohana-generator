@@ -31,8 +31,8 @@
  */
 class <?php 
 	echo $name;	
-	if ( ! empty($extends)) {echo ' extends '.$extends;}
-	if ( ! empty($implements)) {echo ' implements '.$implements;}
+	if ( ! empty($extends)) {echo ' extends ', $extends;}
+	if ( ! empty($implements)) {echo ' implements ', $implements;}
 	if ( ! empty($blank)) {echo ' {}';} else { ?> 
 {
 	/**
@@ -62,6 +62,7 @@ class <?php
 	 */
 	protected function _execute(array $params)
 	{
+		// Method implementation
 	}
 
 } // End <?php echo $name ?>

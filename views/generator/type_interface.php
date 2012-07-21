@@ -9,7 +9,7 @@
  */
 interface <?php 
 	echo $name;	
-	if ( ! empty($extends)) {echo ' extends '.$extends;} ?> 
+	if ( ! empty($extends)) {echo ' extends ', $extends;} ?> 
 {
 
 } // End <?php echo $name ?> 

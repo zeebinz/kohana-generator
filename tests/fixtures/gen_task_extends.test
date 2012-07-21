@@ -64,6 +64,7 @@ class Task_Foo extends Task_Generate
 	 */
 	protected function _execute(array $params)
 	{
+		// Method implementation
 	}
 
 } // End Task_Foo

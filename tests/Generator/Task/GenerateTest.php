@@ -51,6 +51,36 @@ class Generator_Task_GenerateTest extends Unittest_TestCase
 	}
 
 	/**
+	 * Positional arguments may be mapped to defined option names.
+	 */
+	public function test_mapping_positional_arguments_to_options()
+	{
+		$task = Minion_Task::factory(array('task' => 'generate', 'name' => 'Foo'));
+
+		// Using manual mappings
+		$options    = $task->get_options();
+		$options[1] = 'baz';
+		$options[2] = 'qux';
+		$mapping    = array(1 => 'someopt', 2 => 'name');
+		$options    = $task->convert_arguments($options, $mapping);
+
+		$this->assertSame('Foo', $options['name']);
+		$this->assertSame('baz', $options['someopt']);
+		$this->assertArrayNotHasKey(1, $options);
+		$this->assertArrayNotHasKey(2, $options);
+
+		// Using the default mappings
+		$task = Minion_Task::factory(array(
+			'task' => 'generate',
+			1 => 'Foo',
+		));
+
+		$options = $task->get_options();
+		$this->assertSame('Foo', $options['name']);
+		$this->assertArrayNotHasKey(1, $options);
+	}
+
+	/**
 	 * Task commands should be parsable into arrays of arguments, and the process
 	 * should be reversable.
 	 *
@@ -112,16 +142,17 @@ class Generator_Task_GenerateTest extends Unittest_TestCase
 	 *
 	 * @dataProvider  provider_test_fixtures
 	 * @param    Generator_Type_Fixture  $fixture  A fixture object
-	 * @param    string  $name  The name of the fixture file to load
 	 * @depends  test_parse_and_create_task_commands
 	 */
-	public function test_generated_output_with_fixtures($fixture, $name)
+	public function test_generated_output_with_fixtures($fixture)
 	{
 		// First test loading up the fixture's file
-		$this->assertTrue($fixture->load_from_file(), "Couldn't load the fixture: '$name'");
+		$this->assertTrue($fixture->load_from_file(),
+			"Couldn't load the fixture: '".$fixture->name()."'");
 
 		// Create a new task with the fixture's command
 		$task = new Task_Generate_Fixture;
+		$task->set_options(array('module' => $fixture->module()));
 		$args = $task->parse_task_command($fixture->command());
 
 		// Get the expectations
@@ -161,7 +192,7 @@ class Generator_Task_GenerateTest extends Unittest_TestCase
 			$fixt->name($name)->module($module);
 
 			// Add the fixture to the list
-			$fixtures[] = array($fixt, $name);
+			$fixtures[] = array($fixt);
 		}
 
 		return $fixtures;
