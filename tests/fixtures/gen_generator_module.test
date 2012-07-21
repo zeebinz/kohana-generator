@@ -17,7 +17,7 @@ generate:generator --name=Foo --module=bar
  */
 class Bar_Generator_Type_Foo extends Generator_Type
 {
-	protected $_template = 'generator/type_foo';
+	protected $_template = 'generator/type/foo';
 	protected $_folder   = 'classes';
 
 	/**

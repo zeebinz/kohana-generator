@@ -10,7 +10,7 @@
  */
 class Generator_Generator_Type_Controller extends Generator_Type_Class
 {
-	protected $_template = 'generator/type_controller';
+	protected $_template = 'generator/type/controller';
 	protected $_folder   = 'classes';
 
 	/**

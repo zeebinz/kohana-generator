@@ -10,7 +10,7 @@
  */
 class Generator_Generator_Type_Clone extends Generator_Type_Class
 {
-	protected $_template = 'generator/type_clone';
+	protected $_template = 'generator/type/clone';
 	protected $_folder   = 'classes';
 
 	protected $_inherit = FALSE;
@@ -192,7 +192,7 @@ class Generator_Generator_Type_Clone extends Generator_Type_Class
 					if (empty($p['doccomment']))
 					{
 						// Create a new doccomment if one doesn't exist
-						$doc = View::factory('generator/type_doccomment')->set('tabs', 1);
+						$doc = View::factory('generator/type/doccomment')->set('tabs', 1);
 						$doc->set('short_description',  "Declared in {$p['class']}");
 						$doc->set('tags', '@var  '.$p['type'].'  $'.$property);
 

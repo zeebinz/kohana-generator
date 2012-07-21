@@ -11,14 +11,14 @@ A generator type represents a new resource on your file system: it knows what ki
 Generators can be configured manually before their resources are finally added to your project with the `create()` command:
 
 	$generator = new Generator_Type_Class('Foo');
-	$generator->template('generator/type_class');
+	$generator->template('generator/type/class');
 	$generator->create();
 
 Since most of these generator methods are chainable, you can configure and run them in a single statement, using a simple syntax:
 
 	$generator
 		->name('Foo')
-		->template('generator/type_class')
+		->template('generator/type/class')
 		->folder('classes')
 		->module('mymodule')
 		->create();
@@ -42,7 +42,7 @@ Notice that the chain here ends with `builder()`, to guarantee that we get a ref
 So, to continue with the example above:
 
 	$builder = Generator::build()->add_class('Foo')
-		->template('generator/type_class')
+		->template('generator/type/class')
 		->folder('classes')
 		->module('mymodule')
 		->builder();

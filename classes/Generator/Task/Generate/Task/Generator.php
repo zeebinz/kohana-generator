@@ -45,7 +45,7 @@ class Generator_Task_Generate_Task_Generator extends Task_Generate
 		$prefix = $options['prefix'] ?: ucfirst($options['module']);
 
 		// Set the default template and extension
-		$template = $options['template'] ?: 'generator/type_task_generator';
+		$template = $options['template'] ?: 'generator/type/task_generator';
 		$extend = $options['extend'] ?: 'Task_Generate';
 
 		$builder = Generator::build()

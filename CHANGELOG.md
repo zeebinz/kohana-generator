@@ -4,6 +4,7 @@ Generator for Kohana - Changelog
 Version 0.7
 -----------
 
+- Moved all type templates to views/generator/types.
 - Updated the 'Running the Tasks' guide page with info about task arguments.
 - Replaced the Minion validation error template, the new one now has the right
   help info and includes style tags.

@@ -197,7 +197,7 @@ class Generator_TypeTest extends Unittest_TestCase
 	public function test_render()
 	{
 		$type = new Generator_Type_Tester('Foo');
-		$type->template('generator/type_tester');
+		$type->template('generator/type/tester');
 
 		$this->assertRegExp('/Testing Foo template/', $type->render());
 	}
