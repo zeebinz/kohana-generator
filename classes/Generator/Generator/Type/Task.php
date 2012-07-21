@@ -10,7 +10,7 @@
  */
 class Generator_Generator_Type_Task extends Generator_Type_Class
 {
-	protected $_template = 'generator/type_task';
+	protected $_template = 'generator/type/task';
 
 	/**
 	 * Sets/gets the task class name.

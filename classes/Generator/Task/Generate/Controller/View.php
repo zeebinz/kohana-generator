@@ -25,7 +25,7 @@ class Generator_Task_Generate_Controller_View extends Task_Generate_Controller
 
 		// Configure the template and add the view file
 		return parent::get_builder($options)
-			->template('generator/type_controller_view')
+			->template('generator/type/controller_view')
 				->set('view', $view)
 			->add_file($view.EXT)
 				->folder('views')

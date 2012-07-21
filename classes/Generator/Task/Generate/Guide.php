@@ -80,7 +80,7 @@ class Generator_Task_Generate_Guide extends Task_Generate
 		{
 			// Add a config file
 			$builder->add_config('userguide')
-				->template('generator/type_guide_config')
+				->template('generator/type/guide_config')
 				->set('name', ucfirst($options['name']))
 				->set('module', $options['module'])
 				->defaults($this->get_config('defaults.guide', $options['config']));

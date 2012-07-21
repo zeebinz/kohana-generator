@@ -10,7 +10,7 @@
  */
 class Generator_Generator_Type_Config extends Generator_Type 
 {
-	protected $_template = 'generator/type_config';
+	protected $_template = 'generator/type/config';
 	protected $_folder   = 'config';
 
 	/**

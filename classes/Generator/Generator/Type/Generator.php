@@ -12,7 +12,7 @@
  */
 class Generator_Generator_Type_Generator extends Generator_Type_Class
 {
-	protected $_template = 'generator/type_generator';
+	protected $_template = 'generator/type/generator';
 	protected $_folder   = 'classes';
 
 	/**
@@ -70,7 +70,7 @@ class Generator_Generator_Type_Generator extends Generator_Type_Class
 
 		if (empty($this->_params['type_template']))
 		{
-			$this->_params['type_template'] = 'type_'.strtolower($type);
+			$this->_params['type_template'] = 'type/'.strtolower($type);
 		}
 
 		return parent::render();

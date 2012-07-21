@@ -10,7 +10,7 @@
  */
 class Generator_Generator_Type_Interface extends Generator_Type
 {
-	protected $_template = 'generator/type_interface';
+	protected $_template = 'generator/type/interface';
 
 	protected $_defaults = array(
 		'package'   => 'package',

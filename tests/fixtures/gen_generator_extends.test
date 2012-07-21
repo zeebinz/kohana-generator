@@ -17,7 +17,7 @@ generate:generator --name=Foo --extend=Type_Class --no-test --no-task
  */
 class Generator_Type_Foo extends Type_Class
 {
-	protected $_template = 'generator/type_foo';
+	protected $_template = 'generator/type/foo';
 	protected $_folder   = 'classes';
 
 	/**

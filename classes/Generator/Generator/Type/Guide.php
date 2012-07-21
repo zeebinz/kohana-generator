@@ -10,7 +10,7 @@
  */
 class Generator_Generator_Type_Guide extends Generator_Type
 {
-	protected $_template = 'generator/type_guide_menu';
+	protected $_template = 'generator/type/guide_menu';
 	protected $_name     = 'menu.md';
 	protected $_folder   = 'guide';
 

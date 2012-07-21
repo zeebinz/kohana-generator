@@ -10,7 +10,7 @@
  */
 class Generator_Generator_Type_Class extends Generator_Type
 {
-	protected $_template = 'generator/type_class';
+	protected $_template = 'generator/type/class';
 	protected $_folder   = 'classes';
 
 	protected $_defaults = array(
@@ -151,7 +151,7 @@ class Generator_Generator_Type_Class extends Generator_Type
 					if (empty($m['doccomment']))
 					{
 						// Create a new doccomment if one doesn't exist
-						$doc = View::factory('generator/type_doccomment')->set('tabs', 1);
+						$doc = View::factory('generator/type/doccomment')->set('tabs', 1);
 						$tags = array();
 
 						// Set the method description

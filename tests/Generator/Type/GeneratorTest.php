@@ -31,7 +31,7 @@ class Generator_Type_GeneratorTest extends Unittest_TestCase
 		$this->assertSame('Generator/Types', $params['category']);
 		$this->assertSame('Generator_Type', $params['extends']);
 		$this->assertSame('Foo', $params['type']);
-		$this->assertSame('type_foo', $params['type_template']);
+		$this->assertSame('type/foo', $params['type_template']);
 	}
 
 } // End Generator_Type_GeneratorTest 

@@ -10,7 +10,7 @@
  */
 class Generator_Generator_Type_Unittest extends Generator_Type_Class
 {
-	protected $_template = 'generator/type_unittest';
+	protected $_template = 'generator/type/unittest';
 	protected $_folder   = 'tests';
 
 	/**

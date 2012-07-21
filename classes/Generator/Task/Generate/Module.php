@@ -63,7 +63,7 @@ class Generator_Task_Generate_Module extends Task_Generate
 				->content('# '.ucfirst($options['name']).' module'.PHP_EOL.PHP_EOL
 					.'Index page for this module.'.PHP_EOL)
 			->add_config('userguide')
-				->template('generator/type_guide_config')
+				->template('generator/type/guide_config')
 				->set('name', ucfirst($options['name']))
 				->set('module', $options['name'])
 				->defaults($this->get_config('defaults.guide', $options['config']))

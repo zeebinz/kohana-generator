@@ -10,7 +10,7 @@
  */
 class Generator_Generator_Type_Fixture extends Generator_Type
 {
-	protected $_template = 'generator/type_fixture';
+	protected $_template = 'generator/type/fixture';
 	protected $_folder   = 'tests/fixtures';
 	protected $_security = FALSE;
 
