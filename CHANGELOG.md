@@ -1,6 +1,10 @@
 Generator for Kohana - Changelog
 ================================
 
+Version 0.7
+-----------
+
+- Updated the 'Running the Tasks' guide page with info about task arguments.
 - Replaced the Minion validation error template, the new one now has the right
   help info and includes style tags.
 - Task help pages now support style tags for colorization of output with any
@@ -9,7 +13,7 @@ Generator for Kohana - Changelog
   bootstrap or as folders located under MODPATH.
 - Positional arguments are now supported by generator tasks - see the 'Usage'
   info in the task `--help` to see which options may be passed as arguments.
-- When refreshing fixtures, wildcards may now be used in the --name option to
+- When refreshing fixtures, wildcards may now be used in the `--name` option to
   match a list of fixture files (e.g. `--name=gen_model*`).
 - Generators from different builders may now be merged via the new merge()
   method of Generator_Builder.

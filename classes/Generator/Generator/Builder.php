@@ -18,7 +18,7 @@
 class Generator_Generator_Builder
 {
 	// Release version
-	const VERSION = '0.6';
+	const VERSION = '0.7';
 
 	// Generator commands
 	const CREATE = 'create';
