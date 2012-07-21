@@ -42,10 +42,12 @@ class Generator_Task_Generate extends Minion_Task
 	);
 
 	/**
-	 * Instantiates the task, and merges common and task options.We make this
-	 * public here so we can handle different instances more easily.
+	 * Instantiates the task, and merges common and task options.
 	 *
-	 * @return void
+	 * This is re-declared public here so we can handle different instances more
+	 * easily without having to use the factory method.
+	 *
+	 * @return  void
 	 */
 	public function __construct()
 	{
@@ -56,18 +58,18 @@ class Generator_Task_Generate extends Minion_Task
 	}
 
 	/**
-	 * Sets the task options passed as parameters, and maps any positional
+	 * Sets the task options passed as parameters, and converts any positional
 	 * arguments to options.
 	 *
 	 * Boolean parameters (i.e. switches without values) are handled here by
 	 * toggling their associated options on.
 	 *
-	 * @param   array  $options  The options to set
+	 * @param   array  $options  The task options to set
 	 * @return  Minion_Task  This instance
 	 */
 	public function set_options(array $options)
 	{
-		// Map any positional arguments to options
+		// Convert any positional arguments to options
 		$options = $this->convert_arguments($options, $this->_arguments);
 
 		foreach ($options as $key => $value)
@@ -101,7 +103,7 @@ class Generator_Task_Generate extends Minion_Task
 				// Set the option to the argument value
 				$options[$name] = empty($options[$name]) ? $options[$position] : $options[$name];
 
-				// We need to remove numeric keys for validation
+				// Remove the argument for validation
 				unset($options[$position]);
 			}
 		}
@@ -240,7 +242,7 @@ class Generator_Task_Generate extends Minion_Task
 
 	/**
 	 * Parses a task command string, returning an array of arguments and
-	 * option values.
+	 * option values, should be reversible by create_task_command().
 	 *
 	 * @param   string  $command  The task command
 	 * @return  array   The parsed command arguments
@@ -341,7 +343,7 @@ class Generator_Task_Generate extends Minion_Task
 	}
 
 	/**
-	 * Writes a message directly to STDOUT.
+	 * Writes a message to the console, with optional new line.
 	 *
 	 * @param   string   $text  The message to write
 	 * @param   boolean  $eol   Should EOL be added?
@@ -356,7 +358,7 @@ class Generator_Task_Generate extends Minion_Task
 	}
 
 	/**
-	 * Writes a formatted log message directly to STDOUT.
+	 * Writes a formatted log message to the console.
 	 *
 	 * @param   string  $status  The status message
 	 * @param   string  $item    The item affected
@@ -389,9 +391,9 @@ class Generator_Task_Generate extends Minion_Task
 	/**
 	 * Reads user input from STDIN.
 	 *
-	 * @param   string  $text     text to show user before waiting for input
-	 * @param   array   $options  array of options the user is shown
-	 * @return  string  the user input
+	 * @param   string  $text     Text to show user before waiting for input
+	 * @param   array   $options  Array of options the user is shown
+	 * @return  string  The user input
 	 */
 	protected function _read($text, array $options = NULL)
 	{
@@ -409,10 +411,10 @@ class Generator_Task_Generate extends Minion_Task
 	 */
 	protected function _help(array $params)
 	{
-		$inspector = new ReflectionClass($this);
+		$refl = new ReflectionClass($this);
 
 		// Parse the doccomment for the class
-		list($description, $tags) = $this->_parse_doccomment($inspector->getDocComment());
+		list($description, $tags) = $this->_parse_doccomment($refl->getDocComment());
 		$arguments = '';
 
 		if (is_subclass_of($this, 'Task_Generate'))
