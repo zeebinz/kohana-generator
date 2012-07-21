@@ -31,7 +31,7 @@
  */
 class <?php
 	echo $name;
-	echo ' extends '.( ! empty($extends) ? $extends : 'Task_Generate');
+	echo ' extends ', ( ! empty($extends) ? $extends : 'Task_Generate');
 	if ( ! empty($blank)) {echo ' {}';} else { ?> 
 {
 	/**

@@ -1,5 +1,5 @@
 /**
- * <?php echo ucfirst($type).' '.$name ?>, cloned from <?php echo $source ?>.
+ * <?php echo ucfirst($type), ' ', $name ?>, cloned from <?php echo $source ?>.
  *
  * @package    <?php echo $package ?> 
  * @category   <?php echo $category ?> 
@@ -9,9 +9,9 @@
  */
 <?php 
 	echo ( ! empty($modifiers) ? ($modifiers.' '.$type) : $type);
-	echo ' '.$name;	
-	if ( ! empty($extends)) {echo ' extends '.$extends;} 
-	if ( ! empty($implements)) {echo ' implements '.$implements;}
+	echo ' ', $name;
+	if ( ! empty($extends)) {echo ' extends ', $extends;}
+	if ( ! empty($implements)) {echo ' implements ', $implements;}
 	if ( ! empty($blank)): echo ' {}'; else : ?> 
 {
 <?php if ( ! empty($constants)) foreach ($constants as $constant => $c): ?>
@@ -28,7 +28,7 @@
 <?php	if (isset($methods[$group])) foreach ($methods[$group] as $method => $m): ?>
 	<?php echo $m['doccomment'] ?> 
 	<?php echo $m['signature'] ?>
-<?php if ($m['abstract']): echo ';'.PHP_EOL.PHP_EOL; else: ?> 
+<?php if ($m['abstract']): echo ';', PHP_EOL, PHP_EOL; else: ?> 
 	{
 		<?php echo $m['body'] ?> 
 	}

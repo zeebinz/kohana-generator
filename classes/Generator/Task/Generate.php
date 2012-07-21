@@ -352,7 +352,7 @@ class Generator_Task_Generate extends Minion_Task
 		if ($this->_options['quiet'])
 			return;
 
-		echo ($eol ? ($text.PHP_EOL) : $text);
+		echo $text, ($eol ? PHP_EOL : '');
 	}
 
 	/**
