@@ -1,6 +1,6 @@
 <?php defined('SYSPATH') OR die('No direct script access.');
 /**
- * Generator Fixture type.
+ * Transparent extension for Generator Fixture type.
  *
  * @package    Generator
  * @category   Generator/Types

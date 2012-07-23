@@ -128,7 +128,7 @@ class Foo_Bar
 
 <?php defined('SYSPATH') OR die('No direct script access.');
 /**
- * Class Foo.
+ * Transparent extension of Foo_Bar.
  *
  * @package    package
  * @category   category

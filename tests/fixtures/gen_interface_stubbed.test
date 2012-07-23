@@ -24,7 +24,7 @@ interface Some_Fooable
 
 <?php defined('SYSPATH') OR die('No direct script access.');
 /**
- * Fooable interface.
+ * Transparent extension of Some_Fooable.
  *
  * @package    Bar
  * @category   Interfaces
@@ -32,8 +32,5 @@ interface Some_Fooable
  * @copyright  (c) 2012 Test Author
  * @license    Test license
  */
-interface Fooable extends Some_Fooable
-{
-
-} // End Fooable
+interface Fooable extends Some_Fooable {}
 ---END---

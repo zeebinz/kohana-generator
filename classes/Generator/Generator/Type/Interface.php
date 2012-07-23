@@ -45,6 +45,8 @@ class Generator_Generator_Type_Interface extends Generator_Type
 	 */
 	public function render()
 	{
+		$this->_params['class_type'] = 'interface';
+
 		if (empty($this->_params['category']))
 		{
 			$this->_params['category'] = 'Interfaces';

@@ -1,6 +1,8 @@
 Generator for Kohana - Changelog
 ================================
 
+- Added new stub template for transparent extension.
+
 Version 0.7
 -----------
 

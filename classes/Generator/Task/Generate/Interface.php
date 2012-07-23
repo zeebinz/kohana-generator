@@ -59,7 +59,9 @@ class Generator_Task_Generate_Interface extends Task_Generate_Class
 		if ($options['stub'])
 		{
 			$builder->add_interface($options['stub'])
-				->extend($options['name']);
+				->extend($options['name'])
+				->template('generator/type/stub')
+				->set('source', $options['name']);
 		}
 
 		return $builder
