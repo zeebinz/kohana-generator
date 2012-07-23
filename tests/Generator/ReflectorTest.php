@@ -259,6 +259,7 @@ class Generator_ReflectorTest extends Unittest_TestCase
 	{
 		return array(
 			array('foo', "'foo'"),
+			array(0, '0'),
 			array(1, '1'),
 			array(1.1, '1.1'),
 			array(TRUE, 'TRUE'),
@@ -297,6 +298,7 @@ class Generator_ReflectorTest extends Unittest_TestCase
 	{
 		return array(
 			array('foo', 'string'),
+			array(0, 'integer'),
 			array(1, 'integer'),
 			array(1.01, 'float'),
 			array(array(), 'array'),
@@ -360,7 +362,7 @@ class Generator_ReflectorTest extends Unittest_TestCase
 		$this->assertSame('public $prop_one = \'foo\'', $refl->get_property_declaration('prop_one'));
 		$this->assertSame('public $prop_two = 2', $refl->get_property_declaration('prop_two'));
 		$this->assertSame('public $prop_three = array()', $refl->get_property_declaration('prop_three'));
-		$this->assertSame('public $prop_four', $refl->get_property_declaration('prop_four'));
+		$this->assertSame('public $prop_four = 0', $refl->get_property_declaration('prop_four'));
 		$this->assertSame('protected $prop_five', $refl->get_property_declaration('prop_five'));
 		$this->assertSame('public static $prop_six', $refl->get_property_declaration('prop_six'));
 
@@ -458,7 +460,7 @@ abstract class TestClass extends TestParentClass implements TestInterfaceCountab
 	public $prop_one = 'foo';
 	public $prop_two = 2;
 	public $prop_three = array();
-	public $prop_four;
+	public $prop_four = 0;
 
 	protected $prop_five;
 

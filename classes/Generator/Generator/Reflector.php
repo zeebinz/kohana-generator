@@ -670,7 +670,7 @@ class Generator_Generator_Reflector
 
 		// Create the declaration
 		$modifiers = $p['modifiers'] ? ($p['modifiers'].' ') : '';
-		$value = $p['value'] ? (' = '.$p['value']) : '';
+		$value = ($p['value'] != NULL) ? (' = '.$p['value']) : '';
 
 		return $modifiers.'$'.$property.$value;
 	}
