@@ -92,11 +92,6 @@ class Generator_Generator_Type_Guide extends Generator_Type
 			$this->_params['pages'] = $this->_parse_pages($this->_params['pages']);
 		}
 
-		if (empty($this->_params['menu']))
-		{
-			$this->_params['menu'] = 'Guide Menu';
-		}
-
 		return parent::render();
 	}
 

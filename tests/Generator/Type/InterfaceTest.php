@@ -30,10 +30,10 @@ class Generator_Type_InterfaceTest extends Unittest_TestCase
 		$this->assertSame($module, $type->module());
 		$this->assertSame(array('Bar', 'Boom', 'Bang'), $params['extends']);
 
-		$type->render();
+		$rendered = $type->render();
 		$params = $type->params();
 		$this->assertSame('Bar, Boom, Bang', $params['extends']);
-		$this->assertSame('Interfaces', $params['category']);
+		$this->assertRegExp('/@category\s+Interfaces/', $rendered);
 	}
 
 } // End Generator_Type_InterfaceTest
