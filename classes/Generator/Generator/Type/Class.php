@@ -14,11 +14,12 @@ class Generator_Generator_Type_Class extends Generator_Type
 	protected $_folder   = 'classes';
 
 	protected $_defaults = array(
-		'package'   => 'package',
-		'category'  => 'category',
-		'author'    => 'author',
-		'copyright' => 'copyright',
-		'license'   => 'license',
+		'package'    => 'package',
+		'category'   => 'category',
+		'author'     => 'author',
+		'copyright'  => 'copyright',
+		'license'    => 'license',
+		'class_type' => 'class',
 	);
 
 	/**

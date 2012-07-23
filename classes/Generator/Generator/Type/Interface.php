@@ -18,6 +18,7 @@ class Generator_Generator_Type_Interface extends Generator_Type
 		'author'     => 'author',
 		'copyright'  => 'copyright',
 		'license'    => 'license',
+		'class_type' => 'interface',
 	);
 
 	/**
