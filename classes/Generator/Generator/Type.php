@@ -370,7 +370,7 @@ class Generator_Generator_Type
 
 		// Determine the base path for the file
 		$path = $this->_module ? Generator::get_module_path($this->_module,
-			$this->_verify)	: APPPATH;
+			$this->_verify) : APPPATH;
 
 		// Get the file name, optionally converting it to a path
 		$name = $convert ? (str_replace('_', $ds, $this->_name)) : $this->_name;

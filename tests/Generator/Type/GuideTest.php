@@ -32,7 +32,7 @@ class Generator_Type_GuideTest extends Unittest_TestCase
 
 		$this->assertSame('Guide Menu', $params['menu']);
 		$this->assertSame(array('Page 1' => 'first', 'Page 2' => 'second',
-			'Page 3' => 'third'),	$params['pages']
+			'Page 3' => 'third'), $params['pages']
 		);
 
 		$type->guess_filename();

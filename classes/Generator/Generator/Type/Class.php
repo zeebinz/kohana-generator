@@ -89,7 +89,7 @@ class Generator_Generator_Type_Class extends Generator_Type
 		$implemented = array();
 
 		// Check any abstract methods that need implementing
-		if (empty($this->_params['abstract'])	AND empty($this->_params['blank']))
+		if (empty($this->_params['abstract']) AND empty($this->_params['blank']))
 		{
 			if ( ! empty($this->_params['extends']))
 			{
@@ -109,7 +109,7 @@ class Generator_Generator_Type_Class extends Generator_Type
 			{
 				// Implement any interface methods
 				$implemented = array_merge($implemented, $this->_get_reflection_methods(
-					$this->_params['implements'],	Generator_Reflector::TYPE_INTERFACE, TRUE));
+					$this->_params['implements'], Generator_Reflector::TYPE_INTERFACE, TRUE));
 			}
 		}
 

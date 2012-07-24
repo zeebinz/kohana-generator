@@ -112,7 +112,7 @@ class Generator_Generator_Type_Clone extends Generator_Type_Class
 
 			// Add any source methods
 			$this->_params['methods'] = $this->_get_reflection_methods(
-				$source, $type,	$this->_inherit, $refl);
+				$source, $type, $this->_inherit, $refl);
 		}
 
 		return parent::render();

@@ -39,7 +39,7 @@
 	}
 
 <?php foreach (array('static', 'public', 'abstract', 'other') as $group): ?>
-<?php	if (isset($methods[$group])) foreach ($methods[$group] as $method => $m): ?>
+<?php if (isset($methods[$group])) foreach ($methods[$group] as $method => $m): ?>
 	<?php echo $m['doccomment'] ?> 
 	<?php echo $m['signature'] ?>
 <?php if ($m['abstract']): echo ';', PHP_EOL, PHP_EOL; else: ?> 

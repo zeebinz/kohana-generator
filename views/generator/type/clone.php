@@ -26,12 +26,12 @@
 
 <?php endforeach; ?>
 <?php foreach (array('static', 'public', 'abstract', 'other') as $group): ?>
-<?php	if (isset($properties[$group])) foreach ($properties[$group] as $property => $p): ?>
+<?php if (isset($properties[$group])) foreach ($properties[$group] as $property => $p): ?>
 	<?php echo $p['doccomment'] ?> 
 	<?php echo $p['declaration'] ?>; 
 
 <?php endforeach; ?>
-<?php	if (isset($methods[$group])) foreach ($methods[$group] as $method => $m): ?>
+<?php if (isset($methods[$group])) foreach ($methods[$group] as $method => $m): ?>
 	<?php echo $m['doccomment'] ?> 
 	<?php echo $m['signature'] ?>
 <?php if ($m['abstract']): echo ';', PHP_EOL, PHP_EOL; else: ?> 

@@ -582,7 +582,7 @@ abstract class TestClass extends TestParentClass implements TestInterfaceCountab
 
 	public static $prop_six;
 
-	public function count()	{}
+	public function count() {}
 	public function some_invoked_method($foo = 1, array $bar = NULL) {}
 
 	abstract public function some_abstract_method();
