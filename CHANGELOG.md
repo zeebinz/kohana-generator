@@ -1,6 +1,7 @@
 Generator for Kohana - Changelog
 ================================
 
+- Added support for traits to Generator_Reflector (PHP >= 5.4.0 only).
 - Added new stub template for transparent extension.
 
 Version 0.7

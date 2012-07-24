@@ -16,6 +16,7 @@ class Generator_Generator_Reflector
 	// The supported source types
 	const TYPE_CLASS     = 'class';
 	const TYPE_INTERFACE = 'interface';
+	const TYPE_TRAIT     = 'trait';
 
 	/**
 	 * The source class, interface etc. to inspect
@@ -94,10 +95,16 @@ class Generator_Generator_Reflector
 	/**
 	 * Determines whether the current source exists, based on its given type.
 	 *
-	 * @return  bool
+	 * @return  boolean
+	 * @throws  Generator_Exception
 	 */
 	public function exists()
 	{
+		if ($this->is_trait() AND ! $this->supports_traits())
+		{
+			throw new Generator_Exception('PHP >= 5.4.0 is required for trait support');
+		}
+
 		return call_user_func($this->_type.'_exists', $this->_source);
 	}
 
@@ -139,13 +146,28 @@ class Generator_Generator_Reflector
 		$name = $class->getName();
 
 		// Get any class modifiers
-		$modifiers = Reflection::getModifierNames($class->getModifiers());
+		$modifiers = array();
+		if ( ! $this->is_trait())
+		{
+			// The default trait modifiers 'abstract public' aren't helpful
+			// but for the other types we want the modifier names
+			$modifiers = Reflection::getModifierNames($class->getModifiers());
+		}
 
 		// Get the abstract flag
 		$abstract = $class->isAbstract();
 
 		// Get any parent class name
 		$parent = ($parent = $class->getParentClass()) ? $parent->getName() : NULL;
+
+		// Get any traits used by the class
+		$trait_names = array();
+		$traits = array();
+		if ($this->supports_traits())
+		{
+			$trait_names = $class->getTraitNames();
+			$traits = $class->getTraits();
+		}
 
 		// Get any class constants
 		$constants = $class->getConstants();
@@ -171,7 +193,7 @@ class Generator_Generator_Reflector
 
 			foreach ($const_names as $c) if ($i->getConstant($c) != NULL)
 			{
-				// The constant was declared in this interface
+				// The constant was declared by this interface
 				$constants[$c]['class'] = $i->getName();
 			}
 		}
@@ -185,6 +207,13 @@ class Generator_Generator_Reflector
 		{
 			$properties[$property->getName()] = $this->parse_reflection_property(
 				$property, $defaults);
+
+			foreach ($traits as $trait) if ($trait->hasProperty($property->getName()))
+			{
+				// The property was defined by a trait, and can't be re-declared
+				$properties[$property->getName()]['trait'] = $this->get_declaring_trait(
+					$property, $trait);
+			}
 		}
 
 		// Get any declared methods
@@ -192,6 +221,13 @@ class Generator_Generator_Reflector
 		foreach ($class->getMethods() as $method)
 		{
 			$methods[$method->getName()] = $this->parse_reflection_method($method);
+
+			foreach ($traits as $trait) if ($trait->hasMethod($method->getName()))
+			{
+				// The method was defined by a trait, so track its base trait name
+				$methods[$method->getName()]['trait'] = $this->get_declaring_trait(
+					$method, $trait);
+			}
 		}
 
 		// Return the parsed info
@@ -203,6 +239,7 @@ class Generator_Generator_Reflector
 			'parent'     => $parent,
 			'interfaces' => $interfaces,
 			'inherited'  => $inherited,
+			'traits'     => $trait_names,
 			'constants'  => $constants,
 			'properties' => $properties,
 			'methods'    => $methods,
@@ -225,6 +262,9 @@ class Generator_Generator_Reflector
 		// Get the declaring class name
 		$class = $property->getDeclaringClass()->getName();
 
+		// Get any trait info. Trait properties can't be re-declared.
+		$trait = ($this->supports_traits() and trait_exists($class)) ? $class : '';
+
 		// Get the modifiers string
 		$modifiers = implode(' ', Reflection::getModifierNames($property->getModifiers()));
 
@@ -239,6 +279,7 @@ class Generator_Generator_Reflector
 		// Return the parsed info
 		return array(
 			'class'      => $class,
+			'trait'      => $trait,
 			'doccomment' => $doccomment,
 			'modifiers'  => $modifiers,
 			'value'      => $default,
@@ -261,10 +302,14 @@ class Generator_Generator_Reflector
 		// Get the declaring class name
 		$class = $method->getDeclaringClass()->getName();
 
+		// Get any trait info. Trait methods can be re-declared by classes and
+		// other traits, so we need to track the method's base trait.
+		$trait = ($this->supports_traits() and trait_exists($class)) ? $class : '';
+
 		// Get the modifiers
 		$modifiers = $method->getModifiers();
 
-		if ($method->getDeclaringClass()->isInterface())
+		if ($this->is_interface() AND $method->getDeclaringClass()->isInterface())
 		{
 			// We don't need the abstract modifier for interface methods
 			$modifiers &= ~ReflectionMethod::IS_ABSTRACT;
@@ -291,6 +336,7 @@ class Generator_Generator_Reflector
 		// Return the parsed info
 		return array(
 			'class'      => $class,
+			'trait'      => $trait,
 			'doccomment' => $doccomment,
 			'modifiers'  => $modifiers,
 			'by_ref'     => $by_ref,
@@ -343,6 +389,37 @@ class Generator_Generator_Reflector
 			'default' => $default,
 			'by_ref'  => $by_ref
 		);
+	}
+
+	/**
+	 * Gets the base trait in which a given method or property was first defined
+	 * by recursively searching each trait used by the given trait.
+	 *
+	 * @link http://php.net/manual/en/language.oop5.traits.php
+	 *
+	 * @param   ReflectionMethod|ReflectionParameter  $member  The member to check
+	 * @param   ReflectionClass  $trait  The trait to begin searching
+	 * @return  string|boolean   The trait name or FALSE on no match
+	 */
+	public function get_declaring_trait($member, $trait)
+	{
+		// Search any included traits recursively
+		foreach ($trait->getTraits() as $used)
+		{
+			// Use the base trait as the declaring trait
+			if ($name = $this->get_declaring_trait($member, $used))
+				return $name;
+		}
+
+		if (($member instanceof ReflectionMethod AND $trait->hasMethod($member->getName()))
+			OR ($member instanceof ReflectionProperty AND $trait->hasProperty($member->getName())))
+		{
+			// The trait includes a definition of the method/property
+			return $trait->getName();
+		}
+
+		// No definition was found
+		return FALSE;
 	}
 
 	/**
@@ -438,7 +515,7 @@ class Generator_Generator_Reflector
 	/**
 	 * Determines whether the current source has been analyzed yet.
 	 *
-	 * @return  bool
+	 * @return  boolean
 	 */
 	public function is_analyzed()
 	{
@@ -448,7 +525,7 @@ class Generator_Generator_Reflector
 	/**
 	 * Determines whether the current source is an interface type.
 	 *
-	 * @return  bool
+	 * @return  boolean
 	 */
 	public function is_interface()
 	{
@@ -458,7 +535,7 @@ class Generator_Generator_Reflector
 	/**
 	 * Determines whether the current source is a class type.
 	 *
-	 * @return  bool
+	 * @return  boolean
 	 */
 	public function is_class()
 	{
@@ -466,15 +543,35 @@ class Generator_Generator_Reflector
 	}
 
 	/**
+	 * Determines whether the current source is a trait type.
+	 *
+	 * @return  boolean
+	 */
+	public function is_trait()
+	{
+		return $this->_type === Generator_Reflector::TYPE_TRAIT;
+	}
+
+	/**
 	 * Determines whether the current source is an abstract type.
 	 *
-	 * @return  bool
+	 * @return  boolean
 	 */
 	public function is_abstract()
 	{
 		$this->is_analyzed() OR $this->analyze();
 
 		return $this->_info['abstract'];
+	}
+
+	/**
+	 * Determines whether traits are supported for this PHP version.
+	 *
+	 * @return  boolean
+	 */
+	public function supports_traits()
+	{
+		return function_exists('trait_exists');
 	}
 
 	/**
@@ -519,23 +616,24 @@ class Generator_Generator_Reflector
 	 * another in the current list.
 	 *
 	 * Interfaces can be extended by multiple inheritance, and ReflectionClass
-	 * will list the whole inheritance tree by default. Problems can happen
+	 * will report the whole inheritance tree by default. Problems can happen
 	 * when an interface or class tries to implement multiple interfaces that
 	 * inherit each other - depending on the declared order - so it's usually
 	 * helpful to filter the list in this way.
 	 *
 	 * @link http://php.net/manual/en/language.oop5.interfaces.php
 	 *
-	 * @param   boolean   $inherited  Include inherited interfaces?
+	 * @param   boolean   $unfiltered  Include inherited interfaces?
 	 * @return  array     The interfaces list
 	 */
-	public function get_interfaces($inherited = FALSE)
+	public function get_interfaces($unfiltered = FALSE)
 	{
 		$this->is_analyzed() OR $this->analyze();
 
-		if ($inherited)
+		if ($unfiltered)
 			return array_keys($this->_info['interfaces']);
 
+		// Start the filtered list
 		$interfaces = array();
 
 		foreach (array_keys($this->_info['interfaces']) as $i)
@@ -551,6 +649,18 @@ class Generator_Generator_Reflector
 	}
 
 	/**
+	 * Returns the list of traits used by the current source.
+	 *
+	 * @return  array  The traits list
+	 */
+	public function get_traits()
+	{
+		$this->is_analyzed() OR $this->analyze();
+
+		return $this->_info['traits'];
+	}
+
+	/**
 	 * Returns the list of constants defined by the current source.
 	 *
 	 * By default this will exclude constants defined by interfaces, which is
@@ -559,17 +669,17 @@ class Generator_Generator_Reflector
 	 *
 	 * @link http://php.net/manual/en/language.oop5.interfaces.php
 	 *
-	 * @param   boolean  $interfaces  Include constants defined by interfaces?
+	 * @param   boolean  $unfiltered  Include constants defined by interfaces?
 	 * @return  array    The constants list
 	 */
-	public function get_constants($interfaces = FALSE)
+	public function get_constants($unfiltered = FALSE)
 	{
 		$this->is_analyzed() OR $this->analyze();
 
-		if ($interfaces)
+		if ($unfiltered)
 			return $this->_info['constants'];
 
-		// Start the constants list
+		// Start the filtered list
 		$constants = array();
 
 		foreach ($this->_info['constants'] as $const => $c)
@@ -588,40 +698,84 @@ class Generator_Generator_Reflector
 	 * Returns the list of properties with their parsed info from the current
 	 * source.
 	 *
-	 * @return  array  The parameters list
+	 * Since properties declared by traits can't be re-declared by any class or
+	 * other trait that uses the trait directly, they're skipped by default for
+	 * all but the declaring trait. Classes that inherit classes that use the
+	 * trait *can* re-declare them, though ... confused?
+	 *
+	 * @link http://php.net/manual/en/language.oop5.traits.php
+	 *
+	 * @param   boolean  $unfiltered  Return all properties?
+	 * @return  array  The properties list
 	 */
-	public function get_properties()
+	public function get_properties($unfiltered = FALSE)
 	{
 		$this->is_analyzed() OR $this->analyze();
 
-		return $this->_info['properties'];
+		if ($unfiltered)
+			return $this->_info['properties'];
+
+		// Start the filtered list
+		$properties = array();
+
+		foreach ($this->_info['properties'] as $property => $p)
+		{
+			// Skip trait properties unless this is the declaring trait
+			if ( ! empty($p['trait']) AND $p['trait'] != $p['class'])
+				continue;
+
+			// Add the property info
+			$properties[$property] = $p;
+		}
+
+		return $properties;
 	}
 
 	/**
-	 * Returns the list of methods with their parsed info from the current
-	 * source, optionally limited to only abstract methods that may need
-	 * implementing.
+	 * Returns the list of methods with their parsed info from the current source,
+	 * optionally limited to only abstract methods that may need implementing,
+	 * and by default including inheritable methods.
 	 *
-	 * @param   boolean  $abstract  Only return abstract methods?
+	 * Note that ReflectionClass will report all methods associated with the source,
+	 * including final and private methods of parents, interface methods whether
+	 * implemented by the source or not, etc. So 'inherited' here means any methods
+	 * not declared exclusively by the current source; 'inheritable' means all
+	 * non-private and non-final 'inherited' methods.
+	 *
+	 * @param   boolean  $abstract    Only return abstract methods?
+	 * @param   boolean  $inherit     Include inheritable methods?
+	 * @param   boolean  $unfiltered  Return all reported methods?
 	 * @return  array    The methods list
 	 */
-	public function get_methods($abstract = FALSE)
+	public function get_methods($abstract = FALSE, $inherit = TRUE, $unfiltered = FALSE)
 	{
 		$this->is_analyzed() OR $this->analyze();
 
-		if ( ! $abstract)
+		if ($unfiltered)
 			return $this->_info['methods'];
 
-		// Start the methods list
+		// Start the filtered list
 		$methods = array();
 
 		foreach ($this->_info['methods'] as $method => $m)
 		{
-			if ($m['abstract'])
-			{
-				// Only return abstract methods
-				$methods[$method] = $m;
-			}
+			// Has the method been inherited?
+			$inherited = (( ! empty($m['trait']) AND ($m['trait'] != $m['class']))
+				OR ($m['class'] != $this->_source));
+
+			// Is this a private method?
+			$private = ($m['final'] OR $m['private']);
+
+			// Ignore inherited methods that we don't want to implement
+			if ($inherited AND ($private OR ! $inherit))
+				continue;
+
+			// Only include abstract methods?
+			if ($abstract AND ! $m['abstract'])
+				continue;
+
+			// Add the method definition
+			$methods[$method] = $m;
 		}
 
 		return $methods;

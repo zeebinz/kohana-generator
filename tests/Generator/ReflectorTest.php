@@ -388,6 +388,122 @@ class Generator_ReflectorTest extends Unittest_TestCase
 		$this->assertSame(1, $refl->analysis_count);
 	}
 
+	/**
+	 * All the tests involving traits are included here for convenience due to the
+	 * PHP version requirement.
+	 *
+	 * @group  generator.traits
+	 * @group  generator.reflector.traits
+	 */
+	public function test_supports_handling_of_traits()
+	{
+		if ( ! function_exists('trait_exists'))
+		{
+			$this->markTestSkipped('PHP >= 5.4.0 is required');
+		}
+
+		// We'll use the fixtures dummies for these tests
+		require_once dirname(dirname(__FILE__)).'/fixtures/_test_traits.php';
+
+		$refl = new TestReflector('Fx_Trait_Counter', Generator_Reflector::TYPE_TRAIT);		$refl = new TestReflector('Fx_Trait_Counter', Generator_Reflector::TYPE_TRAIT);
+
+		// Traits are always abstract
+		$this->assertTrue($refl->is_trait());
+		$this->assertTrue($refl->is_abstract());
+
+		$this->assertCount(1, $refl->get_methods());
+		$this->assertSame('public function count($input)',
+			$refl->get_method_signature('count'));
+		$this->assertCount(1, $refl->get_properties());
+		$this->assertSame('public $counted = 0',
+			$refl->get_property_declaration('counted'));
+
+		$this->assertSame(1, $refl->analysis_count);
+
+		// Traits can include other traits
+		$refl = new TestReflector('Fx_Trait_Logger', Generator_Reflector::TYPE_TRAIT);
+		$traits = $refl->get_traits();
+		$this->assertCount(2, $traits);
+		$this->assertContains('Fx_Trait_Counter', $traits);
+		$this->assertContains('Fx_Trait_Sorter', $traits);
+
+		// Traits can't re-declare inherited properties, so we ignore them by default
+		$props = $refl->get_properties();
+		$this->assertCount(1, $props);
+		$this->assertArrayHasKey('_logged', $props);
+		$this->assertSame('protected static $_logged = array()',
+			$refl->get_property_declaration('_logged'));
+
+		// Or we can get the full list if we need it, with a record of the base
+		// trait in which each property was declared
+		$props = $refl->get_properties(TRUE);
+		$this->assertCount(3, $props);
+		$this->assertArrayHasKey('counted', $props);
+		$this->assertSame('Fx_Trait_Logger', $props['counted']['class']);
+		$this->assertSame('Fx_Trait_Counter', $props['counted']['trait']);
+		$this->assertArrayHasKey('_sorted', $props);
+		$this->assertSame('Fx_Trait_Logger', $props['_sorted']['class']);
+		$this->assertSame('Fx_Trait_Sorter', $props['_sorted']['trait']);
+
+		// All inherited methods are reported by default
+		$methods = $refl->get_methods();
+		$this->assertCount(4, $methods);
+		$this->assertArrayHasKey('get_logged', $methods);
+		$this->assertSame('Fx_Trait_Logger', $methods['get_logged']['class']);
+		$this->assertSame('Fx_Trait_Logger', $methods['get_logged']['trait']);
+		$this->assertArrayHasKey('log', $methods);
+		$this->assertSame('Fx_Trait_Logger', $methods['log']['class']);
+		$this->assertSame('Fx_Trait_Logger', $methods['log']['trait']);
+		$this->assertArrayHasKey('count', $methods);
+		$this->assertSame('Fx_Trait_Logger', $methods['count']['class']);
+		$this->assertSame('Fx_Trait_Counter', $methods['count']['trait']);
+		$this->assertArrayHasKey('log', $methods);
+		$this->assertSame('Fx_Trait_Logger', $methods['log']['class']);
+		$this->assertSame('Fx_Trait_Logger', $methods['log']['trait']);
+		$this->assertArrayHasKey('count', $methods);
+		$this->assertSame('Fx_Trait_Logger', $methods['count']['class']);
+		$this->assertSame('Fx_Trait_Counter', $methods['count']['trait']);
+		$this->assertArrayHasKey('sort', $methods);
+		$this->assertSame('Fx_Trait_Logger', $methods['sort']['class']);
+		$this->assertSame('Fx_Trait_Sorter', $methods['sort']['trait']);
+
+		// Or we can filter out inherited methods
+		$methods = $refl->get_methods(FALSE, FALSE);
+		$this->assertCount(2, $methods);
+		$this->assertArrayHasKey('get_logged', $methods);
+		$this->assertArrayHasKey('log', $methods);
+
+		$this->assertSame(1, $refl->analysis_count);
+
+		// Classes using traits will report all inherited properties and methods
+		$refl = new TestReflector('Fx_ClassWithTraits', Generator_Reflector::TYPE_CLASS);
+		$traits = $refl->get_traits();
+		$this->assertCount(1, $traits);
+		$this->assertContains('Fx_Trait_Logger', $traits);
+
+		// We should be able to ignore inherited properties, as they can't be re-declared
+		$this->assertCount(3, $refl->get_properties(TRUE));
+		$this->assertCount(0, $refl->get_properties());
+
+		// And we can ignore inherited methods if we need to
+		$this->assertCount(4, $refl->get_methods());
+		$this->assertCount(0, $refl->get_methods(FALSE, FALSE));
+
+		$this->assertSame(1, $refl->analysis_count);
+
+		// Classes that inherit classes that use traits don't have knowledge of
+		// the parent's traits, and so can re-declare any trait properties
+		$refl = new TestReflector('Fx_ClassChildWithTraits', Generator_Reflector::TYPE_CLASS);
+		$this->assertCount(0, $refl->get_traits());
+		$props = $refl->get_properties();
+		$this->assertCount(3, $props);
+		$this->assertArrayHasKey('_logged', $props);
+		$this->assertArrayHasKey('counted', $props);
+		$this->assertArrayHasKey('_sorted', $props);
+
+		$this->assertSame(1, $refl->analysis_count);
+	}
+
 } // End Generator_ReflectorTest
 
 // Test interfaces
