@@ -1,0 +1,81 @@
+---SUMMARY---
+Test fixture for the GENERATE:TRAIT generator.
+---COMMAND---
+generate:trait --name=Foo --clone=Fx_Trait_Logger --reflect --inherit
+---EXPECTED---
+[ File 1 ] APPPATH/classes/Foo.php
+
+<?php defined('SYSPATH') OR die('No direct script access.');
+/**
+ * Trait Foo, cloned from Fx_Trait_Logger.
+ *
+ * @package    package
+ * @category   Traits
+ * @author     Test Author
+ * @copyright  (c) 2012 Test Author
+ * @license    Test license
+ */
+trait Foo
+{
+	// Trait: Fx_Trait_Counter
+	use Fx_Trait_Counter;
+
+	// Trait: Fx_Trait_Sorter
+	use Fx_Trait_Sorter;
+
+	/**
+	 * Declared in Fx_Trait_Logger
+	 *
+	 * @var  array  $_logged
+	 */
+	protected static $_logged = array();
+
+	/**
+	 * Implementation of Fx_Trait_Logger::get_logged
+	 *
+	 * @return  void  **Needs editing**
+	 */
+	public static function get_logged()
+	{
+		// Method implementation
+	}
+
+	/**
+	 * Implementation of Fx_Trait_Logger::log
+	 *
+	 * @param   mixed  $text
+	 * @return  void  **Needs editing**
+	 */
+	public function log($text)
+	{
+		// Method implementation
+	}
+
+	/**
+	 * Implementation of Fx_Trait_Logger::count
+	 *
+	 * First defined in trait: Fx_Trait_Counter
+	 *
+	 * @param   mixed  $input
+	 * @return  void  **Needs editing**
+	 */
+	public function count($input)
+	{
+		// Method implementation
+	}
+
+	/**
+	 * Implementation of Fx_Trait_Logger::sort
+	 *
+	 * First defined in trait: Fx_Trait_Sorter
+	 *
+	 * @param   boolean  $reverse
+	 * @return  void  **Needs editing**
+	 */
+	public function sort($reverse = FALSE)
+	{
+		// Method implementation
+	}
+
+} // End Foo
+---END---

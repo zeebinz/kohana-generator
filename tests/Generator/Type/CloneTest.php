@@ -235,6 +235,86 @@ class Generator_Type_CloneTest extends Unittest_TestCase
 		$this->assertArrAyNotHasKey('body', $params['methods']['public']['count']);
 	}
 
+	/**
+	 * All the tests involving traits are included here for convenience due to the
+	 * PHP version requirement.
+	 *
+	 * @group  generator.traits
+	 */
+	public function test_cloning_traits_and_classes_with_traits()
+	{
+		if ( ! function_exists('trait_exists'))
+		{
+			$this->markTestSkipped('PHP >= 5.4.0 is required');
+		}
+
+		// We'll use the fixtures dummies for these tests
+		require_once dirname(dirname(dirname(__FILE__))).'/fixtures/_test_traits.php';
+
+		// Cloning traits without inheritance
+		$type = new Generator_Type_Clone('Foo');
+		$type->source('Fx_Trait_Logger')
+			->type(Generator_Reflector::TYPE_TRAIT)
+			->inherit(FALSE)
+			->render();
+
+		$params = $type->params();
+		$this->assertArrayHasKey('traits', $params);
+		$this->assertContains('Fx_Trait_Counter', $params['traits']);
+		$this->assertContains('Fx_Trait_Sorter', $params['traits']);
+
+		$this->assertCount(1, $params['properties']['static']);
+		$this->assertArrayHasKey('_logged', $params['properties']['static']);
+
+		$this->assertCount(1, $params['methods']['static']);
+		$this->assertCount(1, $params['methods']['public']);
+		$this->assertArrayHasKey('get_logged', $params['methods']['static']);
+		$this->assertArrayHasKey('log', $params['methods']['public']);
+
+		// Cloning traits with inheritance
+		$type = new Generator_Type_Clone('Foo');
+		$type->source('Fx_Trait_Logger')
+			->type(Generator_Reflector::TYPE_TRAIT)
+			->inherit(TRUE)
+			->render();
+
+		$params = $type->params();
+
+		// Properties shouldn't be inherited, as they can't be re-declared
+		$this->assertCount(1, $params['properties']['static']);
+		$this->assertArrayHasKey('_logged', $params['properties']['static']);
+
+		$this->assertCount(1, $params['methods']['static']);
+		$this->assertCount(3, $params['methods']['public']);
+		$this->assertArrayHasKey('count', $params['methods']['public']);
+		$this->assertSame('Fx_Trait_Logger', $params['methods']['public']['count']['class']);
+		$this->assertSame('Fx_Trait_Counter', $params['methods']['public']['count']['trait']);
+		$this->assertArrayHasKey('sort', $params['methods']['public']);
+		$this->assertSame('Fx_Trait_Logger', $params['methods']['public']['sort']['class']);
+		$this->assertSame('Fx_Trait_Sorter', $params['methods']['public']['sort']['trait']);
+
+		// Cloned traits with abstract methods shouldn't implement those methods
+		$type = new Generator_Type_Clone('Foo');
+		$type->source('Fx_Trait_Reporter')
+			->type(Generator_Reflector::TYPE_TRAIT)
+			->inherit(TRUE)
+			->render();
+
+		$params = $type->params();
+		$this->assertCount(0, $params['properties']);
+		$this->assertCount(2, $params['methods']['abstract']);
+		$this->assertCount(1, $params['methods']['public']);
+		$this->assertArrayHasKey('report', $params['methods']['abstract']);
+		$this->assertSame('Fx_Trait_Reporter', $params['methods']['abstract']['report']['class']);
+		$this->assertSame('Fx_Trait_Reporter', $params['methods']['abstract']['report']['trait']);
+		$this->assertArrayHasKey('select', $params['methods']['abstract']);
+		$this->assertSame('Fx_Trait_Reporter', $params['methods']['abstract']['select']['class']);
+		$this->assertSame('Fx_Trait_Selector', $params['methods']['abstract']['select']['trait']);
+		$this->assertArrayHasKey('sort', $params['methods']['public']);
+		$this->assertSame('Fx_Trait_Reporter', $params['methods']['public']['sort']['class']);
+		$this->assertSame('Fx_Trait_Sorter', $params['methods']['public']['sort']['trait']);
+	}
+
 } // End Generator_Type_CloneTest
 
 // Test classes

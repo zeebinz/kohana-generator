@@ -170,8 +170,7 @@ class Generator_Task_Generate_Fixture extends Task_Generate
 	}
 
 	/**
-	 * Includes any test dummy files required by the fixture, such as dummy classes
-	 * or interfaces.
+	 * Includes any test dummy files required by the fixture.
 	 *
 	 * @param   string  $directory  The directory to search
 	 * @return  void
@@ -180,6 +179,11 @@ class Generator_Task_Generate_Fixture extends Task_Generate
 	{
 		require_once $directory.'_test_interfaces.php';
 		require_once $directory.'_test_classes.php';
+
+		if (function_exists('trait_exists'))
+		{
+			require_once $directory.'_test_traits.php';
+		}
 	}
 
 	/**

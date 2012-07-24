@@ -1,6 +1,7 @@
 Generator for Kohana - Changelog
 ================================
 
+- Added Trait generator (PHP >= 5.4.0 only).
 - Only concrete classes will now implement inherited or interface methods by
   default, abstract classes will not. When cloning abstract classes, the
   `--inherit` option should be used to include any inherited abstract methods.

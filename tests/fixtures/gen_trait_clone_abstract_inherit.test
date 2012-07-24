@@ -1,0 +1,54 @@
+---SUMMARY---
+Test fixture for the GENERATE:TRAIT generator.
+---COMMAND---
+generate:trait --name=Foo --clone=Fx_Trait_Reporter --reflect --inherit
+---EXPECTED---
+[ File 1 ] APPPATH/classes/Foo.php
+
+<?php defined('SYSPATH') OR die('No direct script access.');
+/**
+ * Trait Foo, cloned from Fx_Trait_Reporter.
+ *
+ * @package    package
+ * @category   Traits
+ * @author     Test Author
+ * @copyright  (c) 2012 Test Author
+ * @license    Test license
+ */
+trait Foo
+{
+	// Trait: Fx_Trait_Selector
+	use Fx_Trait_Selector;
+
+	/**
+	 * Implementation of Fx_Trait_Reporter::sort
+	 *
+	 * First defined in trait: Fx_Trait_Sorter
+	 *
+	 * @param   boolean  $reverse
+	 * @return  void  **Needs editing**
+	 */
+	public function sort($reverse = FALSE)
+	{
+		// Method implementation
+	}
+
+	/**
+	 * Declaration of Fx_Trait_Reporter::report
+	 *
+	 * @return  void  **Needs editing**
+	 */
+	abstract public function report();
+
+	/**
+	 * Declaration of Fx_Trait_Reporter::select
+	 *
+	 * First defined in trait: Fx_Trait_Selector
+	 *
+	 * @param   mixed  $item
+	 * @return  void  **Needs editing**
+	 */
+	abstract public function select($item);
+
+} // End Foo
+---END---

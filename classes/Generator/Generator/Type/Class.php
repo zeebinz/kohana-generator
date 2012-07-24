@@ -152,6 +152,12 @@ class Generator_Generator_Type_Class extends Generator_Type
 						$prefix = $m['abstract'] ? 'Declaration' : 'Implementation';
 						$doc->set('short_description',  "{$prefix} of {$m['class']}::{$method}");
 
+						if ( ! empty($m['trait']) AND $m['class'] != $m['trait'])
+						{
+							// Add info about the base trait for the method
+							$doc->set('long_description', 'First defined in trait: '.$m['trait']);
+						}
+
 						// Build the comment tags
 						foreach ($m['params'] as $param => $p)
 						{

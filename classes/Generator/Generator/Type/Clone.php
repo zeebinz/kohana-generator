@@ -97,6 +97,9 @@ class Generator_Generator_Type_Clone extends Generator_Type_Class
 
 		if ( ! isset($this->_params['blank']))
 		{
+			// Add any source traits
+			$this->_params['traits'] = $refl->get_traits();
+
 			// Add any source constants
 			$this->_params['constants'] = $this->_get_reflection_constants(
 				$source, $type, $refl);

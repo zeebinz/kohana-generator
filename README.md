@@ -40,7 +40,7 @@ And then enjoy creating your application or module resources in one line:
 
 See also the Guide pages for more information about different generator tasks and their options.
 
-Current tasks include: class, controller, model, view, unittest, task, generator, interface, guide, module, config, message, etc.
+Current tasks include: class, controller, model, view, unittest, task, generator, interface, guide, module, config, message, trait (PHP >= 5.4.0), etc.
 
 ## Testing
 
@@ -48,4 +48,4 @@ This module is unit tested using the [Unittest module](http://github.com/kohana/
 
 ## Requirements
 
-The module was built against Kohana version 3.3/develop, and requires Minion for running the tasks.
+The module was built against Kohana version 3.3/develop, and requires Minion for running the tasks. Optional support for traits requires PHP >= 5.4.0.

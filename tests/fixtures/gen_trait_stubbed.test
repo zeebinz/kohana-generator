@@ -1,0 +1,53 @@
+---SUMMARY---
+Test fixture for the GENERATE:TRAIT generator.
+---COMMAND---
+generate:trait --name=Foo_Bar --stub=Bar --module=baz
+---EXPECTED---
+[ File 1 ] MODPATH/baz/classes/Foo/Bar.php
+
+<?php defined('SYSPATH') OR die('No direct script access.');
+/**
+ * Trait Foo_Bar.
+ *
+ * @package    Baz
+ * @category   Traits
+ * @author     Test Author
+ * @copyright  (c) 2012 Test Author
+ * @license    Test license
+ */
+trait Foo_Bar
+{
+	/**
+	 * @var  string  some string
+	 */
+	public $some_string;
+
+	/**
+	 * Short description.
+	 *
+	 * Long method description.
+	 *
+	 * @param   string  $param  Some string
+	 * @return  void
+	 */
+	public function some_method($param)
+	{
+		// Method implementation
+	}
+
+} // End Foo_Bar
+
+[ File 2 ] MODPATH/baz/classes/Bar.php
+
+<?php defined('SYSPATH') OR die('No direct script access.');
+/**
+ * Transparent extension of Foo_Bar.
+ *
+ * @package    Baz
+ * @category   Traits
+ * @author     Test Author
+ * @copyright  (c) 2012 Test Author
+ * @license    Test license
+ */
+trait Bar {use Foo_Bar;}
+---END---

@@ -1,5 +1,5 @@
 /**
- * Class <?php echo $name ?>.
+ * <?php echo ucfirst($class_type), ' ', $name ?>.
  *
  * @package    <?php echo $package ?> 
  * @category   <?php echo $category ?> 
@@ -8,12 +8,18 @@
  * @license    <?php echo $license ?> 
  */
 <?php 
-	echo ( ! empty($abstract) ? 'abstract class ' : 'class ');
-	echo $name;	
-	if ( ! empty($extends)) {echo ' extends ', $extends;} 
+	if ( ! empty($abstract)) {echo 'abstract ';}
+	echo $class_type, ' ', $name;
+	if ( ! empty($extends)) {echo ' extends ', $extends;}
 	if ( ! empty($implements)) {echo ' implements ', $implements;}
 	if ( ! empty($blank)) {echo ' {}';} else { ?> 
 {
+<?php if ( ! empty($traits)): foreach ($traits as $trait): ?>
+	// Trait: <?php echo $trait ?> 
+	<?php echo 'use ', $trait, ';' ?> 
+
+<?php endforeach; ?>
+<?php endif; ?>
 	/**
 	 * @var  string  some string
 	 */
