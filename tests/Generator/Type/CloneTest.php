@@ -313,6 +313,53 @@ class Generator_Type_CloneTest extends Unittest_TestCase
 		$this->assertArrayHasKey('sort', $params['methods']['public']);
 		$this->assertSame('Fx_Trait_Reporter', $params['methods']['public']['sort']['class']);
 		$this->assertSame('Fx_Trait_Sorter', $params['methods']['public']['sort']['trait']);
+
+		// Cloned classes with traits can inherit methods but not properties
+		$type = new Generator_Type_Clone('Foo');
+		$type->source('Fx_ClassWithTraits')
+			->type(Generator_Reflector::TYPE_CLASS)
+			->inherit(TRUE)
+			->render();
+
+		$params = $type->params();
+		$this->assertArrayHasKey('traits', $params);
+		$this->assertCount(1, $params['traits']);
+		$this->assertContains('Fx_Trait_Logger', $params['traits']);
+
+		$this->assertCount(0, $params['properties']);
+		$this->assertCount(1, $params['methods']['static']);
+		$this->assertCount(3, $params['methods']['public']);
+
+		$type = new Generator_Type_Clone('Foo');
+		$type->source('Fx_AbstractClassWithTraits')
+			->type(Generator_Reflector::TYPE_CLASS)
+			->inherit(TRUE)
+			->render();
+
+		$params = $type->params();
+		$this->assertArrayHasKey('traits', $params);
+		$this->assertCount(1, $params['traits']);
+		$this->assertContains('Fx_Trait_Selector', $params['traits']);
+
+		$this->assertTrue($params['abstract']);
+		$this->assertCount(0, $params['properties']);
+		$this->assertCount(1, $params['methods']['abstract']);
+		$this->assertCount(1, $params['methods']['public']);
+
+		// Classes that extend parents that use traits have no knowledge of
+		// the parent's traits, and can re-declare any trait properties
+		$type = new Generator_Type_Clone('Foo');
+		$type->source('Fx_ClassChildWithTraits')
+			->type(Generator_Reflector::TYPE_CLASS)
+			->inherit(TRUE)
+			->render();
+
+		$params = $type->params();
+		$this->assertArrayHasKey('traits', $params);
+		$this->assertCount(0, $params['traits']);
+		$this->assertCount(3, $params['properties']);
+		$this->assertCount(1, $params['methods']['static']);
+		$this->assertCount(3, $params['methods']['public']);
 	}
 
 } // End Generator_Type_CloneTest

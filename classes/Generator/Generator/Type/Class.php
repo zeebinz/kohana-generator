@@ -81,7 +81,13 @@ class Generator_Generator_Type_Class extends Generator_Type
 				// Implement any parent's abstract methods
 				$implemented = $this->_get_reflection_methods($this->_params['extends'],
 					Generator_Reflector::TYPE_CLASS, TRUE);
+			}
 
+			if ( ! empty($this->_params['traits']))
+			{
+				// Implement any trait's abstract methods
+				$implemented = array_merge($implemented, $this->_get_reflection_methods(
+					$this->_params['traits'], Generator_Reflector::TYPE_TRAIT, TRUE));
 			}
 
 			if ( ! empty($this->_params['implements']))

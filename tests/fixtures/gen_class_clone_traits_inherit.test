@@ -1,0 +1,75 @@
+---SUMMARY---
+Test fixture for the GENERATE:CLASS generator.
+---COMMAND---
+generate:class --name=Foo --clone=Fx_ClassWithTraits --reflect --inherit --no-test
+---EXPECTED---
+[ File 1 ] APPPATH/classes/Foo.php
+
+<?php defined('SYSPATH') OR die('No direct script access.');
+/**
+ * Class Foo, cloned from Fx_ClassWithTraits.
+ *
+ * @package    package
+ * @category   category
+ * @author     Test Author
+ * @copyright  (c) 2012 Test Author
+ * @license    Test license
+ */
+class Foo
+{
+	// Trait: Fx_Trait_Logger
+	use Fx_Trait_Logger;
+
+	/**
+	 * Implementation of Fx_ClassWithTraits::get_logged
+	 *
+	 * First defined in trait: Fx_Trait_Logger
+	 *
+	 * @return  void  **Needs editing**
+	 */
+	public static function get_logged()
+	{
+		// Method implementation
+	}
+
+	/**
+	 * Implementation of Fx_ClassWithTraits::log
+	 *
+	 * First defined in trait: Fx_Trait_Logger
+	 *
+	 * @param   mixed  $text
+	 * @return  void  **Needs editing**
+	 */
+	public function log($text)
+	{
+		// Method implementation
+	}
+
+	/**
+	 * Implementation of Fx_ClassWithTraits::count
+	 *
+	 * First defined in trait: Fx_Trait_Counter
+	 *
+	 * @param   mixed  $input
+	 * @return  void  **Needs editing**
+	 */
+	public function count($input)
+	{
+		// Method implementation
+	}
+
+	/**
+	 * Implementation of Fx_ClassWithTraits::sort
+	 *
+	 * First defined in trait: Fx_Trait_Sorter
+	 *
+	 * @param   boolean  $reverse
+	 * @return  void  **Needs editing**
+	 */
+	public function sort($reverse = FALSE)
+	{
+		// Method implementation
+	}
+
+} // End Foo
+---END---

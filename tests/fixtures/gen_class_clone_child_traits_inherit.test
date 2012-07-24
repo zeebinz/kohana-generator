@@ -1,0 +1,85 @@
+---SUMMARY---
+Test fixture for the GENERATE:CLASS generator.
+---COMMAND---
+generate:class --name=Foo --clone=Fx_ClassChildWithTraits --reflect --inherit --no-test
+---EXPECTED---
+[ File 1 ] APPPATH/classes/Foo.php
+
+<?php defined('SYSPATH') OR die('No direct script access.');
+/**
+ * Class Foo, cloned from Fx_ClassChildWithTraits.
+ *
+ * @package    package
+ * @category   category
+ * @author     Test Author
+ * @copyright  (c) 2012 Test Author
+ * @license    Test license
+ */
+class Foo extends Fx_ClassWithTraits
+{
+	/**
+	 * Declared in Fx_ClassWithTraits
+	 *
+	 * @var  array  $_logged
+	 */
+	protected static $_logged = array();
+
+	/**
+	 * Implementation of Fx_ClassWithTraits::get_logged
+	 *
+	 * @return  void  **Needs editing**
+	 */
+	public static function get_logged()
+	{
+		parent::get_logged();
+	}
+
+	/**
+	 * Declared in Fx_ClassWithTraits
+	 *
+	 * @var  integer  $counted
+	 */
+	public $counted = 0;
+
+	/**
+	 * Implementation of Fx_ClassWithTraits::log
+	 *
+	 * @param   mixed  $text
+	 * @return  void  **Needs editing**
+	 */
+	public function log($text)
+	{
+		parent::log($text);
+	}
+
+	/**
+	 * Implementation of Fx_ClassWithTraits::count
+	 *
+	 * @param   mixed  $input
+	 * @return  void  **Needs editing**
+	 */
+	public function count($input)
+	{
+		parent::count($input);
+	}
+
+	/**
+	 * Implementation of Fx_ClassWithTraits::sort
+	 *
+	 * @param   boolean  $reverse
+	 * @return  void  **Needs editing**
+	 */
+	public function sort($reverse = FALSE)
+	{
+		parent::sort($reverse);
+	}
+
+	/**
+	 * Declared in Fx_ClassWithTraits
+	 *
+	 * @var  array  $_sorted
+	 */
+	protected $_sorted = array();
+
+} // End Foo
+---END---
