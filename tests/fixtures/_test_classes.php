@@ -56,3 +56,5 @@ class Fx_ImplClass extends Fx_Class implements Fx_Countable, Fx_Sortable
 
 	public function sort(array $list) {}
 }
+
+abstract class Fx_AbstractImplClass implements Fx_Countable, Fx_Sortable {}

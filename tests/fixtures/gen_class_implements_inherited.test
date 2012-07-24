@@ -1,7 +1,7 @@
 ---SUMMARY---
 Test fixture for the GENERATE:CLASS generator.
 ---COMMAND---
-generate:class --name=Foo --abstract --extend=Fx_AbstractClass --no-test
+generate:class --name=Foo --implement=Fx_Iterable --no-test
 ---EXPECTED---
 [ File 1 ] APPPATH/classes/Foo.php
 
@@ -15,7 +15,7 @@ generate:class --name=Foo --abstract --extend=Fx_AbstractClass --no-test
  * @copyright  (c) 2012 Test Author
  * @license    Test license
  */
-abstract class Foo extends Fx_AbstractClass
+class Foo implements Fx_Iterable
 {
 	/**
 	 * @var  string  some string
@@ -31,6 +31,37 @@ abstract class Foo extends Fx_AbstractClass
 	 * @return  void
 	 */
 	public function some_method($param)
+	{
+		// Method implementation
+	}
+
+	/**
+	 * Implementation of Fx_Iterable::iter
+	 *
+	 * @return  void  **Needs editing**
+	 */
+	public function iter()
+	{
+		// Method implementation
+	}
+
+	/**
+	 * Implementation of Fx_Countable::count
+	 *
+	 * @return  void  **Needs editing**
+	 */
+	public function count()
+	{
+		// Method implementation
+	}
+
+	/**
+	 * Implementation of Fx_Sortable::sort
+	 *
+	 * @param   array  $list
+	 * @return  void  **Needs editing**
+	 */
+	public function sort(array $list)
 	{
 		// Method implementation
 	}

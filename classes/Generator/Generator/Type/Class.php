@@ -71,36 +71,38 @@ class Generator_Generator_Type_Class extends Generator_Type
 	{
 		// Start the methods list
 		$methods = isset($this->_params['methods']) ? $this->_params['methods'] : array();
+		$implemented = array();
 
-		// Check any parent for abstract methods that need implementing
-		if (empty($this->_params['abstract']) AND ! empty($this->_params['extends'])
-			AND empty($this->_params['blank']))
+		// Check any abstract methods that need implementing
+		if (empty($this->_params['abstract'])	AND empty($this->_params['blank']))
 		{
-			$implemented = $this->_get_reflection_methods($this->_params['extends'],
-				Generator_Reflector::TYPE_CLASS);
-
-			// Merge any class and abstract methods to implement
-			$methods = array_merge($methods, $implemented);
-		}
-
-		if ( ! empty($this->_params['implements']))
-		{
-			if (empty($this->_params['blank']))
+			if ( ! empty($this->_params['extends']))
 			{
-				// Get the interface methods
-				$interfaces = $this->_get_reflection_methods($this->_params['implements'],
-					Generator_Reflector::TYPE_INTERFACE);
+				// Implement any parent's abstract methods
+				$implemented = $this->_get_reflection_methods($this->_params['extends'],
+					Generator_Reflector::TYPE_CLASS, TRUE);
 
-				// Merge any class and interface methods
-				$methods = array_merge($methods, $interfaces);
 			}
 
-			// Convert the interfaces list
-			$this->_params['implements'] = implode(', ', (array) $this->_params['implements']);
+			if ( ! empty($this->_params['implements']))
+			{
+				// Implement any interface methods
+				$implemented = array_merge($implemented, $this->_get_reflection_methods(
+					$this->_params['implements'],	Generator_Reflector::TYPE_INTERFACE, TRUE));
+			}
 		}
+
+		// Merge any class and implemented abstract methods
+		$methods = array_merge($methods, $implemented);
 
 		// Group any methods by modifier
 		$this->_params['methods'] = $this->_group_by_modifier($methods);
+
+		if ( ! empty($this->_params['implements']))
+		{
+			// Convert the interfaces list
+			$this->_params['implements'] = implode(', ', (array) $this->_params['implements']);
+		}
 
 		return parent::render();
 	}
@@ -132,17 +134,8 @@ class Generator_Generator_Type_Class extends Generator_Type
 			// Only add skeleton methods for known sources
 			if ($refl->source($source)->exists())
 			{
-				foreach ($refl->get_methods($implementing) as $method => $m)
+				foreach ($refl->get_methods($implementing, $inherit) as $method => $m)
 				{
-					// Check any inherited methods (including from interfaces)
-					if (($m['class'] != $source) AND ($m['final'] OR $m['private']
-						OR ( ! $implementing AND ! $inherit)))
-					{
-						// Skip uninheritable methods and any others that we're not
-						// trying to implement if the inherit option isn't set.
-						continue;
-					}
-
 					if ($m['abstract'] AND $implementing)
 					{
 						// Don't treat methods as abstract if we're implementing them

@@ -132,7 +132,7 @@ class Generator_Type_CloneTest extends Unittest_TestCase
 
 		$this->assertSame('TestCloneClassThree',
 			$params['methods']['static']['method_one']['class']);
-		$this->assertSame('TestCloneInterfaceCountable',
+		$this->assertSame('TestCloneClassThree',
 			$params['methods']['public']['count']['class']);
 
 		$this->assertRegExp('/Implementation of TestCloneClassThree::method_three/',
@@ -161,34 +161,42 @@ class Generator_Type_CloneTest extends Unittest_TestCase
 	{
 		$type = new Generator_Type_Clone('Foo');
 		$type->source('TestCloneClassFive')
-			->type(Generator_Reflector::TYPE_CLASS);
+			->type(Generator_Reflector::TYPE_CLASS)
+			->inherit(FALSE)
+			->render();
 
-		$type->render();
 		$params = $type->params();
+		$this->assertCount(0, $params['methods']);
 
+		$type->source('TestCloneClassFive')
+			->type(Generator_Reflector::TYPE_CLASS)
+			->inherit(TRUE)
+			->render();
+
+		$params = $type->params();
 		$this->assertSame('TestCloneInterface', $params['implements']);
-		$this->assertCount(4, $params['methods']['public']);
-		$this->assertArrayHasKey('method_one', $params['methods']['public']);
-		$this->assertArrayHasKey('method_two', $params['methods']['public']);
-		$this->assertArrayHasKey('method_three', $params['methods']['public']);
-		$this->assertArrayHasKey('count', $params['methods']['public']);
+		$this->assertCount(4, $params['methods']['abstract']);
+		$this->assertArrayHasKey('method_one', $params['methods']['abstract']);
+		$this->assertArrayHasKey('method_two', $params['methods']['abstract']);
+		$this->assertArrayHasKey('method_three', $params['methods']['abstract']);
+		$this->assertArrayHasKey('count', $params['methods']['abstract']);
 
 		$type = new Generator_Type_Clone('Foo');
 		$type->source('TestCloneClassSix')
-			->type(Generator_Reflector::TYPE_CLASS);
+			->type(Generator_Reflector::TYPE_CLASS)
+			->inherit(TRUE)
+			->render();
 
-		$type->render();
 		$params = $type->params();
-
 		$this->assertSame('TestCloneInterface, TestCloneInterfaceSortable',
 			$params['implements']);
-		$this->assertCount(6, $params['methods']['public']);
-		$this->assertArrayHasKey('method_one', $params['methods']['public']);
-		$this->assertArrayHasKey('method_two', $params['methods']['public']);
-		$this->assertArrayHasKey('method_three', $params['methods']['public']);
-		$this->assertArrayHasKey('sort', $params['methods']['public']);
-		$this->assertArrayHasKey('iter', $params['methods']['public']);
-		$this->assertArrayHasKey('count', $params['methods']['public']);
+		$this->assertCount(6, $params['methods']['abstract']);
+		$this->assertArrayHasKey('method_one', $params['methods']['abstract']);
+		$this->assertArrayHasKey('method_two', $params['methods']['abstract']);
+		$this->assertArrayHasKey('method_three', $params['methods']['abstract']);
+		$this->assertArrayHasKey('sort', $params['methods']['abstract']);
+		$this->assertArrayHasKey('iter', $params['methods']['abstract']);
+		$this->assertArrayHasKey('count', $params['methods']['abstract']);
 	}
 
 	/**

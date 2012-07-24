@@ -45,7 +45,7 @@ class Generator_Generator_Type_Clone extends Generator_Type_Class
 	 * @param   boolean  $inherit  Should the clone inherit?
 	 * @return  Generator_Type_Clone  This instance
 	 */
-	public function inherit($inherit)
+	public function inherit($inherit = TRUE)
 	{
 		$this->_inherit = (bool) $inherit;
 		return $this;

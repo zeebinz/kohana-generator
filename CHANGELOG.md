@@ -1,6 +1,9 @@
 Generator for Kohana - Changelog
 ================================
 
+- Only concrete classes will now implement inherited or interface methods by
+  default, abstract classes will not. When cloning abstract classes, the
+  `--inherit` option should be used to include any inherited abstract methods.
 - Added support for traits to Generator_Reflector (PHP >= 5.4.0 only).
 - Added new stub template for transparent extension.
 
