@@ -17,6 +17,7 @@ class Generator_Task_Generate_Class extends Task_Generate
 		'name'      => '',
 		'extend'    => '',
 		'implement' => '',
+		'use'       => '',
 		'stub'      => '',
 		'abstract'  => FALSE,
 		'no-test'   => FALSE,
@@ -57,6 +58,7 @@ class Generator_Task_Generate_Class extends Task_Generate
 					->as_abstract(($options['abstract']))
 					->extend($options['extend'])
 					->implement($options['implement'])
+					->using($options['use'])
 					->template($options['template'])
 					->blank($options['blank'])
 				->builder();
@@ -69,6 +71,7 @@ class Generator_Task_Generate_Class extends Task_Generate
 				->extend($options['name'])
 				->template('generator/type/stub')
 				->set('source', $options['name']);
+
 		}
 
 		if ( ! $options['no-test'])

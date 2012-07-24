@@ -62,6 +62,21 @@ class Generator_Generator_Type_Class extends Generator_Type
 	}
 
 	/**
+	 * Adds any traits used by the class.
+	 *
+	 * The traits may be passed either as an array, comma-separated list
+	 * of trait names, or as a single trait name.
+	 *
+	 * @param   string|array  $traits  The trait names to use
+	 * @return  Generator_Type_Class   This instance
+	 */
+	public function using($traits)
+	{
+		$this->param_to_array($traits, 'traits');
+		return $this;
+	}
+
+	/**
 	 * Converts the interfaces list to a string, adds any method skeletons to be
 	 * be implemented by the class and renders the template.
 	 *

@@ -100,6 +100,64 @@ class Generator_Type_ClassTest extends Unittest_TestCase
 		$this->assertNotRegExp('/parent::/', $params['methods']['public']['sort']['body']);
 	}
 
+	/**
+	 * All the tests involving traits are included here for convenience due to the
+	 * PHP version requirement.
+	 *
+	 * @group  generator.traits
+	 */
+	public function test_can_use_traits()
+	{
+		if ( ! function_exists('trait_exists'))
+		{
+			$this->markTestSkipped('PHP >= 5.4.0 is required');
+		}
+
+		// We'll use the fixtures dummies for these tests
+		require_once dirname(dirname(dirname(__FILE__))).'/fixtures/_test_traits.php';
+
+		$type = new Generator_Type_Class('Foo');
+		$type->using('Bar, Baz');
+
+		$params = $type->params();
+		$this->assertArrayHasKey('traits', $params);
+		$this->assertCount(2, $params['traits']);
+		$this->assertContains('Bar', $params['traits']);
+		$this->assertContains('Baz', $params['traits']);
+
+		$rendered = $type->render();
+		$this->assertRegExp('/use Bar;/', $rendered);
+		$this->assertRegExp('/use Baz;/', $rendered);
+
+		// Concrete classes should implement any abstract methods in inherited traits
+		$type = new Generator_Type_Class('Foo');
+		$type->using('Fx_Trait_Selector')->render();
+
+		$params = $type->params();
+		$this->assertArrayHasKey('public', $params['methods']);
+		$this->assertArrayHasKey('select', $params['methods']['public']);
+		$this->assertSame('Fx_Trait_Selector', $params['methods']['public']['select']['class']);
+		$this->assertSame('Fx_Trait_Selector', $params['methods']['public']['select']['trait']);
+		$this->assertSame('public', $params['methods']['public']['select']['modifiers']);
+		$this->assertRegExp('/Implementation of Fx_Trait_Selector::select/',
+			$params['methods']['public']['select']['doccomment']);
+
+		// The same goes if abstract parents include abstract methods from traits
+		$type = new Generator_Type_Class('Foo');
+		$type->extend('Fx_AbstractClassWithTraits')->render();
+
+		$params = $type->params();
+		$this->assertArrayHasKey('public', $params['methods']);
+		$this->assertArrayHasKey('select', $params['methods']['public']);
+		$this->assertSame('Fx_AbstractClassWithTraits', $params['methods']['public']['select']['class']);
+		$this->assertSame('Fx_Trait_Selector', $params['methods']['public']['select']['trait']);
+		$this->assertSame('public', $params['methods']['public']['select']['modifiers']);
+		$this->assertRegExp('/Implementation of Fx_AbstractClassWithTraits::select/',
+			$params['methods']['public']['select']['doccomment']);
+		$this->assertRegExp('/First defined in trait: Fx_Trait_Selector/',
+			$params['methods']['public']['select']['doccomment']);
+	}
+
 } // End Generator_Type_ClassTest
 
 interface TestCountable
