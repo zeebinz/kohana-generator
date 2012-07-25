@@ -86,11 +86,12 @@ class Generator_Generator_Type_Class extends Generator_Type
 	{
 		// Start the methods list
 		$methods = isset($this->_params['methods']) ? $this->_params['methods'] : array();
-		$implemented = array();
 
 		// Check any abstract methods that need implementing
-		if (empty($this->_params['abstract']) AND empty($this->_params['blank']))
+		if (empty($methods) AND empty($this->_params['abstract']) AND empty($this->_params['blank']))
 		{
+			$implemented = array();
+
 			if ( ! empty($this->_params['extends']))
 			{
 				// Implement any parent's abstract methods
@@ -101,20 +102,20 @@ class Generator_Generator_Type_Class extends Generator_Type
 			if ( ! empty($this->_params['traits']))
 			{
 				// Implement any trait's abstract methods
-				$implemented = array_merge($implemented, $this->_get_reflection_methods(
-					$this->_params['traits'], Generator_Reflector::TYPE_TRAIT, TRUE));
+				$implemented += $this->_get_reflection_methods($this->_params['traits'],
+					Generator_Reflector::TYPE_TRAIT, TRUE);
 			}
 
 			if ( ! empty($this->_params['implements']))
 			{
 				// Implement any interface methods
-				$implemented = array_merge($implemented, $this->_get_reflection_methods(
-					$this->_params['implements'], Generator_Reflector::TYPE_INTERFACE, TRUE));
+				$implemented += $this->_get_reflection_methods($this->_params['implements'],
+					Generator_Reflector::TYPE_INTERFACE, TRUE);
 			}
-		}
 
-		// Merge any class and implemented abstract methods
-		$methods = array_merge($methods, $implemented);
+			// Merge any class and implemented abstract methods
+			$methods += $implemented;
+		}
 
 		// Group any methods by modifier
 		$this->_params['methods'] = $this->_group_by_modifier($methods);

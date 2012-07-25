@@ -1,6 +1,8 @@
 Generator for Kohana - Changelog
 ================================
 
+- Precedence will now be given to any overridden methods when cloning sources
+  or implementing abstract methods.
 - Added `--use` option to generate:class for including traits (PHP >= 5.4.0).
 - Added Trait generator (PHP >= 5.4.0 only).
 - Only concrete classes will now implement inherited or interface methods by

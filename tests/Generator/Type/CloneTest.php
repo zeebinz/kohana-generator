@@ -314,6 +314,25 @@ class Generator_Type_CloneTest extends Unittest_TestCase
 		$this->assertSame('Fx_Trait_Reporter', $params['methods']['public']['sort']['class']);
 		$this->assertSame('Fx_Trait_Sorter', $params['methods']['public']['sort']['trait']);
 
+		// Cloned traits should know if any trait method has been overridden
+		$type = new Generator_Type_Clone('Foo');
+		$type->source('Fx_Trait_Overrider')
+			->type(Generator_Reflector::TYPE_TRAIT)
+			->inherit(TRUE)
+			->render();
+
+		$params = $type->params();
+		$this->assertCount(2, $params['methods']['public']);
+		$this->assertCount(1, $params['methods']['abstract']);
+		$this->assertArrayHasKey('report', $params['methods']['public']);
+		$this->assertSame('Fx_Trait_Overrider', $params['methods']['public']['report']['class']);
+		$this->assertSame('Fx_Trait_Reporter', $params['methods']['public']['report']['trait']);
+		$this->assertFalse($params['methods']['public']['report']['inherited']);
+		$this->assertArrayHasKey('sort', $params['methods']['public']);
+		$this->assertSame('Fx_Trait_Overrider', $params['methods']['public']['sort']['class']);
+		$this->assertSame('Fx_Trait_Sorter', $params['methods']['public']['sort']['trait']);
+		$this->assertTrue($params['methods']['public']['sort']['inherited']);
+
 		// Cloned classes with traits can inherit methods but not properties
 		$type = new Generator_Type_Clone('Foo');
 		$type->source('Fx_ClassWithTraits')

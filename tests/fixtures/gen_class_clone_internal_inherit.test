@@ -49,13 +49,13 @@ class Foo extends SplHeap implements Countable, Iterator
 	}
 
 	/**
-	 * Implementation of Countable::count
+	 * Implementation of SplHeap::count
 	 *
 	 * @return  void  **Needs editing**
 	 */
 	public function count()
 	{
-		// Method implementation
+		parent::count();
 	}
 
 	/**
@@ -69,53 +69,53 @@ class Foo extends SplHeap implements Countable, Iterator
 	}
 
 	/**
-	 * Implementation of Iterator::rewind
+	 * Implementation of SplHeap::rewind
 	 *
 	 * @return  void  **Needs editing**
 	 */
 	public function rewind()
 	{
-		// Method implementation
+		parent::rewind();
 	}
 
 	/**
-	 * Implementation of Iterator::current
+	 * Implementation of SplHeap::current
 	 *
 	 * @return  void  **Needs editing**
 	 */
 	public function current()
 	{
-		// Method implementation
+		parent::current();
 	}
 
 	/**
-	 * Implementation of Iterator::key
+	 * Implementation of SplHeap::key
 	 *
 	 * @return  void  **Needs editing**
 	 */
 	public function key()
 	{
-		// Method implementation
+		parent::key();
 	}
 
 	/**
-	 * Implementation of Iterator::next
+	 * Implementation of SplHeap::next
 	 *
 	 * @return  void  **Needs editing**
 	 */
 	public function next()
 	{
-		// Method implementation
+		parent::next();
 	}
 
 	/**
-	 * Implementation of Iterator::valid
+	 * Implementation of SplHeap::valid
 	 *
 	 * @return  void  **Needs editing**
 	 */
 	public function valid()
 	{
-		// Method implementation
+		parent::valid();
 	}
 
 	/**
@@ -129,11 +129,13 @@ class Foo extends SplHeap implements Countable, Iterator
 	}
 
 	/**
-	 * Implementation of SplHeap::compare
+	 * Implementation of SplMinHeap::compare
 	 *
+	 * @param   mixed  $a
+	 * @param   mixed  $b
 	 * @return  void  **Needs editing**
 	 */
-	protected function compare()
+	protected function compare($a, $b)
 	{
 		// Method implementation
 	}
