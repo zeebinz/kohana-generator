@@ -51,6 +51,8 @@ class Foo extends SplHeap implements Countable, Iterator
 	/**
 	 * Implementation of SplHeap::count
 	 *
+	 * From interface: Countable
+	 *
 	 * @return  void  **Needs editing**
 	 */
 	public function count()
@@ -71,6 +73,8 @@ class Foo extends SplHeap implements Countable, Iterator
 	/**
 	 * Implementation of SplHeap::rewind
 	 *
+	 * From interface: Iterator
+	 *
 	 * @return  void  **Needs editing**
 	 */
 	public function rewind()
@@ -80,6 +84,8 @@ class Foo extends SplHeap implements Countable, Iterator
 
 	/**
 	 * Implementation of SplHeap::current
+	 *
+	 * From interface: Iterator
 	 *
 	 * @return  void  **Needs editing**
 	 */
@@ -91,6 +97,8 @@ class Foo extends SplHeap implements Countable, Iterator
 	/**
 	 * Implementation of SplHeap::key
 	 *
+	 * From interface: Iterator
+	 *
 	 * @return  void  **Needs editing**
 	 */
 	public function key()
@@ -101,6 +109,8 @@ class Foo extends SplHeap implements Countable, Iterator
 	/**
 	 * Implementation of SplHeap::next
 	 *
+	 * From interface: Iterator
+	 *
 	 * @return  void  **Needs editing**
 	 */
 	public function next()
@@ -110,6 +120,8 @@ class Foo extends SplHeap implements Countable, Iterator
 
 	/**
 	 * Implementation of SplHeap::valid
+	 *
+	 * From interface: Iterator
 	 *
 	 * @return  void  **Needs editing**
 	 */

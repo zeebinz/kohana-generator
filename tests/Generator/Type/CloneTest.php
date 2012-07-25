@@ -166,11 +166,21 @@ class Generator_Type_CloneTest extends Unittest_TestCase
 		$this->assertNotRegExp('/parent::/',
 			$params['methods']['other']['_method_six']['body']);
 
-		// Non-abstract inherited methods should invoke parent
+		// Non-abstract inherited methods should invoke their parent
 		$this->assertRegExp('/Implementation of TestCloneClassFour::method_seven/',
 			$params['methods']['public']['method_seven']['doccomment']);
 		$this->assertRegExp('/parent::method_seven\(\);/',
 			$params['methods']['public']['method_seven']['body']);
+
+		// We should be able to report the origin of interface methods
+		$this->assertRegExp('/Implementation of TestCloneClassThree::count/',
+			$params['methods']['public']['count']['doccomment']);
+		$this->assertRegExp('/From interface: TestCloneInterfaceCountable/',
+			$params['methods']['public']['count']['doccomment']);
+		$this->assertRegExp('/Method implementation/',
+			$params['methods']['public']['count']['body']);
+		$this->assertNotRegExp('/parent::/',
+			$params['methods']['public']['count']['body']);
 	}
 
 	/**

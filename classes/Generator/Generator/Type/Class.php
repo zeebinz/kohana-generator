@@ -181,6 +181,12 @@ class Generator_Generator_Type_Class extends Generator_Type
 							$doc->set('long_description', 'First defined in trait: '.$m['trait']);
 						}
 
+						if ( ! empty($m['interface']) AND $m['class'] != $m['interface'])
+						{
+							// Add info about the original interface for the method
+							$doc->set('long_description', 'From interface: '.$m['interface']);
+						}
+
 						// Build the comment tags
 						foreach ($m['params'] as $param => $p)
 						{

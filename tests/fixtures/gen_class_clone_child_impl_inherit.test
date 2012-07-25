@@ -86,6 +86,8 @@ class Foo extends Fx_Class implements Fx_Countable, Fx_Sortable
 	/**
 	 * Implementation of Fx_ImplClass::count
 	 *
+	 * From interface: Fx_Countable
+	 *
 	 * @return  void  **Needs editing**
 	 */
 	public function count()
@@ -95,6 +97,8 @@ class Foo extends Fx_Class implements Fx_Countable, Fx_Sortable
 
 	/**
 	 * Implementation of Fx_ImplClass::sort
+	 *
+	 * From interface: Fx_Sortable
 	 *
 	 * @param   array  $list
 	 * @return  void  **Needs editing**

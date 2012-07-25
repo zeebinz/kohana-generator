@@ -183,12 +183,13 @@ class Generator_Generator_Reflector
 		}
 
 		// Get any implemented interfaces
-		$interfaces = array();
+		$interface_names = array();
+		$interfaces = $class->getInterfaces();
 		$inherited  = array();
-		foreach ($class->getInterfaces() as $i)
+		foreach ($interfaces as $i)
 		{
 			// Track the interface inheritance tree
-			$interfaces[$i->getName()] = $i->getInterfaceNames();
+			$interface_names[$i->getName()] = $i->getInterfaceNames();
 			$inherited += array_flip($i->getInterfaceNames());
 
 			foreach ($const_names as $c) if ($i->getConstant($c) != NULL)
@@ -220,14 +221,22 @@ class Generator_Generator_Reflector
 		$methods = array();
 		foreach ($class->getMethods() as $method)
 		{
-			$methods[$method->getName()] = $this->parse_reflection_method($method);
+			$method_name = $method->getName();
+			$methods[$method_name] = $this->parse_reflection_method($method);
 
-			foreach ($traits as $trait) if ($trait->hasMethod($method->getName()))
+			foreach ($interfaces as $i) if ($i->hasMethod($method_name))
+			{
+				// The method was defined by an interface, so track the declaring class
+				$methods[$method_name]['interface'] = $i->getMethod($method_name)
+					->getDeclaringClass()->getName();
+			}
+
+			foreach ($traits as $trait) if ($trait->hasMethod($method_name))
 			{
 				// The method was defined by a trait, so track the base trait info
 				$trait_info = $this->get_declaring_trait($method, $trait);
-				$methods[$method->getName()]['trait'] = $trait_info['name'];
-				$methods[$method->getName()]['inherited'] = ! $trait_info['overridden'];
+				$methods[$method_name]['trait'] = $trait_info['name'];
+				$methods[$method_name]['inherited'] = ! $trait_info['overridden'];
 			}
 		}
 
@@ -238,7 +247,7 @@ class Generator_Generator_Reflector
 			'modifiers'  => $modifiers,
 			'abstract'   => $abstract,
 			'parent'     => $parent,
-			'interfaces' => $interfaces,
+			'interfaces' => $interface_names,
 			'inherited'  => $inherited,
 			'traits'     => $trait_names,
 			'constants'  => $constants,
@@ -303,17 +312,20 @@ class Generator_Generator_Reflector
 		// Get the declaring class name
 		$class = $method->getDeclaringClass()->getName();
 
+		// Get any interface info
+		$interface = interface_exists($class) ? $class : '';
+
 		// Get any trait info. Trait methods can be re-declared by classes and
 		// other traits, so we need to track the method's base trait.
 		$trait = ($this->supports_traits() and trait_exists($class)) ? $class : '';
 
 		// Has the class inherited the method?
-		$inherited = $class != $this->_source;
+		$inherited = ($class != $this->_source);
 
 		// Get the modifiers
 		$modifiers = $method->getModifiers();
 
-		if ($this->is_interface() AND $method->getDeclaringClass()->isInterface())
+		if ($this->is_interface())
 		{
 			// We don't need the abstract modifier for interface methods
 			$modifiers &= ~ReflectionMethod::IS_ABSTRACT;
@@ -340,6 +352,7 @@ class Generator_Generator_Reflector
 		// Return the parsed info
 		return array(
 			'class'      => $class,
+			'interface'  => $interface,
 			'trait'      => $trait,
 			'inherited'  => $inherited,
 			'doccomment' => $doccomment,
@@ -756,7 +769,7 @@ class Generator_Generator_Reflector
 	 * Note that ReflectionClass will report all methods associated with the source,
 	 * including final and private methods of parents, interface methods whether
 	 * implemented by the source or not, etc. So 'inherited' here means any method
-	 * not declared exclusively by the current source or overridden by it; and 
+	 * not declared exclusively by the current source or overridden by it; and
 	 * 'inheritable' means all non-private and non-final 'inherited' methods.
 	 *
 	 * @param   boolean  $abstract    Only return abstract methods?

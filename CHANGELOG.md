@@ -1,6 +1,8 @@
 Generator for Kohana - Changelog
 ================================
 
+- Interface methods are now better tracked, and the original declaration will
+  now be reported properly in the doccomments.
 - Fixed invocation of inherited methods when cloning.
 - Precedence will now be given to any overridden methods when cloning sources
   or implementing abstract methods.

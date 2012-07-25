@@ -210,6 +210,40 @@ class Generator_ReflectorTest extends Unittest_TestCase
 	}
 
 	/**
+	 * We need to be able to determine the original declaring class of any interface
+	 * methods, whether implelemented by a class or declared in interfaces that may
+	 * inherit each other.
+	 */
+	public function test_interface_methods_can_be_tracked()
+	{
+		$refl = new TestReflector('TestInterfaceChild', Generator_Reflector::TYPE_INTERFACE);
+		$methods = $refl->get_methods();
+
+		$this->assertArrayHasKey('method_one', $methods);
+		$this->assertSame('TestInterface', $methods['method_one']['class']);
+		$this->assertSame('TestInterface', $methods['method_one']['interface']);
+
+		$this->assertArrayHasKey('method_two', $methods);
+		$this->assertSame('TestInterface', $methods['method_two']['class']);
+		$this->assertSame('TestInterface', $methods['method_two']['interface']);
+
+		$this->assertArrayHasKey('method_three', $methods);
+		$this->assertSame('TestInterfaceChild', $methods['method_three']['class']);
+		$this->assertSame('TestInterfaceChild', $methods['method_three']['interface']);
+
+		$this->assertArrayHasKey('count', $methods);
+		$this->assertSame('TestInterfaceChild', $methods['count']['class']);
+		$this->assertSame('TestInterfaceCountable', $methods['count']['interface']);
+
+		$refl = new TestReflector('TestClass');
+		$methods = $refl->get_methods();
+
+		$this->assertArrayHasKey('count', $methods);
+		$this->assertSame('TestClass', $methods['count']['class']);
+		$this->assertSame('TestInterfaceCountable', $methods['count']['interface']);
+	}
+
+	/**
 	 * We should be able to convert stored abstract methods to concrete methods
 	 * for implementing in classes.
 	 *
@@ -561,6 +595,7 @@ interface TestInterfaceCountable
 interface TestInterfaceChild extends TestInterface, TestInterfaceCountable
 {
 	public function method_three();
+	public function count();
 }
 
 // For testing multiple inheritance
