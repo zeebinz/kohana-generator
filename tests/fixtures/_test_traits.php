@@ -40,6 +40,13 @@ trait Fx_Trait_Reporter
 	abstract public function report();
 }
 
+trait Fx_Trait_Overrider
+{
+	use Fx_Trait_Reporter;
+
+	public function report($item) {}
+}
+
 class Fx_ClassWithTraits
 {
 	use Fx_Trait_Logger;
@@ -51,3 +58,10 @@ abstract class Fx_AbstractClassWithTraits
 }
 
 class Fx_ClassChildWithTraits extends Fx_ClassWithTraits {}
+
+class Fx_ClassOverridesTraits
+{
+	use Fx_Trait_Selector;
+
+	public function select($item) {}
+}

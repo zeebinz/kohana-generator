@@ -194,7 +194,7 @@ class Generator_Generator_Type_Class extends Generator_Type
 					$m['signature'] = $refl->get_method_signature($method);
 
 					// Include the method body
-					if ( ! $refl->is_abstract() AND ! $m['abstract'] AND $m['class'] != $source)
+					if ( ! $refl->is_abstract() AND ! $m['abstract'] AND $m['inherited'])
 					{
 						// Invoke the parent for inherited methods
 						$m['body']  = isset($doc) ? '' : ('// Defined in '.$m['class'].PHP_EOL."\t\t");

@@ -475,6 +475,24 @@ class Generator_ReflectorTest extends Unittest_TestCase
 
 		$this->assertSame(1, $refl->analysis_count);
 
+		// We should know if traits have overridden methods of other traits
+		$refl = new TestReflector('Fx_Trait_Overrider', Generator_Reflector::TYPE_TRAIT);
+		$methods = $refl->get_methods();
+		$this->assertCount(3, $methods);
+		$this->assertArrayHasKey('select', $methods);
+		$this->assertSame('Fx_Trait_Overrider', $methods['select']['class']);
+		$this->assertSame('Fx_Trait_Selector', $methods['select']['trait']);
+		$this->assertArrayHasKey('sort', $methods);
+		$this->assertSame('Fx_Trait_Overrider', $methods['sort']['class']);
+		$this->assertSame('Fx_Trait_Sorter', $methods['sort']['trait']);
+		$this->assertTrue($methods['sort']['inherited']);
+		$this->assertArrayHasKey('report', $methods);
+		$this->assertSame('Fx_Trait_Overrider', $methods['report']['class']);
+		$this->assertSame('Fx_Trait_Reporter', $methods['report']['trait']);
+		$this->assertFalse($methods['report']['inherited']);
+
+		$this->assertSame(1, $refl->analysis_count);
+
 		// Classes using traits will report all inherited properties and methods
 		$refl = new TestReflector('Fx_ClassWithTraits', Generator_Reflector::TYPE_CLASS);
 		$traits = $refl->get_traits();
@@ -500,6 +518,21 @@ class Generator_ReflectorTest extends Unittest_TestCase
 		$this->assertArrayHasKey('_logged', $props);
 		$this->assertArrayHasKey('counted', $props);
 		$this->assertArrayHasKey('_sorted', $props);
+
+		$this->assertSame(1, $refl->analysis_count);
+
+		// We should be able to detect if a class has overridden a trait method
+		$refl = new TestReflector('Fx_ClassOverridesTraits', Generator_Reflector::TYPE_CLASS);
+		$traits = $refl->get_traits();
+		$this->assertCount(1, $traits);
+		$this->assertContains('Fx_Trait_Selector', $traits);
+
+		$methods = $refl->get_methods();
+		$this->assertCount(2, $methods);
+		$this->assertArrayHasKey('select', $methods);
+		$this->assertArrayHasKey('sort', $methods);
+		$this->assertFalse($methods['select']['inherited']);
+		$this->assertTrue($methods['sort']['inherited']);
 
 		$this->assertSame(1, $refl->analysis_count);
 	}

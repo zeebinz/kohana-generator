@@ -224,9 +224,10 @@ class Generator_Generator_Reflector
 
 			foreach ($traits as $trait) if ($trait->hasMethod($method->getName()))
 			{
-				// The method was defined by a trait, so track its base trait name
-				$methods[$method->getName()]['trait'] = $this->get_declaring_trait(
-					$method, $trait);
+				// The method was defined by a trait, so track the base trait info
+				$trait_info = $this->get_declaring_trait($method, $trait);
+				$methods[$method->getName()]['trait'] = $trait_info['name'];
+				$methods[$method->getName()]['inherited'] = ! $trait_info['overridden'];
 			}
 		}
 
@@ -306,6 +307,9 @@ class Generator_Generator_Reflector
 		// other traits, so we need to track the method's base trait.
 		$trait = ($this->supports_traits() and trait_exists($class)) ? $class : '';
 
+		// Has the class inherited the method?
+		$inherited = $class != $this->_source;
+
 		// Get the modifiers
 		$modifiers = $method->getModifiers();
 
@@ -337,6 +341,7 @@ class Generator_Generator_Reflector
 		return array(
 			'class'      => $class,
 			'trait'      => $trait,
+			'inherited'  => $inherited,
 			'doccomment' => $doccomment,
 			'modifiers'  => $modifiers,
 			'by_ref'     => $by_ref,
@@ -407,15 +412,27 @@ class Generator_Generator_Reflector
 		foreach ($trait->getTraits() as $used)
 		{
 			// Use the base trait as the declaring trait
-			if ($name = $this->get_declaring_trait($member, $used))
-				return $name;
+			if ($base_trait = $this->get_declaring_trait($member, $used))
+				return $base_trait;
 		}
 
-		if (($member instanceof ReflectionMethod AND $trait->hasMethod($member->getName()))
-			OR ($member instanceof ReflectionProperty AND $trait->hasProperty($member->getName())))
+		if ($member instanceof ReflectionProperty AND $trait->hasProperty($member->getName()))
 		{
 			// The trait includes a definition of the method/property
 			return $trait->getName();
+		}
+		elseif ($member instanceof ReflectionMethod AND $trait->hasMethod($member->getName()))
+		{
+			// Compare method definitions
+			$method = $this->parse_reflection_method($member);
+			$trait_method = $this->parse_reflection_method($trait->getMethod($member->getName()));
+
+			// Has the current source overridden the trait method?
+			$overridden = (($method['modifiers'] != $trait_method['modifiers'])
+				OR ($method['params'] != $trait_method['params']));
+
+			// Return the trait method info
+			return array('name' => $trait->getName(), 'overridden' => $overridden);
 		}
 
 		// No definition was found
@@ -738,9 +755,9 @@ class Generator_Generator_Reflector
 	 *
 	 * Note that ReflectionClass will report all methods associated with the source,
 	 * including final and private methods of parents, interface methods whether
-	 * implemented by the source or not, etc. So 'inherited' here means any methods
-	 * not declared exclusively by the current source; 'inheritable' means all
-	 * non-private and non-final 'inherited' methods.
+	 * implemented by the source or not, etc. So 'inherited' here means any method
+	 * not declared exclusively by the current source or overridden by it; and 
+	 * 'inheritable' means all non-private and non-final 'inherited' methods.
 	 *
 	 * @param   boolean  $abstract    Only return abstract methods?
 	 * @param   boolean  $inherit     Include inheritable methods?
@@ -759,15 +776,8 @@ class Generator_Generator_Reflector
 
 		foreach ($this->_info['methods'] as $method => $m)
 		{
-			// Has the method been inherited?
-			$inherited = (( ! empty($m['trait']) AND ($m['trait'] != $m['class']))
-				OR ($m['class'] != $this->_source));
-
-			// Is this a private method?
-			$private = ($m['final'] OR $m['private']);
-
 			// Ignore inherited methods that we don't want to implement
-			if ($inherited AND ($private OR ! $inherit))
+			if ($m['inherited'] AND ($m['final'] OR $m['private'] OR ! $inherit))
 				continue;
 
 			// Only include abstract methods?
