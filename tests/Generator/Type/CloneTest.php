@@ -56,12 +56,23 @@ class Generator_Type_CloneTest extends Unittest_TestCase
 			$params['methods']['other']['_overridden_method']['class']);
 
 		// Inherited methods should invoke their parent
+		$this->assertRegExp('/Implementation of TestCloneClassTwo::__construct/',
+			$params['methods']['public']['__construct']['doccomment']);
+		$this->assertRegExp('/parent::__construct\(\);/',
+			$params['methods']['public']['__construct']['body']);
+
 		$this->assertRegExp('/Some inherited method/',
 			$params['methods']['other']['_inherited_method']['doccomment']);
 		$this->assertRegExp('/Defined in TestCloneClassTwo/',
 			$params['methods']['other']['_inherited_method']['body']);
 		$this->assertRegExp('/parent::_inherited_method\(\$foo\);/',
 			$params['methods']['other']['_inherited_method']['body']);
+
+		// Overridden methods should not invoke their parent
+		$this->assertRegExp('/Implementation of TestCloneClassOne::_overridden_method/',
+			$params['methods']['other']['_overridden_method']['doccomment']);
+		$this->assertNotRegExp('/parent::/',
+			$params['methods']['other']['_overridden_method']['body']);
 	}
 
 	/**
@@ -126,7 +137,7 @@ class Generator_Type_CloneTest extends Unittest_TestCase
 
 		// Methods
 		$this->assertCount(2, $params['methods']['static']);
-		$this->assertCount(2, $params['methods']['public']);
+		$this->assertCount(3, $params['methods']['public']);
 		$this->assertCount(2, $params['methods']['abstract']);
 		$this->assertCount(1, $params['methods']['other']);
 
@@ -134,10 +145,14 @@ class Generator_Type_CloneTest extends Unittest_TestCase
 			$params['methods']['static']['method_one']['class']);
 		$this->assertSame('TestCloneClassThree',
 			$params['methods']['public']['count']['class']);
+		$this->assertNotRegExp('/parent::/',
+			$params['methods']['public']['count']['body']);
 
 		$this->assertRegExp('/Implementation of TestCloneClassThree::method_three/',
 			$params['methods']['public']['method_three']['doccomment']);
 		$this->assertRegExp('/Method implementation/',
+			$params['methods']['public']['method_three']['body']);
+		$this->assertNotRegExp('/parent::/',
 			$params['methods']['public']['method_three']['body']);
 
 		$this->assertRegExp('/Declaration of TestCloneClassThree::method_four/',
@@ -148,6 +163,14 @@ class Generator_Type_CloneTest extends Unittest_TestCase
 			$params['methods']['other']['_method_six']['doccomment']);
 		$this->assertRegExp('/Implementation of TestCloneClassThree::_method_six/',
 			$params['methods']['other']['_method_six']['body']);
+		$this->assertNotRegExp('/parent::/',
+			$params['methods']['other']['_method_six']['body']);
+
+		// Non-abstract inherited methods should invoke parent
+		$this->assertRegExp('/Implementation of TestCloneClassFour::method_seven/',
+			$params['methods']['public']['method_seven']['doccomment']);
+		$this->assertRegExp('/parent::method_seven\(\);/',
+			$params['methods']['public']['method_seven']['body']);
 	}
 
 	/**
@@ -446,6 +469,8 @@ class TestCloneClassFour
 {
 	const CONSTANT_THREE = 3;
 	const CONSTANT_FOUR = 4;
+
+	public function method_seven() {}
 }
 
 // Test interfaces

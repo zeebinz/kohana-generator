@@ -141,6 +141,9 @@ class Generator_Type_ClassTest extends Unittest_TestCase
 		$this->assertSame('public', $params['methods']['public']['select']['modifiers']);
 		$this->assertRegExp('/Implementation of Fx_Trait_Selector::select/',
 			$params['methods']['public']['select']['doccomment']);
+		$this->assertNotRegExp('/parent::/',
+			$params['methods']['public']['select']['body']);
+
 
 		// The same goes if abstract parents include abstract methods from traits
 		$type = new Generator_Type_Class('Foo');
@@ -156,6 +159,8 @@ class Generator_Type_ClassTest extends Unittest_TestCase
 			$params['methods']['public']['select']['doccomment']);
 		$this->assertRegExp('/First defined in trait: Fx_Trait_Selector/',
 			$params['methods']['public']['select']['doccomment']);
+		$this->assertNotRegExp('/parent::/',
+			$params['methods']['public']['select']['body']);
 	}
 
 } // End Generator_Type_ClassTest

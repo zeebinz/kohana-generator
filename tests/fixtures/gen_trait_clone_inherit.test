@@ -61,7 +61,7 @@ trait Foo
 	 */
 	public function count($input)
 	{
-		// Method implementation
+		parent::count($input);
 	}
 
 	/**
@@ -74,7 +74,7 @@ trait Foo
 	 */
 	public function sort($reverse = FALSE)
 	{
-		// Method implementation
+		parent::sort($reverse);
 	}
 
 } // End Foo

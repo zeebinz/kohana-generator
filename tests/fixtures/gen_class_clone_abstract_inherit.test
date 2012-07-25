@@ -48,7 +48,7 @@ abstract class Foo extends Fx_Class
 	 */
 	public static function method_one($one, $two = 'two', $three = 3, $four = 4.01)
 	{
-		// Method implementation
+		parent::method_one($one, $two, $three, $four);
 	}
 
 	/**
@@ -59,7 +59,7 @@ abstract class Foo extends Fx_Class
 	 */
 	protected static function _method_two(SomeClass $class = NULL)
 	{
-		// Method implementation
+		parent::_method_two($class);
 	}
 
 	/**
@@ -91,7 +91,7 @@ abstract class Foo extends Fx_Class
 	 */
 	public function method_three(array $list)
 	{
-		// Method implementation
+		parent::method_three($list);
 	}
 
 	/**
@@ -120,7 +120,8 @@ abstract class Foo extends Fx_Class
 	 */
 	protected function _method_five(SomeClass $class, $two)
 	{
-		// Implementation of Fx_Class::_method_five
+		// Defined in Fx_Class
+		parent::_method_five($class, $two);
 	}
 
 } // End Foo

@@ -162,6 +162,7 @@ class Generator_Generator_Type_Class extends Generator_Type
 					{
 						// Don't treat methods as abstract if we're implementing them
 						$m = $refl->make_method_concrete($m, $method);
+						$m['made_concrete'] = TRUE;
 					}
 
 					if (empty($m['doccomment']))
@@ -195,7 +196,7 @@ class Generator_Generator_Type_Class extends Generator_Type
 					$m['signature'] = $refl->get_method_signature($method);
 
 					// Include the method body
-					if ( ! $refl->is_abstract() AND ! $m['abstract'] AND $m['inherited'])
+					if ( ! $m['abstract'] AND $m['inherited'] AND empty($m['made_concrete']))
 					{
 						// Invoke the parent for inherited methods
 						$m['body']  = isset($doc) ? '' : ('// Defined in '.$m['class'].PHP_EOL."\t\t");
