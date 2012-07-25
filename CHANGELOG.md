@@ -1,6 +1,7 @@
 Generator for Kohana - Changelog
 ================================
 
+- Added get_info() method to Generator_Reflector for debugging purposes only.
 - Interface methods are now better tracked, and the original declaration will
   now be reported properly in the doccomments.
 - Fixed invocation of inherited methods when cloning.

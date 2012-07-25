@@ -605,6 +605,21 @@ class Generator_Generator_Reflector
 	}
 
 	/**
+	 * Returns the raw data for the current source, to be used for debugging
+	 * purposes only as the implementation is subject to change.
+	 *
+	 * @param   string  $key  The requested info
+	 * @return  mixed   The raw info
+	 */
+	public function get_info($info = NULL)
+	{
+		if ($info === NULL)
+			return $this->_info;
+
+		return $this->_info[$info];
+	}
+
+	/**
 	 * Returns the doccomment for the current source.
 	 *
 	 * @return  string  The source doccomment
