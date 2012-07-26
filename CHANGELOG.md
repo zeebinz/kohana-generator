@@ -10,18 +10,18 @@ Version 0.8
 - Fixed invocation of inherited methods when cloning.
 - Precedence will now be given to any overridden methods when cloning sources
   or implementing abstract methods.
-- Added `--use` option to generate:class for including traits (PHP >= 5.4.0).
-- Added Trait generator (PHP >= 5.4.0 only).
+- Added `--use` option to `generate:class` for including traits (PHP >= 5.4.0).
+- Added **Trait** generator (PHP >= 5.4.0 only).
 - Only concrete classes will now implement inherited or interface methods by
   default, abstract classes will not. When cloning abstract classes, the
   `--inherit` option should be used to include any inherited abstract methods.
 - Added support for traits to Generator_Reflector (PHP >= 5.4.0 only).
-- Added new stub template for transparent extension.
+- Added new `generator/type/stub` template for transparent extension.
 
 Version 0.7
 -----------
 
-- Moved all type templates to views/generator/types.
+- Moved all type templates to `views/generator/types`.
 - Updated the 'Running the Tasks' guide page with info about task arguments.
 - Replaced the Minion validation error template, the new one now has the right
   help info and includes style tags.
@@ -46,11 +46,11 @@ Version 0.6
 - Fixed the mixed line ending types for exported arrays with indentation.
 - Added a new render_template() method to Generator_Type for easier overriding
   of the templating system.
-- Added a new Fixture generator for creating simple test fixtures, with some new
+- Added a new **Fixture** generator for creating simple test fixtures, with some new
   functional tests for the Minion tasks that use them.
-- Fixed the tasks produced by generate:generator always to extend Task_Generate
+- Fixed the tasks produced by `generate:generator` always to extend Task_Generate
   rather than Minion_Task.
-- The get_config method for tasks can now accept an absolute path as the $group
+- The get_config() method for tasks can now accept an absolute path as the $group
   parameter, and configuration will be loaded directly from that file.
 - Directory separators for any guessed filenames should now be consistent with
   the value of DIRECTORY_SEPARATOR.
@@ -58,17 +58,17 @@ Version 0.6
   skeleton methods for implementing these will be included by default along with
   any interface methods. Abstract classes aren't affected, though.
 - Added the option to retrieve only abstract methods via reflection.	
-- The generate:class task now includes the --blank option to prevent any skeleton
+- The `generate:class` task now includes the `--blank` option to prevent any skeleton
   methods from being included.
 - There should no longer be any duplicate 'remove' messages when removing,
-  although some extra info can still be viewed when using the --verbose option,
+  although some extra info can still be viewed when using the `--verbose` option,
   which is now disabled by default.
 - When removing directories, parents will now be ignored if the child isn't empty.
 
 Version 0.5
 -----------
 
-- Added --clone option for generate:interface, works the same as for classes
+- Added `--clone` option to `generate:interface`, works the same as for classes
   except for the handling of multiple inheritance and other peculiar quirks
   of interfaces in PHP.
 - Improved the cloning of classes, especially the handling of inherited methods
@@ -84,15 +84,15 @@ Version 0.5
 Version 0.4
 -----------
 
-- Added a --clone option for the generate:class task along with a new Clone type,
-  allowing properties and methods to be copied directly from a class file
+- Added a `--clone` option to the `generate:class` task along with a new **Clone**
+  type, allowing properties and methods to be copied directly from a class file
   or via reflection (with optional inheritance).
 - Extended Generator_Reflector to include class constants, properties and other
   basic reflection info.
 - The implemented methods for generated classes will now use the original interface
   doccomments if these are available, otherwise new ones will be created.
 - Added new doccomment template.
-- Renamed Generator_Reflector::inspect to ::analyze, avoiding confusion with
+- Renamed Generator_Reflector::inspect() to analyze(), avoiding confusion with
   the inspect methods of other Generator classes.
 
 Version 0.3
@@ -102,8 +102,8 @@ Version 0.3
   the interfaces exist - to satisfy any interface requirements.
 - Generated config values should now have proper indentation.
 - Numeric config keys are now set directly and not treated as array paths.
-- Added Generator_Reflector class to support basic reflection functions.
-- Limited access to Type methods that should not be part of their fluent interface.
+- Added **Generator_Reflector** class to support basic reflection functions.
+- Limited access to generator methods that should not be part of their fluent interface.
 - Refactored the tasks to reduce the number of required methods, making
   the creation of new tasks simpler.
 - Added new get_config() method for all tasks to more easily load default
@@ -112,7 +112,7 @@ Version 0.3
 Version 0.2
 -----------
 
-- Added generate:task:generator as a shortcut for creating generator tasks
+- Added `generate:task:generator` task as a shortcut for creating generator tasks
   with skeleton methods.
 - Config file to use with generator tasks can now be specified with the
   new `--config` option.
