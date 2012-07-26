@@ -18,71 +18,13 @@ generate:class --name=Foo --clone=SplMinHeap --reflect --no-test
 class Foo extends SplHeap implements Countable, Iterator
 {
 	/**
-	 * Implementation of Countable::count
+	 * Implementation of SplMinHeap::compare
 	 *
+	 * @param   mixed  $a
+	 * @param   mixed  $b
 	 * @return  void  **Needs editing**
 	 */
-	public function count()
-	{
-		// Method implementation
-	}
-
-	/**
-	 * Implementation of Iterator::current
-	 *
-	 * @return  void  **Needs editing**
-	 */
-	public function current()
-	{
-		// Method implementation
-	}
-
-	/**
-	 * Implementation of Iterator::next
-	 *
-	 * @return  void  **Needs editing**
-	 */
-	public function next()
-	{
-		// Method implementation
-	}
-
-	/**
-	 * Implementation of Iterator::key
-	 *
-	 * @return  void  **Needs editing**
-	 */
-	public function key()
-	{
-		// Method implementation
-	}
-
-	/**
-	 * Implementation of Iterator::valid
-	 *
-	 * @return  void  **Needs editing**
-	 */
-	public function valid()
-	{
-		// Method implementation
-	}
-
-	/**
-	 * Implementation of Iterator::rewind
-	 *
-	 * @return  void  **Needs editing**
-	 */
-	public function rewind()
-	{
-		// Method implementation
-	}
-
-	/**
-	 * Implementation of SplHeap::compare
-	 *
-	 * @return  void  **Needs editing**
-	 */
-	protected function compare()
+	protected function compare($a, $b)
 	{
 		// Method implementation
 	}

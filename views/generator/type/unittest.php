@@ -13,7 +13,7 @@
  */
 class <?php echo $name ?> extends <?php echo $extends ?> 
 {
-<?php	if (empty($blank)): ?>
+<?php if (empty($blank)): ?>
 	/**
 	 * This method is called before any tests are run.
 	 */

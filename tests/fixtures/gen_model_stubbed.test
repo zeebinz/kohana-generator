@@ -41,7 +41,7 @@ class Foo_Model extends Model
 
 <?php defined('SYSPATH') OR die('No direct script access.');
 /**
- * Class Model_Bar.
+ * Transparent extension of Foo_Model.
  *
  * @package    package
  * @category   Models

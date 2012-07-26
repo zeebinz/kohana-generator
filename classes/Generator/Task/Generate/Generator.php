@@ -59,9 +59,9 @@ class Generator_Task_Generate_Generator extends Task_Generate
 
 			// Add a stub to extend the generator transparently
 			$builder->add_generator($options['name'])
-				->template($options['template'])
 				->extend($name)
-				->blank();
+				->template('generator/type/stub')
+				->set('source', 'Generator '.$options['name'].' type');
 		}
 
 		if ( ! $options['no-task'])

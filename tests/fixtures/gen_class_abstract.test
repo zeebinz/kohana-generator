@@ -1,7 +1,7 @@
 ---SUMMARY---
 Test fixture for the GENERATE:CLASS generator.
 ---COMMAND---
-generate:class --name=Foo --abstract --no-test
+generate:class --name=Foo --abstract --extend=Fx_AbstractClass --no-test
 ---EXPECTED---
 [ File 1 ] APPPATH/classes/Foo.php
 
@@ -15,7 +15,7 @@ generate:class --name=Foo --abstract --no-test
  * @copyright  (c) 2012 Test Author
  * @license    Test license
  */
-abstract class Foo
+abstract class Foo extends Fx_AbstractClass
 {
 	/**
 	 * @var  string  some string

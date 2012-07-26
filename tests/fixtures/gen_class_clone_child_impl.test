@@ -25,7 +25,9 @@ class Foo extends Fx_Class implements Fx_Countable, Fx_Sortable
 	public $impl_prop;
 
 	/**
-	 * Implementation of Fx_Countable::count
+	 * Implementation of Fx_ImplClass::count
+	 *
+	 * From interface: Fx_Countable
 	 *
 	 * @return  void  **Needs editing**
 	 */
@@ -35,7 +37,9 @@ class Foo extends Fx_Class implements Fx_Countable, Fx_Sortable
 	}
 
 	/**
-	 * Implementation of Fx_Sortable::sort
+	 * Implementation of Fx_ImplClass::sort
+	 *
+	 * From interface: Fx_Sortable
 	 *
 	 * @param   array  $list
 	 * @return  void  **Needs editing**

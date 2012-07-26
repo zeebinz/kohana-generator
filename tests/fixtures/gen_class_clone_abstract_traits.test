@@ -1,0 +1,24 @@
+---SUMMARY---
+Test fixture for the GENERATE:CLASS generator.
+---COMMAND---
+generate:class --name=Foo --clone=Fx_AbstractClassWithTraits --reflect --no-test
+---EXPECTED---
+[ File 1 ] APPPATH/classes/Foo.php
+
+<?php defined('SYSPATH') OR die('No direct script access.');
+/**
+ * Class Foo, cloned from Fx_AbstractClassWithTraits.
+ *
+ * @package    package
+ * @category   category
+ * @author     Test Author
+ * @copyright  (c) 2012 Test Author
+ * @license    Test license
+ */
+abstract class Foo
+{
+	// Trait: Fx_Trait_Selector
+	use Fx_Trait_Selector;
+
+} // End Foo
+---END---

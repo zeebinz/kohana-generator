@@ -1,0 +1,19 @@
+---SUMMARY---
+Test fixture for the GENERATE:TRAIT generator.
+---COMMAND---
+generate:trait --name=Foo --blank
+---EXPECTED---
+[ File 1 ] APPPATH/classes/Foo.php
+
+<?php defined('SYSPATH') OR die('No direct script access.');
+/**
+ * Trait Foo.
+ *
+ * @package    package
+ * @category   Traits
+ * @author     Test Author
+ * @copyright  (c) 2012 Test Author
+ * @license    Test license
+ */
+trait Foo {}
+---END---

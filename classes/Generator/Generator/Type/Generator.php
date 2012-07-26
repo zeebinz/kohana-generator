@@ -36,7 +36,7 @@ class Generator_Generator_Type_Generator extends Generator_Type_Class
 
 		return $this;
 	}
-	
+
 	/**
 	 * Gets the short type name from the class name.
 	 *

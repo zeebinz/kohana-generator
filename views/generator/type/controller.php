@@ -9,7 +9,7 @@
  */
 class <?php echo $name ?> extends <?php echo $extends ?> 
 {
-<?php	if (empty($blank)): ?>
+<?php if (empty($blank)): ?>
 	/**
 	 * Automatically executed before the controller action. Can be used to set
 	 * properties, do authorization checks, and execute other custom code.

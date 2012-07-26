@@ -45,7 +45,7 @@ class Generator_Generator_Type_Clone extends Generator_Type_Class
 	 * @param   boolean  $inherit  Should the clone inherit?
 	 * @return  Generator_Type_Clone  This instance
 	 */
-	public function inherit($inherit)
+	public function inherit($inherit = TRUE)
 	{
 		$this->_inherit = (bool) $inherit;
 		return $this;
@@ -97,6 +97,9 @@ class Generator_Generator_Type_Clone extends Generator_Type_Class
 
 		if ( ! isset($this->_params['blank']))
 		{
+			// Add any source traits
+			$this->_params['traits'] = $refl->get_traits();
+
 			// Add any source constants
 			$this->_params['constants'] = $this->_get_reflection_constants(
 				$source, $type, $refl);
@@ -109,7 +112,7 @@ class Generator_Generator_Type_Clone extends Generator_Type_Class
 
 			// Add any source methods
 			$this->_params['methods'] = $this->_get_reflection_methods(
-				$source, $type,	$this->_inherit, $refl);
+				$source, $type, $this->_inherit, $refl);
 		}
 
 		return parent::render();

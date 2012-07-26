@@ -1,0 +1,60 @@
+---SUMMARY---
+Test fixture for the GENERATE:CLASS generator.
+---COMMAND---
+generate:class --name=Foo --extend=Fx_AbstractImplClass --no-test
+---EXPECTED---
+[ File 1 ] APPPATH/classes/Foo.php
+
+<?php defined('SYSPATH') OR die('No direct script access.');
+/**
+ * Class Foo.
+ *
+ * @package    package
+ * @category   category
+ * @author     Test Author
+ * @copyright  (c) 2012 Test Author
+ * @license    Test license
+ */
+class Foo extends Fx_AbstractImplClass
+{
+	/**
+	 * @var  string  some string
+	 */
+	public $some_string;
+
+	/**
+	 * Short description.
+	 *
+	 * Long method description.
+	 *
+	 * @param   string  $param  Some string
+	 * @return  void
+	 */
+	public function some_method($param)
+	{
+		// Method implementation
+	}
+
+	/**
+	 * Implementation of Fx_Countable::count
+	 *
+	 * @return  void  **Needs editing**
+	 */
+	public function count()
+	{
+		// Method implementation
+	}
+
+	/**
+	 * Implementation of Fx_Sortable::sort
+	 *
+	 * @param   array  $list
+	 * @return  void  **Needs editing**
+	 */
+	public function sort(array $list)
+	{
+		// Method implementation
+	}
+
+} // End Foo
+---END---

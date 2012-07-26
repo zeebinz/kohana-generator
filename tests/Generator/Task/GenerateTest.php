@@ -146,6 +146,11 @@ class Generator_Task_GenerateTest extends Unittest_TestCase
 	 */
 	public function test_generated_output_with_fixtures($fixture)
 	{
+		if ( ! function_exists('trait_exists') AND strpos($fixture->name(), 'trait') !== FALSE)
+		{
+			$this->markTestSkipped("PHP >= 5.4.0 is required for '".$fixture->name()."'");
+		}
+
 		// First test loading up the fixture's file
 		$this->assertTrue($fixture->load_from_file(),
 			"Couldn't load the fixture: '".$fixture->name()."'");

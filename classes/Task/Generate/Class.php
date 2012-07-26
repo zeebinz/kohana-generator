@@ -24,6 +24,11 @@
  *     A comma-separated list of any interfaces that this class should
  *     implement.
  *
+ *   <info>--use=TRAIT[,TRAIT[,...]]</info>
+ *
+ *     A comma-separated list of any traits that this class should use
+ *     <alert>(requires PHP >= 5.4.0)</alert>.
+ *
  *   <info>--clone=CLASS</info>
  *
  *     If a valid class name is set with this option, its properties and

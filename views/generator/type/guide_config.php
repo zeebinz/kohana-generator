@@ -18,6 +18,6 @@ return array
 
 			// Copyright message, shown in the footer for this module
 			'copyright' => '<?php echo $copyright ?>',
-		)	
+		)
 	)
 );

@@ -14,11 +14,12 @@ class Generator_Generator_Type_Class extends Generator_Type
 	protected $_folder   = 'classes';
 
 	protected $_defaults = array(
-		'package'   => 'package',
-		'category'  => 'category',
-		'author'    => 'author',
-		'copyright' => 'copyright',
-		'license'   => 'license',
+		'package'    => 'package',
+		'category'   => 'category',
+		'author'     => 'author',
+		'copyright'  => 'copyright',
+		'license'    => 'license',
+		'class_type' => 'class',
 	);
 
 	/**
@@ -61,6 +62,21 @@ class Generator_Generator_Type_Class extends Generator_Type
 	}
 
 	/**
+	 * Adds any traits used by the class.
+	 *
+	 * The traits may be passed either as an array, comma-separated list
+	 * of trait names, or as a single trait name.
+	 *
+	 * @param   string|array  $traits  The trait names to use
+	 * @return  Generator_Type_Class   This instance
+	 */
+	public function using($traits)
+	{
+		$this->param_to_array($traits, 'traits');
+		return $this;
+	}
+
+	/**
 	 * Converts the interfaces list to a string, adds any method skeletons to be
 	 * be implemented by the class and renders the template.
 	 *
@@ -71,35 +87,44 @@ class Generator_Generator_Type_Class extends Generator_Type
 		// Start the methods list
 		$methods = isset($this->_params['methods']) ? $this->_params['methods'] : array();
 
-		// Check any parent for abstract methods that need implementing
-		if (empty($this->_params['abstract']) AND ! empty($this->_params['extends'])
-			AND empty($this->_params['blank']))
+		// Check any abstract methods that need implementing
+		if (empty($methods) AND empty($this->_params['abstract']) AND empty($this->_params['blank']))
 		{
-			$implemented = $this->_get_reflection_methods($this->_params['extends'],
-				Generator_Reflector::TYPE_CLASS);
+			$implemented = array();
 
-			// Merge any class and abstract methods to implement
-			$methods = array_merge($methods, $implemented);
-		}
-
-		if ( ! empty($this->_params['implements']))
-		{
-			if (empty($this->_params['blank']))
+			if ( ! empty($this->_params['extends']))
 			{
-				// Get the interface methods
-				$interfaces = $this->_get_reflection_methods($this->_params['implements'],
-					Generator_Reflector::TYPE_INTERFACE);
-
-				// Merge any class and interface methods
-				$methods = array_merge($methods, $interfaces);
+				// Implement any parent's abstract methods
+				$implemented = $this->_get_reflection_methods($this->_params['extends'],
+					Generator_Reflector::TYPE_CLASS, TRUE);
 			}
 
-			// Convert the interfaces list
-			$this->_params['implements'] = implode(', ', (array) $this->_params['implements']);
+			if ( ! empty($this->_params['traits']))
+			{
+				// Implement any trait's abstract methods
+				$implemented += $this->_get_reflection_methods($this->_params['traits'],
+					Generator_Reflector::TYPE_TRAIT, TRUE);
+			}
+
+			if ( ! empty($this->_params['implements']))
+			{
+				// Implement any interface methods
+				$implemented += $this->_get_reflection_methods($this->_params['implements'],
+					Generator_Reflector::TYPE_INTERFACE, TRUE);
+			}
+
+			// Merge any class and implemented abstract methods
+			$methods += $implemented;
 		}
 
 		// Group any methods by modifier
 		$this->_params['methods'] = $this->_group_by_modifier($methods);
+
+		if ( ! empty($this->_params['implements']))
+		{
+			// Convert the interfaces list
+			$this->_params['implements'] = implode(', ', (array) $this->_params['implements']);
+		}
 
 		return parent::render();
 	}
@@ -131,21 +156,13 @@ class Generator_Generator_Type_Class extends Generator_Type
 			// Only add skeleton methods for known sources
 			if ($refl->source($source)->exists())
 			{
-				foreach ($refl->get_methods($implementing) as $method => $m)
+				foreach ($refl->get_methods($implementing, $inherit) as $method => $m)
 				{
-					// Check any inherited methods (including from interfaces)
-					if (($m['class'] != $source) AND ($m['final'] OR $m['private']
-						OR ( ! $implementing AND ! $inherit)))
-					{
-						// Skip uninheritable methods and any others that we're not
-						// trying to implement if the inherit option isn't set.
-						continue;
-					}
-
 					if ($m['abstract'] AND $implementing)
 					{
 						// Don't treat methods as abstract if we're implementing them
 						$m = $refl->make_method_concrete($m, $method);
+						$m['made_concrete'] = TRUE;
 					}
 
 					if (empty($m['doccomment']))
@@ -157,6 +174,18 @@ class Generator_Generator_Type_Class extends Generator_Type
 						// Set the method description
 						$prefix = $m['abstract'] ? 'Declaration' : 'Implementation';
 						$doc->set('short_description',  "{$prefix} of {$m['class']}::{$method}");
+
+						if ( ! empty($m['trait']) AND $m['class'] != $m['trait'])
+						{
+							// Add info about the base trait for the method
+							$doc->set('long_description', 'First defined in trait: '.$m['trait']);
+						}
+
+						if ( ! empty($m['interface']) AND $m['class'] != $m['interface'])
+						{
+							// Add info about the original interface for the method
+							$doc->set('long_description', 'From interface: '.$m['interface']);
+						}
 
 						// Build the comment tags
 						foreach ($m['params'] as $param => $p)
@@ -173,7 +202,7 @@ class Generator_Generator_Type_Class extends Generator_Type
 					$m['signature'] = $refl->get_method_signature($method);
 
 					// Include the method body
-					if ( ! $refl->is_abstract() AND ! $m['abstract'] AND $m['class'] != $source)
+					if ( ! $m['abstract'] AND $m['inherited'] AND empty($m['made_concrete']))
 					{
 						// Invoke the parent for inherited methods
 						$m['body']  = isset($doc) ? '' : ('// Defined in '.$m['class'].PHP_EOL."\t\t");

@@ -13,11 +13,12 @@ class Generator_Generator_Type_Interface extends Generator_Type
 	protected $_template = 'generator/type/interface';
 
 	protected $_defaults = array(
-		'package'   => 'package',
-		'category'  => 'category',
-		'author'    => 'author',
-		'copyright' => 'copyright',
-		'license'   => 'license',
+		'package'    => 'package',
+		'category'   => 'Interfaces',
+		'author'     => 'author',
+		'copyright'  => 'copyright',
+		'license'    => 'license',
+		'class_type' => 'interface',
 	);
 
 	/**
@@ -45,11 +46,6 @@ class Generator_Generator_Type_Interface extends Generator_Type
 	 */
 	public function render()
 	{
-		if (empty($this->_params['category']))
-		{
-			$this->_params['category'] = 'Interfaces';
-		}
-
 		if ( ! empty($this->_params['extends']) AND is_array($this->_params['extends']))
 		{
 			// Convert the inherited interfaces list to a string

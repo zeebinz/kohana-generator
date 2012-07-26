@@ -36,7 +36,7 @@ class Bar_Generator_Type_Foo extends Generator_Type
 
 <?php defined('SYSPATH') OR die('No direct script access.');
 /**
- * Generator Foo type.
+ * Transparent extension of Generator Foo type.
  *
  * @package    Bar
  * @category   Generator/Types

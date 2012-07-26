@@ -56,12 +56,23 @@ class Generator_Type_CloneTest extends Unittest_TestCase
 			$params['methods']['other']['_overridden_method']['class']);
 
 		// Inherited methods should invoke their parent
+		$this->assertRegExp('/Implementation of TestCloneClassTwo::__construct/',
+			$params['methods']['public']['__construct']['doccomment']);
+		$this->assertRegExp('/parent::__construct\(\);/',
+			$params['methods']['public']['__construct']['body']);
+
 		$this->assertRegExp('/Some inherited method/',
 			$params['methods']['other']['_inherited_method']['doccomment']);
 		$this->assertRegExp('/Defined in TestCloneClassTwo/',
 			$params['methods']['other']['_inherited_method']['body']);
 		$this->assertRegExp('/parent::_inherited_method\(\$foo\);/',
 			$params['methods']['other']['_inherited_method']['body']);
+
+		// Overridden methods should not invoke their parent
+		$this->assertRegExp('/Implementation of TestCloneClassOne::_overridden_method/',
+			$params['methods']['other']['_overridden_method']['doccomment']);
+		$this->assertNotRegExp('/parent::/',
+			$params['methods']['other']['_overridden_method']['body']);
 	}
 
 	/**
@@ -126,18 +137,22 @@ class Generator_Type_CloneTest extends Unittest_TestCase
 
 		// Methods
 		$this->assertCount(2, $params['methods']['static']);
-		$this->assertCount(2, $params['methods']['public']);
+		$this->assertCount(3, $params['methods']['public']);
 		$this->assertCount(2, $params['methods']['abstract']);
 		$this->assertCount(1, $params['methods']['other']);
 
 		$this->assertSame('TestCloneClassThree',
 			$params['methods']['static']['method_one']['class']);
-		$this->assertSame('TestCloneInterfaceCountable',
+		$this->assertSame('TestCloneClassThree',
 			$params['methods']['public']['count']['class']);
+		$this->assertNotRegExp('/parent::/',
+			$params['methods']['public']['count']['body']);
 
 		$this->assertRegExp('/Implementation of TestCloneClassThree::method_three/',
 			$params['methods']['public']['method_three']['doccomment']);
 		$this->assertRegExp('/Method implementation/',
+			$params['methods']['public']['method_three']['body']);
+		$this->assertNotRegExp('/parent::/',
 			$params['methods']['public']['method_three']['body']);
 
 		$this->assertRegExp('/Declaration of TestCloneClassThree::method_four/',
@@ -148,6 +163,24 @@ class Generator_Type_CloneTest extends Unittest_TestCase
 			$params['methods']['other']['_method_six']['doccomment']);
 		$this->assertRegExp('/Implementation of TestCloneClassThree::_method_six/',
 			$params['methods']['other']['_method_six']['body']);
+		$this->assertNotRegExp('/parent::/',
+			$params['methods']['other']['_method_six']['body']);
+
+		// Non-abstract inherited methods should invoke their parent
+		$this->assertRegExp('/Implementation of TestCloneClassFour::method_seven/',
+			$params['methods']['public']['method_seven']['doccomment']);
+		$this->assertRegExp('/parent::method_seven\(\);/',
+			$params['methods']['public']['method_seven']['body']);
+
+		// We should be able to report the origin of interface methods
+		$this->assertRegExp('/Implementation of TestCloneClassThree::count/',
+			$params['methods']['public']['count']['doccomment']);
+		$this->assertRegExp('/From interface: TestCloneInterfaceCountable/',
+			$params['methods']['public']['count']['doccomment']);
+		$this->assertRegExp('/Method implementation/',
+			$params['methods']['public']['count']['body']);
+		$this->assertNotRegExp('/parent::/',
+			$params['methods']['public']['count']['body']);
 	}
 
 	/**
@@ -161,34 +194,42 @@ class Generator_Type_CloneTest extends Unittest_TestCase
 	{
 		$type = new Generator_Type_Clone('Foo');
 		$type->source('TestCloneClassFive')
-			->type(Generator_Reflector::TYPE_CLASS);
+			->type(Generator_Reflector::TYPE_CLASS)
+			->inherit(FALSE)
+			->render();
 
-		$type->render();
 		$params = $type->params();
+		$this->assertCount(0, $params['methods']);
 
+		$type->source('TestCloneClassFive')
+			->type(Generator_Reflector::TYPE_CLASS)
+			->inherit(TRUE)
+			->render();
+
+		$params = $type->params();
 		$this->assertSame('TestCloneInterface', $params['implements']);
-		$this->assertCount(4, $params['methods']['public']);
-		$this->assertArrayHasKey('method_one', $params['methods']['public']);
-		$this->assertArrayHasKey('method_two', $params['methods']['public']);
-		$this->assertArrayHasKey('method_three', $params['methods']['public']);
-		$this->assertArrayHasKey('count', $params['methods']['public']);
+		$this->assertCount(4, $params['methods']['abstract']);
+		$this->assertArrayHasKey('method_one', $params['methods']['abstract']);
+		$this->assertArrayHasKey('method_two', $params['methods']['abstract']);
+		$this->assertArrayHasKey('method_three', $params['methods']['abstract']);
+		$this->assertArrayHasKey('count', $params['methods']['abstract']);
 
 		$type = new Generator_Type_Clone('Foo');
 		$type->source('TestCloneClassSix')
-			->type(Generator_Reflector::TYPE_CLASS);
+			->type(Generator_Reflector::TYPE_CLASS)
+			->inherit(TRUE)
+			->render();
 
-		$type->render();
 		$params = $type->params();
-
 		$this->assertSame('TestCloneInterface, TestCloneInterfaceSortable',
 			$params['implements']);
-		$this->assertCount(6, $params['methods']['public']);
-		$this->assertArrayHasKey('method_one', $params['methods']['public']);
-		$this->assertArrayHasKey('method_two', $params['methods']['public']);
-		$this->assertArrayHasKey('method_three', $params['methods']['public']);
-		$this->assertArrayHasKey('sort', $params['methods']['public']);
-		$this->assertArrayHasKey('iter', $params['methods']['public']);
-		$this->assertArrayHasKey('count', $params['methods']['public']);
+		$this->assertCount(6, $params['methods']['abstract']);
+		$this->assertArrayHasKey('method_one', $params['methods']['abstract']);
+		$this->assertArrayHasKey('method_two', $params['methods']['abstract']);
+		$this->assertArrayHasKey('method_three', $params['methods']['abstract']);
+		$this->assertArrayHasKey('sort', $params['methods']['abstract']);
+		$this->assertArrayHasKey('iter', $params['methods']['abstract']);
+		$this->assertArrayHasKey('count', $params['methods']['abstract']);
 	}
 
 	/**
@@ -225,6 +266,152 @@ class Generator_Type_CloneTest extends Unittest_TestCase
 		$this->assertArrAyNotHasKey('body', $params['methods']['public']['method_two']);
 		$this->assertArrAyNotHasKey('body', $params['methods']['public']['method_three']);
 		$this->assertArrAyNotHasKey('body', $params['methods']['public']['count']);
+	}
+
+	/**
+	 * All the tests involving traits are included here for convenience due to the
+	 * PHP version requirement.
+	 *
+	 * @group  generator.traits
+	 */
+	public function test_cloning_traits_and_classes_with_traits()
+	{
+		if ( ! function_exists('trait_exists'))
+		{
+			$this->markTestSkipped('PHP >= 5.4.0 is required');
+		}
+
+		// We'll use the fixtures dummies for these tests
+		require_once dirname(dirname(dirname(__FILE__))).'/fixtures/_test_traits.php';
+
+		// Cloning traits without inheritance
+		$type = new Generator_Type_Clone('Foo');
+		$type->source('Fx_Trait_Logger')
+			->type(Generator_Reflector::TYPE_TRAIT)
+			->inherit(FALSE)
+			->render();
+
+		$params = $type->params();
+		$this->assertArrayHasKey('traits', $params);
+		$this->assertContains('Fx_Trait_Counter', $params['traits']);
+		$this->assertContains('Fx_Trait_Sorter', $params['traits']);
+
+		$this->assertCount(1, $params['properties']['static']);
+		$this->assertArrayHasKey('_logged', $params['properties']['static']);
+
+		$this->assertCount(1, $params['methods']['static']);
+		$this->assertCount(1, $params['methods']['public']);
+		$this->assertArrayHasKey('get_logged', $params['methods']['static']);
+		$this->assertArrayHasKey('log', $params['methods']['public']);
+
+		// Cloning traits with inheritance
+		$type = new Generator_Type_Clone('Foo');
+		$type->source('Fx_Trait_Logger')
+			->type(Generator_Reflector::TYPE_TRAIT)
+			->inherit(TRUE)
+			->render();
+
+		$params = $type->params();
+
+		// Properties shouldn't be inherited, as they can't be re-declared
+		$this->assertCount(1, $params['properties']['static']);
+		$this->assertArrayHasKey('_logged', $params['properties']['static']);
+
+		$this->assertCount(1, $params['methods']['static']);
+		$this->assertCount(3, $params['methods']['public']);
+		$this->assertArrayHasKey('count', $params['methods']['public']);
+		$this->assertSame('Fx_Trait_Logger', $params['methods']['public']['count']['class']);
+		$this->assertSame('Fx_Trait_Counter', $params['methods']['public']['count']['trait']);
+		$this->assertArrayHasKey('sort', $params['methods']['public']);
+		$this->assertSame('Fx_Trait_Logger', $params['methods']['public']['sort']['class']);
+		$this->assertSame('Fx_Trait_Sorter', $params['methods']['public']['sort']['trait']);
+
+		// Cloned traits with abstract methods shouldn't implement those methods
+		$type = new Generator_Type_Clone('Foo');
+		$type->source('Fx_Trait_Reporter')
+			->type(Generator_Reflector::TYPE_TRAIT)
+			->inherit(TRUE)
+			->render();
+
+		$params = $type->params();
+		$this->assertCount(0, $params['properties']);
+		$this->assertCount(2, $params['methods']['abstract']);
+		$this->assertCount(1, $params['methods']['public']);
+		$this->assertArrayHasKey('report', $params['methods']['abstract']);
+		$this->assertSame('Fx_Trait_Reporter', $params['methods']['abstract']['report']['class']);
+		$this->assertSame('Fx_Trait_Reporter', $params['methods']['abstract']['report']['trait']);
+		$this->assertArrayHasKey('select', $params['methods']['abstract']);
+		$this->assertSame('Fx_Trait_Reporter', $params['methods']['abstract']['select']['class']);
+		$this->assertSame('Fx_Trait_Selector', $params['methods']['abstract']['select']['trait']);
+		$this->assertArrayHasKey('sort', $params['methods']['public']);
+		$this->assertSame('Fx_Trait_Reporter', $params['methods']['public']['sort']['class']);
+		$this->assertSame('Fx_Trait_Sorter', $params['methods']['public']['sort']['trait']);
+
+		// Cloned traits should know if any trait method has been overridden
+		$type = new Generator_Type_Clone('Foo');
+		$type->source('Fx_Trait_Overrider')
+			->type(Generator_Reflector::TYPE_TRAIT)
+			->inherit(TRUE)
+			->render();
+
+		$params = $type->params();
+		$this->assertCount(2, $params['methods']['public']);
+		$this->assertCount(1, $params['methods']['abstract']);
+		$this->assertArrayHasKey('report', $params['methods']['public']);
+		$this->assertSame('Fx_Trait_Overrider', $params['methods']['public']['report']['class']);
+		$this->assertSame('Fx_Trait_Reporter', $params['methods']['public']['report']['trait']);
+		$this->assertFalse($params['methods']['public']['report']['inherited']);
+		$this->assertArrayHasKey('sort', $params['methods']['public']);
+		$this->assertSame('Fx_Trait_Overrider', $params['methods']['public']['sort']['class']);
+		$this->assertSame('Fx_Trait_Sorter', $params['methods']['public']['sort']['trait']);
+		$this->assertTrue($params['methods']['public']['sort']['inherited']);
+
+		// Cloned classes with traits can inherit methods but not properties
+		$type = new Generator_Type_Clone('Foo');
+		$type->source('Fx_ClassWithTraits')
+			->type(Generator_Reflector::TYPE_CLASS)
+			->inherit(TRUE)
+			->render();
+
+		$params = $type->params();
+		$this->assertArrayHasKey('traits', $params);
+		$this->assertCount(1, $params['traits']);
+		$this->assertContains('Fx_Trait_Logger', $params['traits']);
+
+		$this->assertCount(0, $params['properties']);
+		$this->assertCount(1, $params['methods']['static']);
+		$this->assertCount(3, $params['methods']['public']);
+
+		$type = new Generator_Type_Clone('Foo');
+		$type->source('Fx_AbstractClassWithTraits')
+			->type(Generator_Reflector::TYPE_CLASS)
+			->inherit(TRUE)
+			->render();
+
+		$params = $type->params();
+		$this->assertArrayHasKey('traits', $params);
+		$this->assertCount(1, $params['traits']);
+		$this->assertContains('Fx_Trait_Selector', $params['traits']);
+
+		$this->assertTrue($params['abstract']);
+		$this->assertCount(0, $params['properties']);
+		$this->assertCount(1, $params['methods']['abstract']);
+		$this->assertCount(1, $params['methods']['public']);
+
+		// Classes that extend parents that use traits have no knowledge of
+		// the parent's traits, and can re-declare any trait properties
+		$type = new Generator_Type_Clone('Foo');
+		$type->source('Fx_ClassChildWithTraits')
+			->type(Generator_Reflector::TYPE_CLASS)
+			->inherit(TRUE)
+			->render();
+
+		$params = $type->params();
+		$this->assertArrayHasKey('traits', $params);
+		$this->assertCount(0, $params['traits']);
+		$this->assertCount(3, $params['properties']);
+		$this->assertCount(1, $params['methods']['static']);
+		$this->assertCount(3, $params['methods']['public']);
 	}
 
 } // End Generator_Type_CloneTest
@@ -292,6 +479,8 @@ class TestCloneClassFour
 {
 	const CONSTANT_THREE = 3;
 	const CONSTANT_FOUR = 4;
+
+	public function method_seven() {}
 }
 
 // Test interfaces
