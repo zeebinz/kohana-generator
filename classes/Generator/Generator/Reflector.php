@@ -417,7 +417,7 @@ class Generator_Generator_Reflector
 	 *
 	 * @param   ReflectionMethod|ReflectionParameter  $member  The member to check
 	 * @param   ReflectionClass  $trait  The trait to begin searching
-	 * @return  string|boolean   The trait name or FALSE on no match
+	 * @return  mixed  The trait name, an info array or FALSE on no match
 	 */
 	public function get_declaring_trait($member, $trait)
 	{
