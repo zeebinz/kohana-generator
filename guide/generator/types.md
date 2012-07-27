@@ -17,7 +17,7 @@ All of the types are defined in classes/Generator/Type/*, and extend the base `G
 :	The absolute path to the resource can be set directly, but otherwise it will be guessed based on name, folder and module settings, which is what you usually want.
 
 **template($template)**
-:	The view template used by the generator must be stored in the views folder. The value is what you would normally use to load templates, e.g. 'generator/type_class' will load 'views/generator/type_class.php', wherever it can be found in the Cascading Filesystem. This means that it's very easy to swap the default templates with your own - just add them to the views folder in your application.
+:	The view template used by the generator must be stored in the views folder. The value is what you would normally use to load templates, e.g. 'generator/type/class' will load 'views/generator/type/class.php', wherever it can be found in the Cascading Filesystem. This means that it's very easy to swap the default templates with your own - just add them to the views folder in your application.
 
 **pretend()**
 :	When the pretend mode is set, no changes will be made to the filesystem, but the log will record what *would* have happened if the command had been run. This is very handy for previewing and debugging.
@@ -76,7 +76,7 @@ This is one of two special generators that don't use view templates. Instead, th
 	$generator
 		->name('index.md')
 		->folder('guide/generator')
-		->content(''Content of the index file)
+		->content('Content of the index file')
 		->create();
 
 Here the generator name is the actual filename, and the destination folder must be set explicitly. The `render()` method is overridden just to return whatever was set via `content()`. This type can be handy for generating content on the fly, but if you use it often that's probably a sign that it's time to make your own generator to handle this functionality.
@@ -112,10 +112,11 @@ Any generator type can be created by the Builder with `add_<type>()` method like
 Every public method that you define in the new type will become part of the generator's fluent interface, so it's usually important always to return the generator instance from them so that they can be chained.  A number of methods act as both getters and setters to keep the syntax simple. For example:
 
 	/**
-	 * Setter and getter for the module folder in which generator items will
-	 * be created.  This must be a valid folder under the current MODPATH.
+	 * Setter and getter for the module in which generator items will be created.
+	 * This must be either the name of a loaded module as defined in the bootstrap,
+	 * or a valid folder under the current MODPATH.
 	 *
-	 * @param   string  $module  The module folder name
+	 * @param   string  $module  The module name
 	 * @return  string|Generator_Type  The current module name or this instance
 	 */
 	public function module($module = NULL)
