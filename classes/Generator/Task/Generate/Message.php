@@ -49,6 +49,7 @@ class Generator_Task_Generate_Message extends Task_Generate
 		return Generator::build()
 			->add_message($options['name'])
 				->value($options['values'])
+				->template($options['template'])
 				->module($options['module'])
 				->pretend($options['pretend'])
 				->force($options['force'])
