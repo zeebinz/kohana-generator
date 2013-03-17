@@ -96,16 +96,6 @@ class Generator_Generator_Type_Fixture extends Generator_Type
 	}
 
 	/**
-	 * Finalizes parameters and renders the template.
-	 *
-	 * @return  string  The rendered output
-	 */
-	public function render()
-	{
-		return parent::render();
-	}
-
-	/**
 	 * Loads an existing fixture file based on the current fixture name,
 	 * parses the contents and stores the values in the current instance.
 	 *
