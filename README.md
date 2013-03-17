@@ -48,4 +48,4 @@ This module is unit tested using the [Unittest module](http://github.com/kohana/
 
 ## Requirements
 
-The module was built against Kohana version 3.3/develop, and requires Minion for running the tasks. Optional support for traits requires PHP >= 5.4.0.
+The module was built against Kohana version 3.3, and requires Minion for running the tasks. Optional support for traits requires PHP >= 5.4.0.
