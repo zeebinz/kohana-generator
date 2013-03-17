@@ -45,6 +45,12 @@ class Generator_Generator_Type
 	protected $_file;
 
 	/**
+	 * The base path in which the file should be created
+	 * @var string
+	 */
+	protected $_path;
+
+	/**
 	 * The base folder in which the file should be created
 	 * @var string
 	 */
@@ -102,7 +108,7 @@ class Generator_Generator_Type
 	 */
 	public function __construct($name = NULL, Generator_Builder $builder = NULL)
 	{
-		$this->_builder = $builder ?: NULL;
+		$this->set_builder($builder);
 		$this->name($name);
 	}
 
@@ -157,6 +163,37 @@ class Generator_Generator_Type
 	}
 
 	/**
+	 * Setter and getter for the absolute base path in which the generator items will
+	 * be created. If not set, either APPPATH or MODPATH will be used by default.
+	 *
+	 * @param   string  $path  The absolute base file path
+	 * @return  string|Generator_Type  The current base path or this instance
+	 * @throws  Generator_Exception  On missing base path
+	 */
+	public function path($path = NULL)
+	{
+		if ($path === NULL)
+		{
+			if ( ! $this->_path)
+				return $this->_module ? MODPATH : APPPATH;
+
+			if ($this->_verify AND ! file_exists($this->_path))
+				throw new Generator_Exception("Path ':path' does not exist", array(':path' => $this->_path));
+
+			return $this->_path;
+		}
+
+		if ($path AND substr($path, -1, 1) != DIRECTORY_SEPARATOR)
+		{
+			$path .= DIRECTORY_SEPARATOR;
+		}
+
+		$this->_path = $path;
+
+		return $this;
+	}
+
+	/**
 	 * Setter and getter for the base folder in which the generator items will
 	 * be created, e.g. 'classes', 'tests'.
 	 *
@@ -176,7 +213,7 @@ class Generator_Generator_Type
 	/**
 	 * Setter and getter for the module in which generator items will be created.
 	 * This must be either the name of a loaded module as defined in the bootstrap,
-	 * or a valid folder under the current MODPATH.
+	 * or a valid folder under the current MODPATH or defined custom base path.
 	 *
 	 * @param   string  $module  The module name
 	 * @return  string|Generator_Type  The current module name or this instance
@@ -289,12 +326,12 @@ class Generator_Generator_Type
 	}
 
 	/**
-	 * Sets the builder instance associated with this type.
+	 * Sets or removes the builder instance associated with this type.
 	 *
 	 * @param   Generator_Builder  $builder  A builder instance
 	 * @return  Generator_Type  This instance
 	 */
-	public function set_builder(Generator_Builder $builder)
+	public function set_builder(Generator_Builder $builder = NULL)
 	{
 		$this->_builder = $builder;
 		return $this;
@@ -370,7 +407,7 @@ class Generator_Generator_Type
 
 		// Determine the base path for the file
 		$path = $this->_module ? Generator::get_module_path($this->_module,
-			$this->_verify) : APPPATH;
+			$this->_verify, $this->path()) : $this->path();
 
 		// Get the file name, optionally converting it to a path
 		$name = $convert ? (str_replace('_', $ds, $this->_name)) : $this->_name;
@@ -470,13 +507,9 @@ class Generator_Generator_Type
 			}
 			else
 			{
+				// Create the parent directory
 				$this->log('create', $dir);
-
-				if ( ! $this->_pretend)
-				{
-					// Create the parent directory
-					$this->make_dir($dir);
-				}
+				$this->_pretend OR $this->make_dir($dir);
 			}
 		}
 
@@ -570,13 +603,9 @@ class Generator_Generator_Type
 		// Check the file
 		if ($this->item_exists($this->_file, FALSE))
 		{
+			// Delete the file
 			$this->log('remove', $this->_file);
-
-			if ( ! $this->_pretend)
-			{
-				// Delete the file
-				unlink($this->_file);
-			}
+			$this->_pretend OR unlink($this->_file);
 		}
 
 		// Check the parent directories
@@ -590,16 +619,10 @@ class Generator_Generator_Type
 					$this->log('not empty', $dir);
 					break;
 				}
-				else
-				{
-					$this->log('remove', $dir);
 
-					if ( ! $this->_pretend)
-					{
-						// Remove the directory
-						rmdir($dir);
-					}
-				}
+				// Remove the directory
+				$this->log('remove', $dir);
+				$this->_pretend OR rmdir($dir);
 			}
 		}
 
@@ -663,11 +686,10 @@ class Generator_Generator_Type
 
 		// Set the base path
 		$base = rtrim(($this->_module ? dirname(Generator::get_module_path(
-			$this->_module, $this->_verify)) : APPPATH), $ds);
+			$this->_module, $this->_verify, $this->path())) : $this->path()), $ds);
 
 		// Remove each leaf from the path
-		while (($path = substr($path, 0, strrpos($path, $ds)))
-			AND $path != $base)
+		while (($path = substr($path, 0, strrpos($path, $ds))) AND $path != $base)
 		{
 			// Add the sub-path to the list
 			array_unshift($tree, $path);

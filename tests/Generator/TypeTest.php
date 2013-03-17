@@ -1,17 +1,17 @@
 <?php defined('SYSPATH') OR die('No direct script access.');
 /**
  * Test case for Generator_Type.
- * 
- * @group      generator 
- * @group      generator.types 
  *
- * @package    Generator 
- * @category   Tests 
- * @author     Zeebee 
- * @copyright  (c) 2012 Zeebee 
- * @license    BSD revised 
+ * @group      generator
+ * @group      generator.types
+ *
+ * @package    Generator
+ * @category   Tests
+ * @author     Zeebee
+ * @copyright  (c) 2012 Zeebee
+ * @license    BSD revised
  */
-class Generator_TypeTest extends Unittest_TestCase 
+class Generator_TypeTest extends Unittest_TestCase
 {
 	/**
 	 * If created using the Builder, any calls to undefined methods will be
@@ -84,7 +84,7 @@ class Generator_TypeTest extends Unittest_TestCase
 	}
 
 	/**
-	 * Boolean setter methods should return the type instance, and should 
+	 * Boolean setter methods should return the type instance, and should
 	 * ignore NULL values.
 	 */
 	public function test_boolean_setters()
@@ -125,7 +125,7 @@ class Generator_TypeTest extends Unittest_TestCase
 		$params = array('author' => 'author');
 		$type = new Generator_Type_Tester();
 
-		$this->assertInstanceOf('Generator_Type', $type->params($params));		
+		$this->assertInstanceOf('Generator_Type', $type->params($params));
 		$this->assertSame($params, $type->params());
 
 		$this->assertInstanceOf('Generator_Type', $type->set('author', 'Anon'));
@@ -146,9 +146,24 @@ class Generator_TypeTest extends Unittest_TestCase
 
 		$this->assertInstanceOf('Generator_Type', $type->log('create', 'some_item'));
 		$this->assertSame(
-			array(array('status' => 'create', 'item' => 'some_item')), 
+			array(array('status' => 'create', 'item' => 'some_item')),
 			$type->log()
 		);
+	}
+
+	/**
+	 * If a non-existent base path is specified, an exception should be thrown
+	 * unless verify mode is set to FALSE.
+	 *
+	 * @expectedException Generator_Exception
+	 */
+	public function test_verifying_nonexistent_base_path_throws_exception()
+	{
+		$ds = DIRECTORY_SEPARATOR;
+		$type = new Generator_Type_Tester('Foo_Bar');
+		$type->verify(TRUE);
+		$type->path('some'.$ds.'path'.$ds);
+		$type->path();
 	}
 
 	/**
@@ -192,6 +207,32 @@ class Generator_TypeTest extends Unittest_TestCase
 	}
 
 	/**
+	 * We should be able to set the base path for destination files to be somewhere
+	 * outside of APPPATH or MODPATH.
+	 */
+	public function test_guess_filename_with_custom_base_path()
+	{
+		$ds = DIRECTORY_SEPARATOR;
+		$path = 'some'.$ds.'base'.$ds.'path'.$ds;
+
+		$type = new Generator_Type_Tester('Foo_Bar');
+		$this->assertSame(APPPATH, $type->path());
+
+		$type->path($path)->verify(FALSE)->folder('classes');
+		$this->assertSame($path, $type->path());
+
+		$expected = $path.'classes'.$ds.'Foo'.$ds.'Bar'.EXT;
+		$type->guess_filename();
+		$this->assertSame($expected, $type->file());
+
+		$module = 'amodule';
+		$type->module($module);
+		$expected = $path.$module.$ds.'classes'.$ds.'Foo'.$ds.'Bar'.EXT;
+		$type->guess_filename();
+		$this->assertSame($expected, $type->file());
+	}
+
+	/**
 	 * The default render method should return a rendered view template.
 	 */
 	public function test_render()
@@ -204,7 +245,7 @@ class Generator_TypeTest extends Unittest_TestCase
 
 	/**
 	 * When creating an item, we also need a list of all the directories that
-	 * the item will create, not including APPPATH or MODPATH.
+	 * the item will create, not including APPPATH or MODPATH or custom base path.
 	 */
 	public function test_get_dirs_from_filename()
 	{
@@ -227,6 +268,15 @@ class Generator_TypeTest extends Unittest_TestCase
 			MODPATH.'amodule',
 			MODPATH.'amodule'.$ds.'classes',
 			MODPATH.'amodule'.$ds.'classes'.$ds.'Foo'),
+			$type->get_item_dirs());
+
+		// With custom base path
+		$path = __DIR__.$ds;
+		$type->path($path)->guess_filename();
+		$this->assertSame(array(
+			$path.'amodule',
+			$path.'amodule'.$ds.'classes',
+			$path.'amodule'.$ds.'classes'.$ds.'Foo'),
 			$type->get_item_dirs());
 	}
 
@@ -292,6 +342,6 @@ class Generator_TypeTest extends Unittest_TestCase
 		$type->builder();
 	}
 
-} // End Generator_TypeTest 
+} // End Generator_TypeTest
 
 class Generator_Type_Tester extends Generator_Type {}

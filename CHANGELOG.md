@@ -1,6 +1,14 @@
 Generator for Kohana - Changelog
 ================================
 
+Version 1.0
+-----------
+
+- Added composer.json for Packagist support.
+- Various tweaks and code cleanup for Kohana 3.3.0 release.
+- Added option for generators to define custom base paths for destination files
+  outside of the default APPPATH or MODPATH.
+
 Version 0.8
 -----------
 

@@ -9,7 +9,7 @@ echo '/**', PHP_EOL;
 // Short description
 if (isset($short_description)) foreach ( (array) $short_description as $line)
 {
-	echo $tabs.' * ', $line, PHP_EOL;
+	echo $tabs, ' * ', $line, PHP_EOL;
 }
 
 // Long description
@@ -31,7 +31,7 @@ if (isset($short_description) OR isset($long_description))
 // Tags
 if (isset($tags)) foreach ( (array) $tags as $tag)
 {
-	echo $tabs, ' * ', $tag.PHP_EOL;
+	echo $tabs, ' * ', $tag, PHP_EOL;
 }
 
 // Close doccomment

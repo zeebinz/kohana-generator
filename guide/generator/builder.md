@@ -6,7 +6,7 @@ This is where the Generator Builder comes in handy.  Its main purpose is to prov
 
 ## Generator Types
 
-A generator type represents a new resource on your file system: it knows what kind of file it should be, where it belongs, what template is being used to create it, and the values that the template needs for rendering, etc. Types have methods that allow easy configuration of the file content, as well as controlling the behaviour of the generator when it's run. All generator objects are instances of some `Generator_Type` class.
+A generator type represents a new resource in your filesystem: it knows what kind of file it should be, where it belongs, what template is being used to create it, and the values that the template needs for rendering, etc. Types have methods that allow easy configuration of the file content, as well as controlling the behaviour of the generator when it's run. All generator objects are instances of some `Generator_Type` class.
 
 Generators can be configured manually before their resources are finally added to your project with the `create()` command:
 
@@ -78,7 +78,7 @@ Something else worth noting at this point: whenever a method is called on the Bu
 
 ## Setting Global Options and Defaults
 
-So far, we've configured each generator individually, but often there are common settings that would be more helpful to apply to all of the generators.  For example, if the resources need to be created in the same module, or be run in *pretend* mode where no changes should be made to the file system. The Builder's `with_*` methods allow this:
+So far, we've configured each generator individually, but often there are common settings that would be more helpful to apply to all of the generators.  For example, if the resources need to be created in the same module, or be run in *pretend* mode where no changes should be made to the filesystem. The Builder's `with_*` methods allow this:
 
 	$builder = Generator::build()
 		->add_model('Kohana_Model_Foo')

@@ -1,8 +1,8 @@
 # Generator Types
 
-As explained in [Using the Builder](builder), all generators are instances of some `Generator_Type` class.  Each represents a single resource on the file system, and in most cases the file content is created from vanilla view templates.  This keeps things simple and familiar, since it uses the same kind of MVC pattern as your web application.  But it also means that generators are not purely dynamic code generators, where all of the file content is created on the fly, for example like [Zend's CodeGenerator](http://framework.zend.com/manual/en/zend.codegenerator.introduction.html) and other great tools like it.
+As explained in [Using the Builder](builder), all generators are instances of some `Generator_Type` class.  Each represents a single resource in the filesystem, and in most cases the file content is created from vanilla view templates.  This keeps things simple and familiar, since it uses the same kind of MVC pattern as your web application.  But it also means that generators are not purely dynamic code generators, where all of the file content is created on the fly, for example like [Zend's CodeGenerator](http://framework.zend.com/manual/en/zend.codegenerator.introduction.html) and other great tools like it.
 
-Although you can create generators that mimic this behaviour quite easily, the bundled generators take a simpler approach with a more straightforward syntax.  The types also include methods for creating and deleting resources, and ways to change the behaviour of these commands when executed.  So most types have combined responsibilities for handling configuration, processing view templates and working with the file system.
+Although you can create generators that mimic this behaviour quite easily, the bundled generators take a simpler approach with a more straightforward syntax.  The types also include methods for creating and deleting resources, and ways to change the behaviour of these commands when executed.  So most types have combined responsibilities for handling configuration, processing view templates and working with the filesystem.
 
 The advantage of this approach is that it's easy to make controllers for the generators, such as your web application or Minion tasks, and the syntax stays terse and simple to remember. It also makes it very easy to configure the output just the way you want it by replacing the template files with your own.
 
@@ -16,11 +16,14 @@ All of the types are defined in classes/Generator/Type/*, and extend the base `G
 **file($path)**
 :	The absolute path to the resource can be set directly, but otherwise it will be guessed based on name, folder and module settings, which is what you usually want.
 
+**path($basepath)**
+:	You will normally be working within either the APPPATH or MODPATH contexts, but sometimes you may want to set an alternative absolute base path outside of these defaults. This option should obviously be used with caution, especially if user input is involved.
+
 **template($template)**
-:	The view template used by the generator must be stored in the views folder. The value is what you would normally use to load templates, e.g. 'generator/type_class' will load 'views/generator/type_class.php', wherever it can be found in the Cascading File System. This means that it's very easy to swap the default templates with your own - just add them to the views folder in your application.
+:	The view template used by the generator must be stored in the views folder. The value is what you would normally use to load templates, e.g. 'generator/type/class' will load 'views/generator/type/class.php', wherever it can be found in the Cascading Filesystem. This means that it's very easy to swap the default templates with your own - just add them to the views folder in your application.
 
 **pretend()**
-:	When the pretend mode is set, no changes will be made to the file system, but the log will record what *would* have happened if the command had been run. This is very handy for previewing and debugging.
+:	When the pretend mode is set, no changes will be made to the filesystem, but the log will record what *would* have happened if the command had been run. This is very handy for previewing and debugging.
 
 **render()**
 :	This method must be implemented by each type, and `Generator_Type` by default returns a rendered view from the specified template, with parameters configured by methods like `set($key, $value)`.  But any children of `Generator_Type` can override this method quite easily.  All that needs to be returned is a string that represents the file contents, so pure code generation without using view templates is also possible. This is in fact how `Generator_Type_File` works (see below).
@@ -29,7 +32,7 @@ All of the types are defined in classes/Generator/Type/*, and extend the base `G
 :	By design, the actions taken by the generator are recorded in a simple log, each entry consisting of an array with `status` and `item` keys. Most controllers will want to process the log returned by this method in some way to verify the result of running a generator.
 
 **create()**, **remove()**
-: When these actions are called, the log will be populated with a record of the actions taken, including for all of the resource's sub-directories as well as the file itself.  This log should be identical in pretend mode - just without any actual effects on the file system. Nested directories will be created automatically, and when the resource is removed any empty ones should be deleted as well.
+: When these actions are called, the log will be populated with a record of the actions taken, including for all of the resource's sub-directories as well as the file itself.  This log should be identical in pretend mode - just without any actual effects on the filesystem. Nested directories will be created automatically, and when the resource is removed any empty ones should be deleted as well.
 
 There's a lot more in the `Generator_Type` class, including methods for handling default parameters, guessing filenames, processing sub-directories, and so on. It's well worth getting to know this class well if you plan to make your own generator types.
 
@@ -76,7 +79,7 @@ This is one of two special generators that don't use view templates. Instead, th
 	$generator
 		->name('index.md')
 		->folder('guide/generator')
-		->content(''Content of the index file)
+		->content('Content of the index file')
 		->create();
 
 Here the generator name is the actual filename, and the destination folder must be set explicitly. The `render()` method is overridden just to return whatever was set via `content()`. This type can be handy for generating content on the fly, but if you use it often that's probably a sign that it's time to make your own generator to handle this functionality.
@@ -112,10 +115,11 @@ Any generator type can be created by the Builder with `add_<type>()` method like
 Every public method that you define in the new type will become part of the generator's fluent interface, so it's usually important always to return the generator instance from them so that they can be chained.  A number of methods act as both getters and setters to keep the syntax simple. For example:
 
 	/**
-	 * Setter and getter for the module folder in which generator items will
-	 * be created.  This must be a valid folder under the current MODPATH.
+	 * Setter and getter for the module in which generator items will be created.
+	 * This must be either the name of a loaded module as defined in the bootstrap,
+	 * or a valid folder under the current MODPATH.
 	 *
-	 * @param   string  $module  The module folder name
+	 * @param   string  $module  The module name
 	 * @return  string|Generator_Type  The current module name or this instance
 	 */
 	public function module($module = NULL)

@@ -73,16 +73,10 @@ class Generator_Generator_Type_Directory extends Generator_Type
 				$this->log('not empty', $child);
 				return $this;
 			}
-			else
-			{
-				$this->log('remove', $child);
 
-				if ( ! $this->_pretend)
-				{
-					// Remove the directory
-					rmdir($child);
-				}
-			}
+			// Remove the directory
+			$this->log('remove', $child);
+			$this->_pretend OR rmdir($child);
 		}
 
 		// Check the parent directories
@@ -96,16 +90,10 @@ class Generator_Generator_Type_Directory extends Generator_Type
 					$this->log('not empty', $parent);
 					break;
 				}
-				else
-				{
-					$this->log('remove', $parent);
 
-					if ( ! $this->_pretend)
-					{
-						// Remove the directory
-						rmdir($parent);
-					}
-				}
+				// Remove the directory
+				$this->log('remove', $parent);
+				$this->_pretend OR rmdir($parent);
 			}
 		}
 

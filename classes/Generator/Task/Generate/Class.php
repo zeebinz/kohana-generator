@@ -71,7 +71,6 @@ class Generator_Task_Generate_Class extends Task_Generate
 				->extend($options['name'])
 				->template('generator/type/stub')
 				->set('source', $options['name']);
-
 		}
 
 		if ( ! $options['no-test'])
