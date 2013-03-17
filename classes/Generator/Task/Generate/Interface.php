@@ -52,6 +52,7 @@ class Generator_Task_Generate_Interface extends Task_Generate_Class
 		{
 			$builder = Generator::build()
 				->add_interface($options['name'])
+					->template($options['template'])
 					->extend($options['extend'])
 				->builder();
 		}
@@ -65,7 +66,6 @@ class Generator_Task_Generate_Interface extends Task_Generate_Class
 		}
 
 		return $builder
-			->with_template($options['template'])
 			->with_module($options['module'])
 			->with_pretend($options['pretend'])
 			->with_force($options['force'])
