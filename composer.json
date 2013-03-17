@@ -1,0 +1,12 @@
+{
+	"name"        :"zeebee/kohana-generator",
+	"type"        :"kohana-module",
+	"description" :"Kohana module for generating application and module resources, includes a Builder class and Minion tasks.",
+	"keywords"    :["kohana", "generator", "minion", "kohana module", "code generation"],
+	"homepage"    :"https://github.com/zeebinz/kohana-generator",
+	"license"     :"BSD revised",
+	"require"     :{
+		"php": ">=5.4.0",
+		"composer/installers": "*"
+	}
+}
