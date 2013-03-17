@@ -49,6 +49,7 @@ class Generator_Task_Generate_Config extends Task_Generate
 		return Generator::build()
 			->add_config($options['name'])
 				->value($options['values'])
+				->template($options['template'])
 				->module($options['module'])
 				->pretend($options['pretend'])
 				->force($options['force'])
