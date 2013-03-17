@@ -439,7 +439,7 @@ class Generator_ReflectorTest extends Unittest_TestCase
 		// We'll use the fixtures dummies for these tests
 		require_once dirname(dirname(__FILE__)).'/fixtures/_test_traits.php';
 
-		$refl = new TestReflector('Fx_Trait_Counter', Generator_Reflector::TYPE_TRAIT);		$refl = new TestReflector('Fx_Trait_Counter', Generator_Reflector::TYPE_TRAIT);
+		$refl = new TestReflector('Fx_Trait_Counter', Generator_Reflector::TYPE_TRAIT);
 
 		// Traits are always abstract
 		$this->assertTrue($refl->is_trait());

@@ -1,17 +1,17 @@
 <?php defined('SYSPATH') OR die('No direct script access.');
 /**
  * Test case for Generator_Type.
- * 
- * @group      generator 
- * @group      generator.types 
  *
- * @package    Generator 
- * @category   Tests 
- * @author     Zeebee 
- * @copyright  (c) 2012 Zeebee 
- * @license    BSD revised 
+ * @group      generator
+ * @group      generator.types
+ *
+ * @package    Generator
+ * @category   Tests
+ * @author     Zeebee
+ * @copyright  (c) 2012 Zeebee
+ * @license    BSD revised
  */
-class Generator_TypeTest extends Unittest_TestCase 
+class Generator_TypeTest extends Unittest_TestCase
 {
 	/**
 	 * If created using the Builder, any calls to undefined methods will be
@@ -84,7 +84,7 @@ class Generator_TypeTest extends Unittest_TestCase
 	}
 
 	/**
-	 * Boolean setter methods should return the type instance, and should 
+	 * Boolean setter methods should return the type instance, and should
 	 * ignore NULL values.
 	 */
 	public function test_boolean_setters()
@@ -125,7 +125,7 @@ class Generator_TypeTest extends Unittest_TestCase
 		$params = array('author' => 'author');
 		$type = new Generator_Type_Tester();
 
-		$this->assertInstanceOf('Generator_Type', $type->params($params));		
+		$this->assertInstanceOf('Generator_Type', $type->params($params));
 		$this->assertSame($params, $type->params());
 
 		$this->assertInstanceOf('Generator_Type', $type->set('author', 'Anon'));
@@ -146,7 +146,7 @@ class Generator_TypeTest extends Unittest_TestCase
 
 		$this->assertInstanceOf('Generator_Type', $type->log('create', 'some_item'));
 		$this->assertSame(
-			array(array('status' => 'create', 'item' => 'some_item')), 
+			array(array('status' => 'create', 'item' => 'some_item')),
 			$type->log()
 		);
 	}
@@ -292,6 +292,6 @@ class Generator_TypeTest extends Unittest_TestCase
 		$type->builder();
 	}
 
-} // End Generator_TypeTest 
+} // End Generator_TypeTest
 
 class Generator_Type_Tester extends Generator_Type {}
