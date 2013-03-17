@@ -52,7 +52,7 @@ Nice and simple. There are also methods for getting parsable string representati
 	$reflection = new Generator_Reflector;
 	$reflection
 		->source('SplSubject')
-		->type(GENERATOR_REFLECTOR::TYPE_INTERFACE)
+		->type(Generator_Reflector::TYPE_INTERFACE)
 		->analyze();
 	
 	foreach ($reflection->get_methods() as $method => $m)
