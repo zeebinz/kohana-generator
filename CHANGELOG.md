@@ -1,6 +1,9 @@
 Generator for Kohana - Changelog
 ================================
 
+- Added option for generators to define custom base paths for destination files
+  outside of the default APPPATH or MODPATH.
+
 Version 0.8
 -----------
 

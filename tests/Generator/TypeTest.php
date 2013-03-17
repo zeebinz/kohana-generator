@@ -152,6 +152,21 @@ class Generator_TypeTest extends Unittest_TestCase
 	}
 
 	/**
+	 * If a non-existent base path is specified, an exception should be thrown
+	 * unless verify mode is set to FALSE.
+	 *
+	 * @expectedException Generator_Exception
+	 */
+	public function test_verifying_nonexistent_base_path_throws_exception()
+	{
+		$ds = DIRECTORY_SEPARATOR;
+		$type = new Generator_Type_Tester('Foo_Bar');
+		$type->verify(TRUE);
+		$type->path('some'.$ds.'path'.$ds);
+		$type->path();
+	}
+
+	/**
 	 * If a non-existent module is specified, an exception should be thrown
 	 * unless verify mode is set to FALSE.
 	 *
@@ -192,6 +207,32 @@ class Generator_TypeTest extends Unittest_TestCase
 	}
 
 	/**
+	 * We should be able to set the base path for destination files to be somewhere
+	 * outside of APPPATH or MODPATH.
+	 */
+	public function test_guess_filename_with_custom_base_path()
+	{
+		$ds = DIRECTORY_SEPARATOR;
+		$path = 'some'.$ds.'base'.$ds.'path'.$ds;
+
+		$type = new Generator_Type_Tester('Foo_Bar');
+		$this->assertSame(APPPATH, $type->path());
+
+		$type->path($path)->verify(FALSE)->folder('classes');
+		$this->assertSame($path, $type->path());
+
+		$expected = $path.'classes'.$ds.'Foo'.$ds.'Bar'.EXT;
+		$type->guess_filename();
+		$this->assertSame($expected, $type->file());
+
+		$module = 'amodule';
+		$type->module($module);
+		$expected = $path.$module.$ds.'classes'.$ds.'Foo'.$ds.'Bar'.EXT;
+		$type->guess_filename();
+		$this->assertSame($expected, $type->file());
+	}
+
+	/**
 	 * The default render method should return a rendered view template.
 	 */
 	public function test_render()
@@ -204,7 +245,7 @@ class Generator_TypeTest extends Unittest_TestCase
 
 	/**
 	 * When creating an item, we also need a list of all the directories that
-	 * the item will create, not including APPPATH or MODPATH.
+	 * the item will create, not including APPPATH or MODPATH or custom base path.
 	 */
 	public function test_get_dirs_from_filename()
 	{
@@ -227,6 +268,15 @@ class Generator_TypeTest extends Unittest_TestCase
 			MODPATH.'amodule',
 			MODPATH.'amodule'.$ds.'classes',
 			MODPATH.'amodule'.$ds.'classes'.$ds.'Foo'),
+			$type->get_item_dirs());
+
+		// With custom base path
+		$path = __DIR__.$ds;
+		$type->path($path)->guess_filename();
+		$this->assertSame(array(
+			$path.'amodule',
+			$path.'amodule'.$ds.'classes',
+			$path.'amodule'.$ds.'classes'.$ds.'Foo'),
 			$type->get_item_dirs());
 	}
 

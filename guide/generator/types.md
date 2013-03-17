@@ -16,6 +16,9 @@ All of the types are defined in classes/Generator/Type/*, and extend the base `G
 **file($path)**
 :	The absolute path to the resource can be set directly, but otherwise it will be guessed based on name, folder and module settings, which is what you usually want.
 
+**path($basepath)**
+:	You will normally be working within either the APPPATH or MODPATH contexts, but sometimes you may want to set an alternative absolute base path outside of these defaults. This option should obviously be used with caution, especially if user input is involved.
+
 **template($template)**
 :	The view template used by the generator must be stored in the views folder. The value is what you would normally use to load templates, e.g. 'generator/type/class' will load 'views/generator/type/class.php', wherever it can be found in the Cascading Filesystem. This means that it's very easy to swap the default templates with your own - just add them to the views folder in your application.
 

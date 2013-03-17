@@ -61,6 +61,12 @@ class Generator_Generator_Builder
 	protected $_defaults = array();
 
 	/**
+	 * The absolute base path under which each item should be created
+	 * @var string
+	 */
+	protected $_path;
+
+	/**
 	 * The module folder under which each item should be created
 	 * @var string
 	 */
@@ -83,15 +89,16 @@ class Generator_Generator_Builder
 	}
 
 	/**
-	 * Returns full paths for loaded module names (or folder names under MODPATH),
-	 * optionally with a check for the path's existence.
+	 * Returns full paths for loaded module names (or folder names under MODPATH or
+	 * defined custom base path), optionally with a check for the path's existence.
 	 *
 	 * @param   string   $module  The module name or folder
 	 * @param   boolean  $verify  Should the existence of the path be checked?
+	 * @param   boolean  $base    The custom base path to check
 	 * @return  string   The full path to the module
 	 * @throws  Generator_Exception  On missing module path
 	 */
-	public static function get_module_path($module, $verify = TRUE)
+	public static function get_module_path($module, $verify = TRUE, $base = NULL)
 	{
 		$modules = Kohana::modules();
 
@@ -99,8 +106,9 @@ class Generator_Generator_Builder
 		if (isset($modules[$module]))
 			return $modules[$module];
 
-		// Search under MODPATH for the folder instead
-		$path = MODPATH.$module.DIRECTORY_SEPARATOR;
+		// Search for the folder instead
+		$path =  $base ?: MODPATH;
+		$path .= $module.DIRECTORY_SEPARATOR;
 
 		if ($verify AND ! file_exists($path))
 		{
@@ -232,6 +240,21 @@ class Generator_Generator_Builder
 	public function with_verify($verify = TRUE)
 	{
 		$this->_verify = (bool) $verify;
+
+		$this->_is_prepared = FALSE;
+		return $this;
+	}
+
+	/**
+	 * Sets the absolute base path in which each generator item is to be created,
+	 * otherwise defaults to either APPPATH or MODPATH.
+	 *
+	 * @param   string  $path  The absolute base path
+	 * @return  Generator_Builder  This instance
+	 */
+	public function with_path($path)
+	{
+		$this->_path = (string) $path;
 
 		$this->_is_prepared = FALSE;
 		return $this;
@@ -409,6 +432,9 @@ class Generator_Generator_Builder
 
 			// Set the verify mode for the generator
 			$generator->verify($this->_verify);
+
+			// Set the custom base path for the generator, if any
+			$generator->path($this->_path);
 
 			if ( ! $generator->file())
 			{

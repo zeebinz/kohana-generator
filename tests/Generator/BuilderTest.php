@@ -117,7 +117,8 @@ class Generator_BuilderTest extends Unittest_TestCase
 
 	/**
 	 * Module names should be converted to valid module paths. Names must be
-	 * defined in the bootstrap, or should be folders under MODPATH.
+	 * defined in the bootstrap, or should be folders under MODPATH or any
+	 * custom base path.
 	 */
 	public function test_converts_module_names_to_paths()
 	{
@@ -131,6 +132,11 @@ class Generator_BuilderTest extends Unittest_TestCase
 		// Verification can be disabled
 		$path = MODPATH.'nonexistantmod'.$ds;
 		$this->assertSame($path, Generator::get_module_path('nonexistantmod', FALSE));
+
+		// Custom base paths can be specified
+		$base = 'some'.$ds.'path'.$ds;
+		$path = $base.'nonexistantmod'.$ds;
+		$this->assertSame($path, Generator::get_module_path('nonexistantmod', FALSE, $base));
 	}
 
 	/**
@@ -212,6 +218,12 @@ class Generator_BuilderTest extends Unittest_TestCase
 		$this->assertSame('foo.bar', $generators[0]->template());
 
 		$this->assertContains('Tester', $generators[0]->defaults());
+
+		// With custom base path
+		$path = 'somebasepath'.DIRECTORY_SEPARATOR;
+		$builder->with_path($path)->prepare();
+		$this->assertAttributeSame($path, '_path', $builder);
+		$this->assertSame($path, $generators[0]->path());
 	}
 
 	/**
