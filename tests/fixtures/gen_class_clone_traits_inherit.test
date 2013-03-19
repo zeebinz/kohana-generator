@@ -29,7 +29,7 @@ class Foo
 	 */
 	public static function get_logged()
 	{
-		parent::get_logged();
+		return parent::get_logged();
 	}
 
 	/**
@@ -42,7 +42,7 @@ class Foo
 	 */
 	public function log($text)
 	{
-		parent::log($text);
+		return parent::log($text);
 	}
 
 	/**
@@ -55,7 +55,7 @@ class Foo
 	 */
 	public function count($input)
 	{
-		parent::count($input);
+		return parent::count($input);
 	}
 
 	/**
@@ -68,7 +68,7 @@ class Foo
 	 */
 	public function sort($reverse = FALSE)
 	{
-		parent::sort($reverse);
+		return parent::sort($reverse);
 	}
 
 } // End Foo

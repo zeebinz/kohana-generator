@@ -1,6 +1,8 @@
 Generator for Kohana - Changelog
 ================================
 
+- Inherited methods now return the values of invoked parent methods by default
+  unless the return value is known to be void.
 - Added support for absolute paths to view template files.
 
 Version 1.0

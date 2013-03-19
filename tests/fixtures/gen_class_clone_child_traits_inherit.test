@@ -31,7 +31,7 @@ class Foo extends Fx_ClassWithTraits
 	 */
 	public static function get_logged()
 	{
-		parent::get_logged();
+		return parent::get_logged();
 	}
 
 	/**
@@ -49,7 +49,7 @@ class Foo extends Fx_ClassWithTraits
 	 */
 	public function log($text)
 	{
-		parent::log($text);
+		return parent::log($text);
 	}
 
 	/**
@@ -60,7 +60,7 @@ class Foo extends Fx_ClassWithTraits
 	 */
 	public function count($input)
 	{
-		parent::count($input);
+		return parent::count($input);
 	}
 
 	/**
@@ -71,7 +71,7 @@ class Foo extends Fx_ClassWithTraits
 	 */
 	public function sort($reverse = FALSE)
 	{
-		parent::sort($reverse);
+		return parent::sort($reverse);
 	}
 
 	/**
