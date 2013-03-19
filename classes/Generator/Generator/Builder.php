@@ -79,6 +79,12 @@ class Generator_Generator_Builder
 	protected $_template;
 
 	/**
+	 * Overrides the views template directory used by each generator
+	 * @var string
+	 */
+	protected $_template_dir;
+
+	/**
 	 * The main factory method for returning new builder instances.
 	 *
 	 * @return  Generator_Builder
@@ -292,6 +298,21 @@ class Generator_Generator_Builder
 	}
 
 	/**
+	 * Sets the absolute path to the templates directory that will be checked by
+	 * by each generator before the CFS is searched.
+	 *
+	 * @param   string  $path  The templates directory
+	 * @return  Generator_Builder  This instance
+	 */
+	public function with_template_dir($path)
+	{
+		$this->_template_dir = (string) $path;
+
+		$this->_is_prepared = FALSE;
+		return $this;
+	}
+
+	/**
 	 * Returns the list of generators added by the builder, each representing
 	 * an item to be created in the filesystem.
 	 *
@@ -446,6 +467,7 @@ class Generator_Generator_Builder
 			$generator->defaults(array_merge($generator->defaults(), $this->_defaults));
 
 			// Set the other global options
+			$generator->template_dir($this->_template_dir);
 			$generator->template($this->_template);
 			$generator->pretend($this->_pretend);
 			$generator->force($this->_force);

@@ -1,6 +1,8 @@
 Generator for Kohana - Changelog
 ================================
 
+- Added support for absolute paths to view template files.
+
 Version 1.0
 -----------
 

@@ -64,9 +64,16 @@ class Generator_Generator_Type
 
 	/**
 	 * The view template file used by the generator
-	 * @var bool
+	 * @var string
 	 */
 	protected $_template;
+
+	/**
+	 * The absolute path to a template directory that should be checked
+	 * first for templates before the CFS is searched.
+	 * @var string
+	 */
+	protected $_template_dir;
 
 	/**
 	 * Should the security string be added to the rendered template?
@@ -157,6 +164,26 @@ class Generator_Generator_Type
 		if ($template !== '')
 		{
 			$this->_template = $template;
+		}
+
+		return $this;
+	}
+
+	/**
+	 * Setter and getter for an absolute path to any templates directory that
+	 * should be checked first for templates before the CFS is searched.
+	 *
+	 * @param   string  $path  The absolute path to the templates directory
+	 * @return  string|Generator_Type  The templates path or this instance
+	 */
+	public function template_dir($path = NULL)
+	{
+		if ($path === NULL)
+			return $this->_template_dir;
+
+		if ($path !== '')
+		{
+			$this->_template_dir = $path;
 		}
 
 		return $this;
@@ -453,7 +480,9 @@ class Generator_Generator_Type
 	public function render_template()
 	{
 		// Create the view with initial parameters
-		$view = View::factory($this->_template)->set('name', $this->_name);
+		$view = Generator_View::factory()
+			->set_filename($this->_template, $this->_template_dir)
+			->set('name', $this->_name);
 
 		// Merge the default parameters with any set manually
 		$params = array_merge($this->_defaults, $this->_params);
