@@ -328,6 +328,9 @@ class Generator_Task_Generate_Fixture extends Task_Generate
 				// Merge the new builder into the base
 				$builder->merge($this->get_builder($options));
 			}
+
+			// Force replacement of the files
+			$builder->with_force(TRUE);
 		}
 
 		// Run the task

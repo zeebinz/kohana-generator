@@ -1,6 +1,8 @@
 Generator for Kohana - Changelog
 ================================
 
+- When using the `generate:fixture --refresh` option, matching files will now
+  be replaced by default without needing the `--force` option.
 - Inherited methods now return the values of invoked parent methods by default
   unless the return value is known to be void.
 - Added support for absolute paths to view template files.
