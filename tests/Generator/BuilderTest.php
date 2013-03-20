@@ -201,28 +201,31 @@ class Generator_BuilderTest extends Unittest_TestCase
 			->with_verify(FALSE);
 
 		$generators = $builder->generators();
+		$globals = $builder->globals();
 
-		$this->assertAttributeSame(TRUE, '_pretend', $builder);
+		$this->assertTrue($globals['pretend']);
 		$this->assertAttributeSame(TRUE, '_pretend', $generators[0]);
 
-		$this->assertAttributeSame(TRUE, '_force', $builder);
+		$this->assertTrue($globals['force']);
 		$this->assertAttributeSame(TRUE, '_force', $generators[0]);
 
-		$this->assertAttributeSame(FALSE, '_verify', $builder);
+		$this->assertFalse($globals['verify']);
 		$this->assertAttributeSame(FALSE, '_verify', $generators[0]);
 
-		$this->assertAttributeSame('amodule', '_module', $builder);
+		$this->assertSame('amodule', $globals['module']);
 		$this->assertSame('amodule', $generators[0]->module());
 
-		$this->assertAttributeSame('foo.bar', '_template', $builder);
+		$this->assertSame('foo.bar', $globals['template']);
 		$this->assertSame('foo.bar', $generators[0]->template());
 
+		$this->assertContains('Tester', $globals['defaults']);
 		$this->assertContains('Tester', $generators[0]->defaults());
 
 		// With custom base path
 		$path = 'somebasepath'.DIRECTORY_SEPARATOR;
 		$builder->with_path($path)->prepare();
-		$this->assertAttributeSame($path, '_path', $builder);
+		$globals = $builder->globals();
+		$this->assertSame($path, $globals['path']);
 		$this->assertSame($path, $generators[0]->path());
 	}
 

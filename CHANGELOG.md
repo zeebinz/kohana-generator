@@ -1,6 +1,8 @@
 Generator for Kohana - Changelog
 ================================
 
+- Added Generator_Builder::globals() method for getting and setting global values
+  to be set on all stored generators in one call.
 - When using the `generate:fixture --refresh` option, matching files will now
   be replaced by default without needing the `--force` option.
 - Inherited methods now return the values of invoked parent methods by default
