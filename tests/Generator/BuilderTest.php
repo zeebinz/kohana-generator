@@ -301,4 +301,75 @@ class Generator_BuilderTest extends Unittest_TestCase
 		$this->assertSame($builder_a, $generators[1]->builder());
 	}
 
+	/**
+	 * Paths produced by Debug::path() and equivalent should be reversible.
+	 */
+	public function test_debug_paths_can_be_expanded()
+	{
+		$path = 'some/file/path.php';
+
+		$this->assertSame(APPPATH.$path, Generator::expand_path('APPPATH/'.$path));
+		$this->assertSame(MODPATH.$path, Generator::expand_path('MODPATH/'.$path));
+		$this->assertSame(SYSPATH.$path, Generator::expand_path('SYSPATH/'.$path));
+		$this->assertSame(DOCROOT.$path, Generator::expand_path('DOCROOT/'.$path));
+	}
+
+	/**
+	 * We should be able to load configuration values from any source, including
+	 * from absolute file paths, with or without array paths specified.
+	 */
+	public function test_config_can_be_loaded_from_different_sources()
+	{
+		$expected = array('author' => 'Author', 'copyright' => '(c) 2012 Author', 'license' => 'License info');
+
+		// From an absolute file path
+		$file = dirname(dirname(dirname(__FILE__))).'/config/testconfig/generator.php';
+		$config = Generator::get_config($file, 'defaults.class');
+		$this->assertEquals($expected, $config);
+
+		// We can also get the whole config as an array
+		$config = Generator::get_config($file);
+		$this->assertArrayHasKey('defaults', $config);
+		$this->assertArrayHasKey('class', $config['defaults']);
+		$this->assertArrayHasKey('guide', $config['defaults']);
+
+		// From searching the CFS
+		$config = Generator::get_config('testconfig/generator', 'defaults.class');
+		$this->assertEquals($expected, $config);
+
+		$config = Generator::get_config('testconfig/generator');
+		$this->assertArrayHasKey('defaults', $config);
+		$this->assertArrayHasKey('class', $config['defaults']);
+		$this->assertArrayHasKey('guide', $config['defaults']);
+	}
+
+	/**
+	 * We should be able to load message values from any source, including from
+	 * absolute file paths, with or without array paths specified.
+	 */
+	public function test_messages_can_be_loaded_from_different_sources()
+	{
+		$expected = array('three' => 'second message', 'four' => array('five' => 'third message'));
+
+		// From an absolute file path
+		$file = dirname(dirname(dirname(__FILE__))).'/messages/testmsgs/generator.php';
+		$msg = Generator::get_message($file, 'two');
+		$this->assertEquals($expected, $msg);
+
+		// We can also get the whole config as an array
+		$msg = Generator::get_message($file);
+		$this->assertArrayHasKey('one', $msg);
+		$this->assertArrayHasKey('two', $msg);
+		$this->assertArrayHasKey('three', $msg['two']);
+
+		// From searching the CFS
+		$msg = Generator::get_message('testmsgs/generator', 'two');
+		$this->assertEquals($expected, $msg);
+
+		$msg = Generator::get_message('testmsgs/generator');
+		$this->assertArrayHasKey('one', $msg);
+		$this->assertArrayHasKey('two', $msg);
+		$this->assertArrayHasKey('three', $msg['two']);
+	}
+
 } // End Generator_BuilderTest

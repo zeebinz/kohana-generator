@@ -84,6 +84,74 @@ class Generator_Generator_Builder
 	}
 
 	/**
+	 * Convenience method for loading configuration values, optionally from
+	 * a given config group or an absolute file path.
+	 *
+	 * @param   string  $path    Array path to the config values
+	 * @param   string  $source  The config group or file to load
+	 * @return  mixed  The config values or NULL
+	 */
+	public static function get_config($source = NULL, $path = NULL)
+	{
+		if ($source !== NULL AND ($file = Generator::expand_path($source)) AND is_file($file))
+		{
+			// Return the values from the file
+			$config = Kohana::load($file);
+			if ($path)
+				return Arr::path($config, $path);
+
+			return $config;
+		}
+
+		// Otherwise load the CFS config values
+		$config = $source ?: 'generator';
+		$config = $path ? ($config.'.'.$path) : $config;
+		if ($path)
+			return Kohana::$config->load($config);
+
+		return (array) Kohana::$config->load($config);
+	}
+
+	/**
+	 * Convenience method for loading message values, optionally from a given
+	 * absolute file path or via the CFS.
+	 *
+	 * @param   string  $file  The message source to load
+	 * @param   string  $path  Array path to the message values
+	 * @return  mixed  The message values or NULL
+	 */
+	public static function get_message($file, $path = NULL)
+	{
+		if (($file = Generator::expand_path($file)) AND is_file($file))
+		{
+			// Return the values from the file
+			$msg = Kohana::load($file);
+			if ($path)
+				return Arr::path($msg, $path);
+
+			return $msg;
+		}
+
+		// Otherwise load the CFS values
+		return Kohana::message($file, $path);
+	}
+
+	/**
+	 * Convenience method for expanding the results of Debug::path() or equivalent
+	 * to their full absolute paths.
+	 *
+	 * @param   string  $path  The path to expand
+	 * @return  string  The expanded path
+	 */
+	public static function expand_path($path)
+	{
+		return preg_replace(
+			array('@^APPPATH/?@', '@^MODPATH/?@', '@^SYSPATH/?@', '@^DOCROOT/?@'),
+			array(APPPATH, MODPATH, SYSPATH, DOCROOT), $path
+		);
+	}
+
+	/**
 	 * Adds a new type to the builder list, and returns the type instance
 	 * so that it can be configured via the fluent interface. Note that
 	 * the __call() method allows simple aliasing of this function, so these

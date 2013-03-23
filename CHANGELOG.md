@@ -1,6 +1,8 @@
 Generator for Kohana - Changelog
 ================================
 
+- Added get_config(), get_message() and expand_path() convenience methods to
+  Generator_Builder.
 - Fixed quoting of values with reserved characters when creating fixtures.
 - Added Generator_Builder::globals() method for getting and setting global values
   to be set on all stored generators in one call.
