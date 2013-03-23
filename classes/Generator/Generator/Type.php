@@ -731,8 +731,8 @@ class Generator_Generator_Type
 	 * Converts strings, including comma-separated lists, to arrays for local
 	 * parameter storage.
 	 *
-	 * @param   string   $values  The given parameter string value(s)
-	 * @param   string   $param   The parameter name
+	 * @param   array|string  $values  The given parameter string value(s)
+	 * @param   string        $param   The parameter name
 	 * @return  boolean  TRUE if the values were converted
 	 */
 	public function param_to_array($values, $param)
