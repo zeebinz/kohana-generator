@@ -69,7 +69,7 @@ The options listed in the general help are common to all generators, and each ge
 	Description
 	===========
 	Generates configuration files, optionally with simple config entries
-	passed as value definitions.
+	passed as value definitions or imported from existing sources.
 	
 	Additional options:
 	
@@ -82,12 +82,24 @@ The options listed in the general help are common to all generators, and each ge
 	    Value definitions may be added as a comma-separated list in the
 	    format: "array.path.key|value".
 	
+	  --import=SOURCE[,SOURCE[,...]]
+	
+	    Values may be imported from existing sources as a comma-separated list
+	    in the format: "source|array.path.key", and may be overridden by any
+	    values set via the option. If only the source is specified, all of its
+	    its values will be imported.
+	
 	Examples
 	========
 	minion generate:config --name=logger --module=logger \
 	    --values="logger.file.name|log, logger.file.ext|txt, logger.debug|1"
 	
 	    file : MODPATH/logger/config/logger.php
+	
+	minion generate:config --name=logger --import="app|logger.file, other" \
+	    --values="logger.debug|1, other.name|foo"
+	
+	    file : APPPATH/logger/config/logger.php
 	
 	...
 

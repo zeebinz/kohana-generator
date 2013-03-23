@@ -1,0 +1,19 @@
+---SUMMARY---
+Test fixture for the GENERATE:MESSAGE generator.
+---COMMAND---
+generate:message --name=foo --import="testmsgs/generator"
+---EXPECTED---
+[ File 1 ] APPPATH/messages/foo.php
+
+<?php defined('SYSPATH') OR die('No direct script access.');
+
+return array(
+	'one' => 'first message',
+	'two' => array(
+		'three' => 'second message',
+		'four' => array(
+			'five' => 'third message',
+		),
+	),
+);
+---END---

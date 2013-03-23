@@ -1,7 +1,7 @@
 <?php defined('SYSPATH') OR die('No direct script access.');
 /**
  * Generates message files, optionally with simple message entries
- * passed as value definitions.
+ * passed as value definitions or imported from existing sources.
  *
  * <comment>Additional options:</comment>
  *
@@ -14,12 +14,24 @@
  *     Value definitions may be added as a comma-separated list in the
  *     format: "array.path.key|value".
  *
+ *   <info>--import=SOURCE[,SOURCE[,...]]</info>
+ *
+ *     Values may be imported from existing sources as a comma-separated list
+ *     in the format: "source|array.path.key", and may be overridden by any
+ *     values set via the <info>--values</info> option. If only the source is specified,
+ *     all of its values will be imported.
+ *
  * <comment>Examples</comment>
  * ========
  * <info>minion generate:message --name=logger --module=logger \
  *     --values="logging.some_message|some_value"</info>
  *
  *     file : MODPATH/logger/messages/logger.php
+ *
+ * <info>minion generate:message --name=logger --import="app|logging, other" \
+ *     --values="logging.some_message|some_value"</info>
+ *
+ *     file : APPPATH/logger/messages/logger.php
  *
  * @package    Generator
  * @category   Tasks

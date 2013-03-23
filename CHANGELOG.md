@@ -1,6 +1,8 @@
 Generator for Kohana - Changelog
 ================================
 
+- Added `--import` option for `generate:config` and `generate:message`, allows
+  importing of existing values into config or message output.
 - Added get_config(), get_message() and expand_path() convenience methods to
   Generator_Builder.
 - Fixed quoting of values with reserved characters when creating fixtures.

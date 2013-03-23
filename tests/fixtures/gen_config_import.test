@@ -1,0 +1,24 @@
+---SUMMARY---
+Test fixture for the GENERATE:CONFIG generator.
+---COMMAND---
+generate:config --name=foo --import="testconfig/generator"
+---EXPECTED---
+[ File 1 ] APPPATH/config/foo.php
+
+<?php defined('SYSPATH') OR die('No direct script access.');
+
+return array(
+	'defaults' => array(
+		'class' => array(
+			'author' => 'Author',
+			'copyright' => '(c) 2012 Author',
+			'license' => 'License info',
+		),
+		'guide' => array(
+			'author' => 'Author',
+			'copyright' => '(c) 2012 Author',
+			'license' => 'License info',
+		),
+	),
+);
+---END---
