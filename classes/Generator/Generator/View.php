@@ -38,7 +38,7 @@ class Generator_Generator_View extends Kohana_View
 	 */
 	public function set_filename($file, $path = NULL)
 	{
-		if ($path AND file_exists($path.$file.EXT))
+		if ($path AND is_file($path.$file.EXT))
 		{
 			// Use the absolute path
 			$this->_file = $path.$file.EXT;
