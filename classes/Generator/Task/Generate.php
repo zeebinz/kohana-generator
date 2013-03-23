@@ -285,7 +285,7 @@ class Generator_Task_Generate extends Minion_Task
 
 		foreach ($args['options'] as $key => $value)
 		{
-			$value = (strpos($value, ' ') !== FALSE) ? ('"'.$value.'"') : $value;
+			$value = (preg_match('@[\s\|\\\/]@', $value)) ? ('"'.$value.'"') : $value;
 			$command .= ' --'.$key.($value ? ('='.$value) : '');
 		}
 

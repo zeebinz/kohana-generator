@@ -1,6 +1,7 @@
 Generator for Kohana - Changelog
 ================================
 
+- Fixed quoting of values with reserved characters when creating fixtures.
 - Added Generator_Builder::globals() method for getting and setting global values
   to be set on all stored generators in one call.
 - When using the `generate:fixture --refresh` option, matching files will now

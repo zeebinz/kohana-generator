@@ -126,6 +126,14 @@ class Generator_Task_GenerateTest extends Unittest_TestCase
 				array('task' => 'generate:config', 'options' => array('name' => 'foo', 'values' => 'a.b|a, c|d')),
 			),
 			array(
+				'generate:config --name=foo --values="a.b|a"',
+				array('task' => 'generate:config', 'options' => array('name' => 'foo', 'values' => 'a.b|a')),
+			),
+			array(
+				'generate:config --name="foo/bar" --values="a.b|a,c|d"',
+				array('task' => 'generate:config', 'options' => array('name' => 'foo/bar', 'values' => 'a.b|a,c|d')),
+			),
+			array(
 				'generate:controller:view --name=Foo',
 				array('task' => 'generate:controller:view', 'options' => array('name' => 'Foo')),
 			),
