@@ -37,14 +37,4 @@ class Generator_Generator_Type_Trait extends Generator_Type
 		return $this;
 	}
 
-	/**
-	 * Finalizes parameters and renders the template.
-	 *
-	 * @return  string  The rendered output
-	 */
-	public function render()
-	{
-		return parent::render();
-	}
-
 } // End Generator_Generator_Type_Trait

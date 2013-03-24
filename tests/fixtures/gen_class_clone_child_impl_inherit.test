@@ -48,7 +48,7 @@ class Foo extends Fx_Class implements Fx_Countable, Fx_Sortable
 	 */
 	public static function method_one($one, $two = 'two', $three = 3, $four = 4.01)
 	{
-		parent::method_one($one, $two, $three, $four);
+		return parent::method_one($one, $two, $three, $four);
 	}
 
 	/**
@@ -59,7 +59,7 @@ class Foo extends Fx_Class implements Fx_Countable, Fx_Sortable
 	 */
 	protected static function _method_two(SomeClass $class = NULL)
 	{
-		parent::_method_two($class);
+		return parent::_method_two($class);
 	}
 
 	/**
@@ -116,7 +116,7 @@ class Foo extends Fx_Class implements Fx_Countable, Fx_Sortable
 	 */
 	public function method_three(array $list)
 	{
-		parent::method_three($list);
+		return parent::method_three($list);
 	}
 
 	/**
@@ -126,6 +126,8 @@ class Foo extends Fx_Class implements Fx_Countable, Fx_Sortable
 
 	/**
 	 * A protected method
+	 *
+	 * @return void
 	 */
 	protected function _method_five(SomeClass $class, $two)
 	{

@@ -24,7 +24,7 @@ class Foo extends SplHeap implements Countable, Iterator
 	 */
 	public function extract()
 	{
-		parent::extract();
+		return parent::extract();
 	}
 
 	/**
@@ -35,7 +35,7 @@ class Foo extends SplHeap implements Countable, Iterator
 	 */
 	public function insert($value)
 	{
-		parent::insert($value);
+		return parent::insert($value);
 	}
 
 	/**
@@ -45,7 +45,7 @@ class Foo extends SplHeap implements Countable, Iterator
 	 */
 	public function top()
 	{
-		parent::top();
+		return parent::top();
 	}
 
 	/**
@@ -57,7 +57,7 @@ class Foo extends SplHeap implements Countable, Iterator
 	 */
 	public function count()
 	{
-		parent::count();
+		return parent::count();
 	}
 
 	/**
@@ -67,7 +67,7 @@ class Foo extends SplHeap implements Countable, Iterator
 	 */
 	public function isEmpty()
 	{
-		parent::isEmpty();
+		return parent::isEmpty();
 	}
 
 	/**
@@ -79,7 +79,7 @@ class Foo extends SplHeap implements Countable, Iterator
 	 */
 	public function rewind()
 	{
-		parent::rewind();
+		return parent::rewind();
 	}
 
 	/**
@@ -91,7 +91,7 @@ class Foo extends SplHeap implements Countable, Iterator
 	 */
 	public function current()
 	{
-		parent::current();
+		return parent::current();
 	}
 
 	/**
@@ -103,7 +103,7 @@ class Foo extends SplHeap implements Countable, Iterator
 	 */
 	public function key()
 	{
-		parent::key();
+		return parent::key();
 	}
 
 	/**
@@ -115,7 +115,7 @@ class Foo extends SplHeap implements Countable, Iterator
 	 */
 	public function next()
 	{
-		parent::next();
+		return parent::next();
 	}
 
 	/**
@@ -127,7 +127,7 @@ class Foo extends SplHeap implements Countable, Iterator
 	 */
 	public function valid()
 	{
-		parent::valid();
+		return parent::valid();
 	}
 
 	/**
@@ -137,7 +137,7 @@ class Foo extends SplHeap implements Countable, Iterator
 	 */
 	public function recoverFromCorruption()
 	{
-		parent::recoverFromCorruption();
+		return parent::recoverFromCorruption();
 	}
 
 	/**

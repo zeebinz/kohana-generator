@@ -106,6 +106,8 @@ class Foo_Bar
 
 	/**
 	 * A protected method
+	 *
+	 * @return void
 	 */
 	protected function _method_five(SomeClass $class, $two)
 	{

@@ -30,7 +30,7 @@ abstract class Foo
 	 */
 	public function sort($reverse = FALSE)
 	{
-		parent::sort($reverse);
+		return parent::sort($reverse);
 	}
 
 	/**

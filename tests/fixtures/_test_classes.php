@@ -24,6 +24,8 @@ class Fx_Class
 
 	/**
 	 * A protected method
+	 *
+	 * @return void
 	 */
 	protected function _method_five(SomeClass $class, $two) {}
 	final protected function _method_six() {}

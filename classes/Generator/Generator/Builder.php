@@ -18,7 +18,7 @@
 class Generator_Generator_Builder
 {
 	// Release version
-	const VERSION = '1.0';
+	const VERSION = '1.1';
 
 	// Generator commands
 	const CREATE = 'create';
@@ -31,52 +31,16 @@ class Generator_Generator_Builder
 	protected $_generators = array();
 
 	/**
-	 * The pretend mode to be applied to each generator
-	 * @var boolean
+	 * The global values to be applied to each generator
+	 * @var array
 	 */
-	protected $_pretend;
-
-	/**
-	 * The force mode be applied to each generator
-	 * @var boolean
-	 */
-	protected $_force;
-
-	/**
-	 * The verify mode be applied to each generator
-	 * @var boolean
-	 */
-	protected $_verify;
+	protected $_globals = array();
 
 	/**
 	 * Is the builder ready to be executed?
 	 * @var boolean
 	 */
 	protected $_is_prepared = FALSE;
-
-	/**
-	 * Parameter defaults to be applied to each generator
-	 * @var array
-	 */
-	protected $_defaults = array();
-
-	/**
-	 * The absolute base path under which each item should be created
-	 * @var string
-	 */
-	protected $_path;
-
-	/**
-	 * The module folder under which each item should be created
-	 * @var string
-	 */
-	protected $_module;
-
-	/**
-	 * Overrides the view template file used by each generator
-	 * @var string
-	 */
-	protected $_template;
 
 	/**
 	 * The main factory method for returning new builder instances.
@@ -117,6 +81,73 @@ class Generator_Generator_Builder
 		}
 
 		return $path;
+	}
+
+	/**
+	 * Convenience method for loading configuration values, optionally from
+	 * a given config group or an absolute file path.
+	 *
+	 * @param   string  $path    Array path to the config values
+	 * @param   string  $source  The config group or file to load
+	 * @return  mixed  The config values or NULL
+	 */
+	public static function get_config($source = NULL, $path = NULL)
+	{
+		if ($source !== NULL AND ($file = Generator::expand_path($source)) AND is_file($file))
+		{
+			// Return the values from the file
+			$config = Kohana::load($file);
+			if ($path)
+				return Arr::path($config, $path);
+
+			return $config;
+		}
+
+		// Otherwise load the CFS config values
+		$group = $source ?: 'generator';
+		if ($path)
+			return Kohana::$config->load($group.'.'.$path);
+
+		return (array) Kohana::$config->load($group);
+	}
+
+	/**
+	 * Convenience method for loading message values, optionally from a given
+	 * absolute file path or via the CFS.
+	 *
+	 * @param   string  $file  The message source to load
+	 * @param   string  $path  Array path to the message values
+	 * @return  mixed  The message values or NULL
+	 */
+	public static function get_message($file, $path = NULL)
+	{
+		if (($file = Generator::expand_path($file)) AND is_file($file))
+		{
+			// Return the values from the file
+			$msg = Kohana::load($file);
+			if ($path)
+				return Arr::path($msg, $path);
+
+			return $msg;
+		}
+
+		// Otherwise load the CFS values
+		return Kohana::message($file, $path);
+	}
+
+	/**
+	 * Convenience method for expanding the results of Debug::path() or equivalent
+	 * to their full absolute paths.
+	 *
+	 * @param   string  $path  The path to expand
+	 * @return  string  The expanded path
+	 */
+	public static function expand_path($path)
+	{
+		return preg_replace(
+			array('@^APPPATH/?@', '@^MODPATH/?@', '@^SYSPATH/?@', '@^DOCROOT/?@'),
+			array(APPPATH, MODPATH, SYSPATH, DOCROOT), $path
+		);
 	}
 
 	/**
@@ -181,11 +212,8 @@ class Generator_Generator_Builder
 	 */
 	public function with_defaults(array $defaults = NULL)
 	{
-		if ($defaults)
-		{
-			$this->_defaults = $defaults;
-			$this->_is_prepared = FALSE;
-		}
+		$this->_globals['defaults'] = $defaults;
+		$this->_is_prepared = FALSE;
 
 		return $this;
 	}
@@ -199,9 +227,9 @@ class Generator_Generator_Builder
 	 */
 	public function with_pretend($pretend = TRUE)
 	{
-		$this->_pretend = (bool) $pretend;
-
+		$this->_globals['pretend'] = (bool) $pretend;
 		$this->_is_prepared = FALSE;
+
 		return $this;
 	}
 
@@ -212,7 +240,7 @@ class Generator_Generator_Builder
 	 */
 	public function is_pretend()
 	{
-		return $this->_pretend;
+		return Arr::get($this->_globals, 'pretend') === TRUE;
 	}
 
 	/**
@@ -224,9 +252,9 @@ class Generator_Generator_Builder
 	 */
 	public function with_force($force = TRUE)
 	{
-		$this->_force = (bool) $force;
-
+		$this->_globals['force'] = (bool) $force;
 		$this->_is_prepared = FALSE;
+
 		return $this;
 	}
 
@@ -239,9 +267,9 @@ class Generator_Generator_Builder
 	 */
 	public function with_verify($verify = TRUE)
 	{
-		$this->_verify = (bool) $verify;
-
+		$this->_globals['verify'] = (bool) $verify;
 		$this->_is_prepared = FALSE;
+
 		return $this;
 	}
 
@@ -254,9 +282,9 @@ class Generator_Generator_Builder
 	 */
 	public function with_path($path)
 	{
-		$this->_path = (string) $path;
-
+		$this->_globals['path'] = (string) $path;
 		$this->_is_prepared = FALSE;
+
 		return $this;
 	}
 
@@ -270,9 +298,9 @@ class Generator_Generator_Builder
 	 */
 	public function with_module($module)
 	{
-		$this->_module = (string) $module;
-
+		$this->_globals['module'] = (string) $module;
 		$this->_is_prepared = FALSE;
+
 		return $this;
 	}
 
@@ -285,9 +313,42 @@ class Generator_Generator_Builder
 	 */
 	public function with_template($template)
 	{
-		$this->_template = (string) $template;
-
+		$this->_globals['template'] = (string) $template;
 		$this->_is_prepared = FALSE;
+
+		return $this;
+	}
+
+	/**
+	 * Sets the absolute path to the templates directory that will be checked by
+	 * by each generator before the CFS is searched.
+	 *
+	 * @param   string  $path  The templates directory
+	 * @return  Generator_Builder  This instance
+	 */
+	public function with_template_dir($path)
+	{
+		$this->_globals['template_dir'] = (string) $path;
+		$this->_is_prepared = FALSE;
+
+		return $this;
+	}
+
+	/**
+	 * Lists the global values that are to be applied to each generator type added
+	 * by the builder using the with_* methods, or sets them via a passed array.
+	 *
+	 * @param   array  $globals  The list of global values to be set on generators
+	 * @return  array|Generator_Builder  List of stored globals or this instance
+	 */
+	public function globals(array $globals = NULL)
+	{
+		if ($globals === NULL)
+			return $this->_globals;
+
+		$this->_globals = $globals;
+		$this->_is_prepared = FALSE;
+
 		return $this;
 	}
 
@@ -308,7 +369,7 @@ class Generator_Generator_Builder
 	 * Allows inspection of the current generators list for debugging purposes.
 	 *
 	 * @param   boolean  $rendered  Should rendered output be displayed?
-	 * @return  array
+	 * @return  array  The generators list
 	 */
 	public function inspect($rendered = TRUE)
 	{
@@ -428,13 +489,13 @@ class Generator_Generator_Builder
 		foreach ($this->_generators as $generator)
 		{
 			// Set the module for the generator, if any
-			$generator->module($this->_module);
+			$generator->module(Arr::get($this->_globals, 'module'));
 
 			// Set the verify mode for the generator
-			$generator->verify($this->_verify);
+			$generator->verify(Arr::get($this->_globals, 'verify'));
 
 			// Set the custom base path for the generator, if any
-			$generator->path($this->_path);
+			$generator->path(Arr::get($this->_globals, 'path'));
 
 			if ( ! $generator->file())
 			{
@@ -442,13 +503,17 @@ class Generator_Generator_Builder
 				$generator->guess_filename();
 			}
 
-			// Builder defaults should be merged with the generator defaults
-			$generator->defaults(array_merge($generator->defaults(), $this->_defaults));
+			if (isset($this->_globals['defaults']))
+			{
+				// Builder defaults should be merged with the generator defaults
+				$generator->defaults(array_merge($generator->defaults(), $this->_globals['defaults']));
+			}
 
 			// Set the other global options
-			$generator->template($this->_template);
-			$generator->pretend($this->_pretend);
-			$generator->force($this->_force);
+			$generator->template_dir(Arr::get($this->_globals, 'template_dir'));
+			$generator->template(Arr::get($this->_globals, 'template'));
+			$generator->pretend(Arr::get($this->_globals, 'pretend'));
+			$generator->force(Arr::get($this->_globals, 'force'));
 		}
 
 		// We're finished preparing

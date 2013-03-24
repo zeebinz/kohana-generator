@@ -1,6 +1,23 @@
 Generator for Kohana - Changelog
 ================================
 
+Version 1.1
+-----------
+
+- Added `--import` option for `generate:config` and `generate:message`, allows
+  importing of existing values into config or message output.
+- Added get_config(), get_message() and expand_path() convenience methods to
+  Generator_Builder.
+- Fixed quoting of values with reserved characters when creating fixtures.
+- Added Generator_Builder::globals() method for getting and setting global values
+  to be set on all stored generators in one call.
+- When using the `generate:fixture --refresh` option, matching files will now
+  be replaced by default without needing the `--force` option.
+- Inherited methods now return the values of invoked parent methods by default
+  unless the return value is known to be void.
+- Added support for specifying absolute paths to view template files with new
+  Generator_View class.
+
 Version 1.0
 -----------
 

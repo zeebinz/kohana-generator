@@ -206,6 +206,7 @@ class Generator_Generator_Type_Class extends Generator_Type
 					{
 						// Invoke the parent for inherited methods
 						$m['body']  = isset($doc) ? '' : ('// Defined in '.$m['class'].PHP_EOL."\t\t");
+						$m['body'] .= (isset($doc) OR ! preg_match('/@return\s+void/i', $m['doccomment'])) ? 'return ' : '';
 						$m['body'] .= 'parent::'.$refl->get_method_invocation($method).';';
 					}
 					elseif ( ! $m['abstract'])

@@ -145,8 +145,12 @@ class Generator_Task_Generate_Fixture extends Task_Generate
 		// Add the test config, if any
 		$task->set_options(array('config' => $fixtures.'_test_config.php'));
 
+		// Get the module's templates directory
+		$template_dir = $this->get_templates_directory();
+
 		// Get the builder and override its options
 		$builder = $task->get_builder($task->get_options())
+			->with_template_dir($template_dir)
 			->with_verify(FALSE)
 			->with_force(FALSE)
 			->with_pretend(TRUE)
@@ -235,6 +239,17 @@ class Generator_Task_Generate_Fixture extends Task_Generate
 	}
 
 	/**
+	 * Returns the full path to this modules templates directory.
+	 *
+	 * @return  string  The path to the templates directory
+	 */
+	public function get_templates_directory()
+	{
+		$ds = DIRECTORY_SEPARATOR;
+		return dirname(dirname(dirname(dirname(dirname(__FILE__))))).$ds.'views'.$ds;
+	}
+
+	/**
 	 * Returns the names of any currently stored fixtures, optionally limited to
 	 * fixture names that match a given pattern (with wildcards).
 	 *
@@ -313,6 +328,9 @@ class Generator_Task_Generate_Fixture extends Task_Generate
 				// Merge the new builder into the base
 				$builder->merge($this->get_builder($options));
 			}
+
+			// Force replacement of the files
+			$builder->with_force(TRUE);
 		}
 
 		// Run the task
