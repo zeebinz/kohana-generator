@@ -104,12 +104,11 @@ class Generator_Generator_Builder
 		}
 
 		// Otherwise load the CFS config values
-		$config = $source ?: 'generator';
-		$config = $path ? ($config.'.'.$path) : $config;
+		$group = $source ?: 'generator';
 		if ($path)
-			return Kohana::$config->load($config);
+			return Kohana::$config->load($group.'.'.$path);
 
-		return (array) Kohana::$config->load($config);
+		return (array) Kohana::$config->load($group);
 	}
 
 	/**
