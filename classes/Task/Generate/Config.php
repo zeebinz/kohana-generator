@@ -31,7 +31,7 @@
  * <info>minion generate:config --name=logger --import="app|logger.file, other" \
  *     --values="logger.debug|1, other.name|foo"</info>
  *
- *     file : APPPATH/logger/config/logger.php
+ *     file : APPPATH/config/logger.php
  *
  * @package    Generator
  * @category   Tasks

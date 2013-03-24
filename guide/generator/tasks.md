@@ -77,17 +77,17 @@ The options listed in the general help are common to all generators, and each ge
 	
 	    This sets the name of the config file.
 	
-	  --values=VALUES
+	  --values=VALUE[,VALUE[,...]]
 	
 	    Value definitions may be added as a comma-separated list in the
 	    format: "array.path.key|value".
 	
 	  --import=SOURCE[,SOURCE[,...]]
 	
-	    Values may be imported from existing sources as a comma-separated list
-	    in the format: "source|array.path.key", and may be overridden by any
-	    values set via the option. If only the source is specified, all of its
-	    its values will be imported.
+	    Values may be imported from existing sources as a comma-separated
+	    list in the format: "source|array.path.key", and may be overridden
+	    by any values set via the --values option. If only the source is
+	    specified, all of its its values will be imported.
 	
 	Examples
 	========
@@ -99,7 +99,7 @@ The options listed in the general help are common to all generators, and each ge
 	minion generate:config --name=logger --import="app|logger.file, other" \
 	    --values="logger.debug|1, other.name|foo"
 	
-	    file : APPPATH/logger/config/logger.php
+	    file : APPPATH/config/logger.php
 	
 	...
 

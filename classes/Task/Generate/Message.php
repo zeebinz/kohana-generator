@@ -9,17 +9,17 @@
  *
  *     This sets the name of the message file.
  *
- *   <info>--values=VALUES</info>
+ *   <info>--values=VALUE[,VALUE[,...]]</info>
  *
  *     Value definitions may be added as a comma-separated list in the
  *     format: "array.path.key|value".
  *
  *   <info>--import=SOURCE[,SOURCE[,...]]</info>
  *
- *     Values may be imported from existing sources as a comma-separated list
- *     in the format: "source|array.path.key", and may be overridden by any
- *     values set via the <info>--values</info> option. If only the source is specified,
- *     all of its values will be imported.
+ *     Values may be imported from existing sources as a comma-separated
+ *     list in the format: "source|array.path.key", and may be overridden
+ *     by any values set via the <info>--values</info> option. If only the source is
+ *     specified, all of its values will be imported.
  *
  * <comment>Examples</comment>
  * ========
@@ -31,7 +31,7 @@
  * <info>minion generate:message --name=logger --import="app|logging, other" \
  *     --values="logging.some_message|some_value"</info>
  *
- *     file : APPPATH/logger/messages/logger.php
+ *     file : APPPATH/messages/logger.php
  *
  * @package    Generator
  * @category   Tasks
