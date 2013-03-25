@@ -108,7 +108,7 @@ class Generator_Generator_Builder
 		if ($path)
 			return Kohana::$config->load($group.'.'.$path);
 
-		return (array) Kohana::$config->load($group);
+		return Kohana::$config->load($group)->as_array();
 	}
 
 	/**
