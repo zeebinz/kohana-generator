@@ -312,7 +312,7 @@ class Generator_TypeTest extends Unittest_TestCase
 	{
 		$type = new Generator_Type_Tester('Foo');
 
-		$type->param_to_array('list,of,values', 'test');
+		$type->param_to_array('list,of , values', 'test');
 		$type->param_to_array('some_string', 'test');
 		$params = $type->params();
 
